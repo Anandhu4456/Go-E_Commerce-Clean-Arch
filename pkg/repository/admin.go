@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -24,4 +27,18 @@ func (ar *adminRepository) LoginHandler(adminDetails models.AdminLogin) (domain.
 		return domain.Admin{}, err
 	}
 	return adminCompareDetail, nil
+}
+
+func (ar *adminRepository)GetUserById(id string)(domain.User,error){
+	userId,err:=strconv.Atoi(id)
+	if err!=nil{
+		return domain.User{},err
+	}
+	query:=fmt.Sprintf("select * from users where id = '%d'",userId)
+	var userDetails domain.User
+	err =ar.DB.Raw(query).Scan(&userDetails).Error
+	if err!=nil{
+		return domain.User{},err
+	}
+	return userDetails,nil
 }
