@@ -42,3 +42,12 @@ func (ar *adminRepository)GetUserById(id string)(domain.User,error){
 	}
 	return userDetails,nil
 }
+
+// This function will both block and unblock user
+func (ar *adminRepository)UpdateBlockUserById(user domain.User)error{
+	err:=ar.DB.Exec("update users set permission = ? where id = ?",user.Permission,user.ID).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
