@@ -51,3 +51,19 @@ func (ar *adminRepository)UpdateBlockUserById(user domain.User)error{
 	}
 	return nil
 }
+
+func (ar *adminRepository)GetUsers(page,limit int)([]models.UserDetailsAtAdmin,error){
+	if page== 0{
+		page = 1
+	}
+	if limit==0{
+		limit =10
+	}
+	offset:=(page-1)*limit
+	var userDetails []models.UserDetailsAtAdmin
+	err:=ar.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?",limit,offset).Scan(&userDetails).Error
+	if err!=nil{
+		return []models.UserDetailsAtAdmin{},err
+	}
+	return userDetails,nil
+}
