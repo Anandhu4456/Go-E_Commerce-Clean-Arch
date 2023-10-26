@@ -2,12 +2,19 @@ package repository
 
 import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
 type adminRepository struct {
 	DB *gorm.DB
+}
+
+func NewAdminRepository(DB *gorm.DB)interfaces.AdminRepository{
+	return &adminRepository{
+		DB:DB,
+	}
 }
 
 func (ar *adminRepository) LoginHandler(adminDetails models.AdminLogin) (domain.Admin, error) {
