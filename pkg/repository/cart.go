@@ -28,9 +28,29 @@ func (cr *cartRepository)GetAddresses(id int)([]domain.Address,error){
 
 func (cr *cartRepository)GetCartId(user_id int)(int,error){
 	var userId int
-	err:=cr.DB.Raw("select id from carts where user_id = ?",userId).Scan(&userId).Error
+	err:=cr.DB.Raw("select id from carts where user_id = ?",user_id).Scan(&userId).Error
 	if err!=nil{
 		return 0,err
 	}
 	return userId,nil
+}
+
+func (cr *cartRepository)CreateNewCart(user_id int)(int,error){
+	var id int
+	err:=cr.DB.Exec(`INSERT INTO carts (user_id) VALUES (?)`,user_id).Error
+	if err!=nil{
+		return 0,err
+	}
+	err = cr.DB.Raw("select id from carts where user_id ",user_id).Scan(&id).Error
+	if err!=nil{
+		return 0,err
+	}
+	return id,nil
+}
+func (cr *cartRepository)AddLineItems(inventory_id ,cart_id int)error{
+	err:=cr.DB.Exec(`INSERT INTO line_items (inventory_id,cart_id) VALUES(?,?)`,inventory_id,cart_id).Error
+	if err!=nil{
+		return err
+	}
+	return nil
 }
