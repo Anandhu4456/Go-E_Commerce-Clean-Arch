@@ -54,3 +54,23 @@ func (cr *cartRepository)AddLineItems(inventory_id ,cart_id int)error{
 	}
 	return nil
 }
+
+func (cr *cartRepository)CheckIfInvAdded(invId,cartId int)bool{
+	var count int=0
+	err:=cr.DB.Raw("select count(id) from line_items where cart_id=? and inventory_id = ?",cartId,invId).Scan(&count).Error
+	if err!=nil{
+		return false
+	}
+	if count <1 {
+		return false
+	}
+	return true
+}
+
+func (cr *cartRepository)AddQuantity(invId,cartId int)error{
+	err:=cr.DB.Raw("update line_items set quantity=quantity+1 where cart_id = ? and inventory_id = ? ",cartId,invId).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
