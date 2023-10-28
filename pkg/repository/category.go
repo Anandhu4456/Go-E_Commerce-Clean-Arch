@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"gorm.io/gorm"
@@ -50,4 +52,26 @@ func (cat *categoryRepository)CheckCategory(current string)(bool,error){
 		return false,err
 	}
 	return true,nil
+}
+
+func (cat *categoryRepository)UpdateCategory(current, new string)(domain.Category,error){
+
+	// check database connection 
+
+	if cat.DB == nil{
+		return domain.Category{},errors.New("database connection failed while update category")
+	}
+
+	// update category
+	err:=cat.DB.Exec("UPDATE categories SET category=? WHERE category=?",new,current).Error
+	if err!=nil{
+		return domain.Category{},err
+	}
+	// Retrieve updated category
+	var updatedCat domain.Category
+	err =cat.DB.First(&updatedCat,"category=?",new).Error
+	if err!=nil{
+		return domain.Category{},err
+	}
+	return updatedCat,nil
 }
