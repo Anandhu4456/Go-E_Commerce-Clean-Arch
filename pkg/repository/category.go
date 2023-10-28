@@ -39,3 +39,15 @@ func (cat *categoryRepository) AddCategory(category string) (domain.Category, er
 	}
 	return categoryResponse, nil
 }
+
+func (cat *categoryRepository)CheckCategory(current string)(bool,error){
+	var response int
+	err:=cat.DB.Raw("SELECT COUNT (*) FROM categories WHERE category= ?",current).Scan(&response).Error
+	if err!=nil{
+		return false,err
+	}
+	if response == 0{
+		return false,err
+	}
+	return true,nil
+}
