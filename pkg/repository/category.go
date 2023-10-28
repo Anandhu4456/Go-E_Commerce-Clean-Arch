@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
@@ -74,4 +75,16 @@ func (cat *categoryRepository)UpdateCategory(current, new string)(domain.Categor
 		return domain.Category{},err
 	}
 	return updatedCat,nil
+}
+
+func (cat *categoryRepository)DeleteCategory(categoryId string)error{
+	id,err:=strconv.Atoi(categoryId) 
+	if err!=nil{
+		return errors.New("string to int conversion failed")
+	}
+	deleteRes:=cat.DB.Exec("DELETE FROM categories WHERE id=?",id)
+	if deleteRes.RowsAffected <1{
+		return errors.New("No record exists with this id")
+	}
+	return nil
 }
