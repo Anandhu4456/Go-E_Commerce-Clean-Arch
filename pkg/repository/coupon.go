@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
@@ -46,18 +47,35 @@ func (couprep *couponRepository) FindCouponDiscount(coupon string) int {
 	return discountRate
 }
 
-func (couprep *couponRepository)GetCoupons(page,limit int)([]domain.Coupon,error){
-	if page==0{
+func (couprep *couponRepository) GetCoupons(page, limit int) ([]domain.Coupon, error) {
+	if page == 0 {
 		page = 1
 	}
-	if limit ==0{
-		limit =10
+	if limit == 0 {
+		limit = 10
 	}
-	offset:=(page-1)*limit
+	offset := (page - 1) * limit
 	var couponResponse []domain.Coupon
-	err:=couprep.DB.Raw("SELECT id,name,discount_rate,valid FROM coupons limit ? offset ?",limit,offset).Scan(&couponResponse).Error
-	if err!=nil{
-		return []domain.Coupon{},err
+	err := couprep.DB.Raw("SELECT id,name,discount_rate,valid FROM coupons limit ? offset ?", limit, offset).Scan(&couponResponse).Error
+	if err != nil {
+		return []domain.Coupon{}, err
 	}
-	return couponResponse,nil
+	return couponResponse, nil
+}
+
+func (couprep *couponRepository) ValidateCoupon(coupon string) (bool, error) {
+	count := 0
+	err := couprep.DB.Raw("SELECT COUNT(id)FROM coupons WHERE name=?", coupon).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	if count < 1 {
+		return false, errors.New("not a valid coupon")
+	}
+	valid := true
+	err = couprep.DB.Raw("SELECT valid FROM coupons WHERE name = ?", coupon).Scan(&valid).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
