@@ -45,3 +45,19 @@ func (couprep *couponRepository) FindCouponDiscount(coupon string) int {
 	fmt.Println("discount rate: ", discountRate)
 	return discountRate
 }
+
+func (couprep *couponRepository)GetCoupons(page,limit int)([]domain.Coupon,error){
+	if page==0{
+		page = 1
+	}
+	if limit ==0{
+		limit =10
+	}
+	offset:=(page-1)*limit
+	var couponResponse []domain.Coupon
+	err:=couprep.DB.Raw("SELECT id,name,discount_rate,valid FROM coupons limit ? offset ?",limit,offset).Scan(&couponResponse).Error
+	if err!=nil{
+		return []domain.Coupon{},err
+	}
+	return couponResponse,nil
+}
