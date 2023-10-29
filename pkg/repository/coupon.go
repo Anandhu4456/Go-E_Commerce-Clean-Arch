@@ -25,3 +25,11 @@ func (couprep *couponRepository)AddCoupon(coupon domain.Coupon)error{
 	}
 	return nil
 }
+
+func (couprep *couponRepository)MakeCouponInvalid(id int)error{
+	err:=couprep.DB.Exec("UPDATE coupons SET valid=false WHERE id=$1",id).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
