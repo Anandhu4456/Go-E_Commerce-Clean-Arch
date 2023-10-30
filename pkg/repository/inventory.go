@@ -66,3 +66,47 @@ func (ir *inventoryRespository) CheckInventory(pid int) (bool, error) {
 	}
 	return true, nil
 }
+
+func (ir *inventoryRespository) UpdateInventory(pid int, invData models.UpdateInventory) (models.Inventory, error) {
+	if ir.DB == nil {
+		return models.Inventory{}, errors.New("database connection failed while update inventory")
+	}
+
+	if invData.CategoryID != 0 {
+		if err := ir.DB.Exec("UPDATE inventories SET categorie_id WHERE id=?", invData.CategoryID, pid).Error; err != nil {
+			return models.Inventory{}, err
+		}
+	}
+
+	if invData.ProductName != "" && invData.ProductName != "string" {
+		if err := ir.DB.Exec("UPDATE inventories SET product_name=? WHERE id= ?", invData.ProductName, pid).Error; err != nil {
+			return models.Inventory{}, err
+		}
+	}
+
+	if invData.Description != "" && invData.Description != "string" {
+		if err := ir.DB.Exec("UPDATE inventories SET description=? WHERE id=?", invData.Description, pid).Error; err != nil {
+			return models.Inventory{}, err
+		}
+	}
+
+	if invData.Stock != 0 {
+		if err := ir.DB.Exec("UPDATE inventories SET stock= ? WHERE id=?", invData.Stock, pid).Error; err != nil {
+			return models.Inventory{}, err
+		}
+	}
+
+	if invData.Price != 0 {
+		if err := ir.DB.Exec("UPDATE inventories SET price=? WHERE id=?", invData.Price, pid).Error; err != nil {
+			return models.Inventory{}, err
+		}
+	}
+
+	// retrieve the updates
+	var updatedInventory models.Inventory
+	err := ir.DB.Raw("SELECT * FROM inventories WHERE Id = ?", pid).Scan(&updatedInventory).Error
+	if err != nil {
+		return models.Inventory{}, err
+	}
+	return updatedInventory, nil
+}
