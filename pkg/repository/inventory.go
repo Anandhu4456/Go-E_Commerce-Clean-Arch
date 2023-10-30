@@ -54,3 +54,15 @@ func (ir *inventoryRespository) UpdateImage(inventId int, url string) (models.In
 	}
 	return updatedImageInventory, nil
 }
+
+func (ir *inventoryRespository) CheckInventory(pid int) (bool, error) {
+	var check int
+	err := ir.DB.Raw("SELECT COUNT(*)FROM inventories WHERE id = ?", pid).Scan(&check).Error
+	if err != nil {
+		return false, err
+	}
+	if check == 0 {
+		return false, err
+	}
+	return true, nil
+}
