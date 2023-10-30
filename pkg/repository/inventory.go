@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -109,4 +110,17 @@ func (ir *inventoryRespository) UpdateInventory(pid int, invData models.UpdateIn
 		return models.Inventory{}, err
 	}
 	return updatedInventory, nil
+}
+
+func (ir *inventoryRespository) DeleteInventory(inventoryId string) error {
+	id, err := strconv.Atoi(inventoryId)
+	if err != nil {
+		return errors.New("string to int conversion failed")
+	}
+	result := ir.DB.Exec("DELETE FROM inventories WHERE id = ? ", id)
+
+	if result.RowsAffected < 1 {
+		return errors.New("no records exists with this id")
+	}
+	return nil
 }
