@@ -158,20 +158,59 @@ func (ir *inventoryRespository) ListProducts(page, limit int) ([]models.Inventor
 	}
 	return productDetails, nil
 }
-func (ir *inventoryRespository)CheckStock(inventory_id int) (int, error){
+func (ir *inventoryRespository) CheckStock(inventory_id int) (int, error) {
 	var stock int
-	err:=ir.DB.Raw("SELECT stock FROM inventories WHERE id = ? ",inventory_id).Scan(&stock).Error
-	if err!=nil{
-		return 0,err
+	err := ir.DB.Raw("SELECT stock FROM inventories WHERE id = ? ", inventory_id).Scan(&stock).Error
+	if err != nil {
+		return 0, err
 	}
-	return stock,nil
+	return stock, nil
 }
 
-func (ir *inventoryRespository)CheckPrice(inventory_id int) (float64, error){
+func (ir *inventoryRespository) CheckPrice(inventory_id int) (float64, error) {
 	var price float64
-	err:=ir.DB.Raw("SELECT price FROM inventories WHERE id = ?",inventory_id).Scan(&price).Error
-	if err!=nil{
-		return 0,err
+	err := ir.DB.Raw("SELECT price FROM inventories WHERE id = ?", inventory_id).Scan(&price).Error
+	if err != nil {
+		return 0, err
 	}
-	return price,err
+	return price, err
+}
+
+func (ir *inventoryRespository) SearchProducts(key string, page, limit int) ([]models.InventoryList, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+
+	var productSearchResult []models.InventoryList
+
+	query := `
+	
+	SELECT 
+		inventories.id,
+		inventories.product_name,
+		inventories.description,
+		inventories.stock,
+		inventories.price,
+		inventories.image,
+		categories.category AS category
+	FROM
+		inventories
+	JOIN
+		categories
+	ON
+		inventories.category_id = categories.id
+	WHERE
+		product_name ILIKE '%' || ? || '%'
+	OR description ILIKE '%' || ? || '%'
+	LIMIT ? OFFSET ?
+	`
+	err := ir.DB.Raw(query, key, limit, offset).Scan(&productSearchResult).Error
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return productSearchResult, nil
 }
