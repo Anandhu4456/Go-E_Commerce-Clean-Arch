@@ -125,19 +125,36 @@ func (ir *inventoryRespository) DeleteInventory(inventoryId string) error {
 	return nil
 }
 
-func (ir *inventoryRespository)ShowIndividualProducts(id string) (models.Inventory, error){
-	pid,err:=strconv.Atoi(id)
-	if err!=nil{
-		return models.Inventory{},errors.New("string to int conversion failed")
+func (ir *inventoryRespository) ShowIndividualProducts(id string) (models.Inventory, error) {
+	pid, err := strconv.Atoi(id)
+	if err != nil {
+		return models.Inventory{}, errors.New("string to int conversion failed")
 	}
 	var product models.Inventory
 
-	err =ir.DB.Raw(`
+	err = ir.DB.Raw(`
 		SELECT * FROM inventories
 		WHERE Inventories.id = ?
-	`,pid).Scan(&product).Error
-	if err!=nil{
-		return models.Inventory{},errors.New("error occured while showing individual product")
+	`, pid).Scan(&product).Error
+	if err != nil {
+		return models.Inventory{}, errors.New("error occured while showing individual product")
 	}
-	return product,err
+	return product, err
+}
+
+func (ir *inventoryRespository) ListProducts(page, limit int) ([]models.InventoryList, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var productDetails []models.InventoryList
+
+	err := ir.DB.Raw("SELECT inventories.id,inventories.product_name,inventories.description,inventories.stock,inventories.price,inventories.image,categories.category AS category FROM inventories JOIN categores ON inventories.category_id = categories.id LIMIT ? OFFSET ?", limit, offset).Scan(&productDetails).Error
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return productDetails, nil
 }
