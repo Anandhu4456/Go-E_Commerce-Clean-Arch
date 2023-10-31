@@ -252,3 +252,21 @@ func (ir *inventoryRespository) GetCategoryProducts(categoryId, page, limit int)
 	}
 	return categoryProd, nil
 }
+
+func (ir *inventoryRespository)AddImage(product_id int, image_url string) (models.InventoryResponse, error){
+	var addImageResponse models.InventoryResponse
+
+	query:= `
+	
+	INSERT INTO 
+		images (inventory_id,image_url)
+	VALUES (?,?)
+	RETURNING 
+		inventory_id
+	`
+	err:=ir.DB.Raw(query,product_id,image_url).Scan(&addImageResponse).Error
+	if err!=nil{
+		return models.InventoryResponse{},errors.New("adding image failed")
+	}
+	return addImageResponse,nil
+}
