@@ -253,10 +253,10 @@ func (ir *inventoryRespository) GetCategoryProducts(categoryId, page, limit int)
 	return categoryProd, nil
 }
 
-func (ir *inventoryRespository)AddImage(product_id int, image_url string) (models.InventoryResponse, error){
+func (ir *inventoryRespository) AddImage(product_id int, image_url string) (models.InventoryResponse, error) {
 	var addImageResponse models.InventoryResponse
 
-	query:= `
+	query := `
 	
 	INSERT INTO 
 		images (inventory_id,image_url)
@@ -264,9 +264,27 @@ func (ir *inventoryRespository)AddImage(product_id int, image_url string) (model
 	RETURNING 
 		inventory_id
 	`
-	err:=ir.DB.Raw(query,product_id,image_url).Scan(&addImageResponse).Error
-	if err!=nil{
-		return models.InventoryResponse{},errors.New("adding image failed")
+	err := ir.DB.Raw(query, product_id, image_url).Scan(&addImageResponse).Error
+	if err != nil {
+		return models.InventoryResponse{}, errors.New("adding image failed")
 	}
-	return addImageResponse,nil
+	return addImageResponse, nil
+}
+
+func (ir *inventoryRespository) DeleteImage(product_id int, imageId int) error {
+	result := ir.DB.Exec("DELETE FROM images WHERE id= ?", imageId)
+
+	if result.RowsAffected < 1 {
+		return errors.New("no image exists with this id")
+	}
+	return nil
+}
+
+func (ir *inventoryRespository) GetImagesFromInventoryId(product_id int) ([]models.ImagesInfo, error) {
+	var imagesFromInvId []models.ImagesInfo
+	err := ir.DB.Raw("SELECT id,image_url FROM images WHERE inventory_id = ?", product_id).Scan(&imagesFromInvId).Error
+	if err != nil {
+		return []models.ImagesInfo{}, err
+	}
+	return imagesFromInvId, nil
 }
