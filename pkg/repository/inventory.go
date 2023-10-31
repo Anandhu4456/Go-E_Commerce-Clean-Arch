@@ -124,3 +124,20 @@ func (ir *inventoryRespository) DeleteInventory(inventoryId string) error {
 	}
 	return nil
 }
+
+func (ir *inventoryRespository)ShowIndividualProducts(id string) (models.Inventory, error){
+	pid,err:=strconv.Atoi(id)
+	if err!=nil{
+		return models.Inventory{},errors.New("string to int conversion failed")
+	}
+	var product models.Inventory
+
+	err =ir.DB.Raw(`
+		SELECT * FROM inventories
+		WHERE Inventories.id = ?
+	`,pid).Scan(&product).Error
+	if err!=nil{
+		return models.Inventory{},errors.New("error occured while showing individual product")
+	}
+	return product,err
+}
