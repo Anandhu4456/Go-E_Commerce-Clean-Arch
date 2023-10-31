@@ -214,3 +214,41 @@ func (ir *inventoryRespository) SearchProducts(key string, page, limit int) ([]m
 	}
 	return productSearchResult, nil
 }
+
+func (ir *inventoryRespository) GetCategoryProducts(categoryId, page, limit int) ([]models.InventoryList, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var categoryProd []models.InventoryList
+
+	query := `
+	
+	SELECT 
+		inventories.id,
+		inventories.product_name,
+		inventories.description,
+		inventories.image,
+		inventories.stock,
+		inventories.price
+		categories.categorie AS category
+	FROM
+		inventories 
+	JOIN
+		categories
+	ON
+		inventories.category_id = categories.id
+	WHERE 
+		inventories.category_id = ?
+	LIMIT ? OFFSET ?
+	`
+
+	err := ir.DB.Raw(query, categoryId, limit, offset).Scan(&categoryProd).Error
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return categoryProd, nil
+}

@@ -16,7 +16,7 @@ type InventoryRespository interface{
 	ListProducts(page,limit int)([]models.InventoryList,error)
 	ShowIndividualProducts(id string)(models.Inventory,error)
 	SearchProducts(key string,page,limit int)([]models.InventoryList,error)
-	GetCategoryProducts(cartId,page,limit int)([]models.InventoryList,error)
+	GetCategoryProducts(categoryId,page,limit int)([]models.InventoryList,error)
 
 	CheckStock(inventory_id int)(int,error)
 	CheckPrice(inventory_id int)(float64,error)
