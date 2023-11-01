@@ -25,3 +25,11 @@ func (or *offerRepository) AddNewOffer(offer models.CreateOffer) error{
 	}
 	return nil
 }
+
+func (or *offerRepository)MakeOfferExpired(categoryId int)error{
+	err:=or.DB.Exec("UPDATE offers SET valid=false WHERE id=$1",categoryId).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
