@@ -33,3 +33,13 @@ func (or *offerRepository)MakeOfferExpired(categoryId int)error{
 	}
 	return nil
 }
+
+func (or *offerRepository)FindDiscountPercentage(categoryId int) (int, error){
+	var percentage int
+
+	err:=or.DB.Raw("SELECT discount_rate FROM offers WHERE category_id=$1 and valid=true",categoryId).Scan(&percentage).Error
+	if err!=nil{
+		return 0 ,err
+	}
+	return percentage,nil
+}

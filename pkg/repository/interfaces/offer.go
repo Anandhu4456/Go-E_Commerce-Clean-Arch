@@ -8,6 +8,6 @@ import (
 type OfferRepository interface {
 	AddNewOffer(models.CreateOffer) error
 	MakeOfferExpired(categorytId int) error
-	FindDiscountPercentage(cartId int) (int, error)
+	FindDiscountPercentage(categorytId int) (int, error)
 	GetOffers(page, limit int) ([]domain.Offer, error)
 }
