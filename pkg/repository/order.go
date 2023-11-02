@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"gorm.io/gorm"
@@ -33,4 +35,15 @@ func (orr *orderRepository) GetOrders(id, page, limit int) ([]domain.Order, erro
 		return []domain.Order{}, err
 	}
 	return getOrders, nil
+}
+
+func (orr *orderRepository) GetOrdersInRange(startDate, endDate time.Time) ([]domain.Order, error) {
+	var getOrdersInTimeRange []domain.Order
+
+	// to fetch orders with in a time range
+	err := orr.DB.Raw("SELECT * FROM orders WHERE ordered_at BETWEEN ? AND ?", startDate, endDate).Scan(&getOrdersInTimeRange).Error
+	if err != nil {
+		return []domain.Order{}, err
+	}
+	return getOrdersInTimeRange, nil
 }
