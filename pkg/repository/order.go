@@ -5,6 +5,7 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -48,13 +49,23 @@ func (orr *orderRepository) GetOrdersInRange(startDate, endDate time.Time) ([]do
 	return getOrdersInTimeRange, nil
 }
 
-func (orr *orderRepository)GetProductsQuantity() ([]domain.ProductReport, error){
+func (orr *orderRepository) GetProductsQuantity() ([]domain.ProductReport, error) {
 
 	var getProductQuantity []domain.ProductReport
 
-	err:=orr.DB.Raw("SELECT inventory_id,quantity FROM order_items").Scan(&getProductQuantity).Error
-	if err!=nil{
-		return []domain.ProductReport{},err
+	err := orr.DB.Raw("SELECT inventory_id,quantity FROM order_items").Scan(&getProductQuantity).Error
+	if err != nil {
+		return []domain.ProductReport{}, err
 	}
-	return getProductQuantity,nil
+	return getProductQuantity, nil
+}
+
+func (orr *orderRepository) GetCart(userid int) (models.GetCart, error){
+
+	var cart models.GetCart
+	err:=orr.DB.Raw("SELECT inventories.product_name,cart_products.quantity,cart_products.total_price AS total FROM cart_products JOIN inventories ON cart_products.inventory_id=inventores.id WHERE user_id=?",userid).Scan(&cart).Error
+	if err!=nil{
+		return models.GetCart{},err
+	}
+	return cart,nil
 }
