@@ -60,12 +60,23 @@ func (orr *orderRepository) GetProductsQuantity() ([]domain.ProductReport, error
 	return getProductQuantity, nil
 }
 
-func (orr *orderRepository) GetCart(userid int) (models.GetCart, error){
+func (orr *orderRepository) GetCart(userid int) (models.GetCart, error) {
 
 	var cart models.GetCart
-	err:=orr.DB.Raw("SELECT inventories.product_name,cart_products.quantity,cart_products.total_price AS total FROM cart_products JOIN inventories ON cart_products.inventory_id=inventores.id WHERE user_id=?",userid).Scan(&cart).Error
-	if err!=nil{
-		return models.GetCart{},err
+	err := orr.DB.Raw("SELECT inventories.product_name,cart_products.quantity,cart_products.total_price AS total FROM cart_products JOIN inventories ON cart_products.inventory_id=inventores.id WHERE user_id=?", userid).Scan(&cart).Error
+	if err != nil {
+		return models.GetCart{}, err
 	}
-	return cart,nil
+	return cart, nil
+}
+
+func (orr *orderRepository) GetProductNameFromId(id int) (string, error) {
+
+	var productName string
+
+	err := orr.DB.Raw("SELECT product_name FROM inventories WHERE id = ?", id).Scan(&productName).Error
+	if err != nil {
+		return "", err
+	}
+	return productName, nil
 }
