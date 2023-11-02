@@ -47,3 +47,14 @@ func (orr *orderRepository) GetOrdersInRange(startDate, endDate time.Time) ([]do
 	}
 	return getOrdersInTimeRange, nil
 }
+
+func (orr *orderRepository)GetProductsQuantity() ([]domain.ProductReport, error){
+
+	var getProductQuantity []domain.ProductReport
+
+	err:=orr.DB.Raw("SELECT inventory_id,quantity FROM order_items").Scan(&getProductQuantity).Error
+	if err!=nil{
+		return []domain.ProductReport{},err
+	}
+	return getProductQuantity,nil
+}
