@@ -80,3 +80,22 @@ func (orr *orderRepository) GetProductNameFromId(id int) (string, error) {
 	}
 	return productName, nil
 }
+
+func (orr *orderRepository) OrderItems(userid int, order models.Order, total float64) (int, error) {
+
+	var id int
+
+	query := `
+	
+	INSERT INTO orders
+		(user_id,address_id,price,payment_method_id,ordered_at)
+	VALUES
+		(?,?,?,?,?)
+	RETURNING id
+	`
+	err := orr.DB.Raw(query, userid, order.AddressId, total, order.PaymentId, time.Now()).Scan(&id).Error
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
