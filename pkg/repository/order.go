@@ -99,3 +99,27 @@ func (orr *orderRepository) OrderItems(userid int, order models.Order, total flo
 	}
 	return id, nil
 }
+
+func (orr *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) error {
+	query := `
+	
+	INSERT INTO 
+		order_items
+		(order_id,inventory_id,quantity,total_price)
+	VALUES
+		(?,?,?,?)
+
+	`
+	for _, cartVals := range cart {
+		var invId int
+		err := orr.DB.Raw("SELECT id FROM inventories WHERE product_name=?", cartVals.ProductName).Scan(&invId).Error
+		if err != nil {
+			return err
+		}
+		if err := orr.DB.Raw(query, order_id, invId, cartVals.Quantity, cartVals.Total).Error; err != nil {
+			return err
+		}
+
+	}
+	return nil
+}
