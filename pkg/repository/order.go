@@ -123,3 +123,26 @@ func (orr *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart
 	}
 	return nil
 }
+
+func (orr *orderRepository) CancelOrder(orderid int) error {
+	err := orr.DB.Exec("UPDATE orders SET order_status='CANCELED' WHERE id=?", orderid).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (orr *orderRepository) EditOrderStatus(status string, id int) error {
+	err := orr.DB.Exec("UPDATE orders SET order_status=? WHERE id=?", status, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (orr *orderRepository) MarkAsPaid(orderID int) error {
+	if err := orr.DB.Exec("UPDATE orders SET payment_status='PAID' WHERE id=?", orderID).Error; err != nil {
+		return err
+	}
+	return nil
+}
