@@ -229,3 +229,21 @@ func (orr *orderRepository) FindAmountFromOrderID(orderID int) (float64, error) 
 	}
 	return amount, nil
 }
+
+func (orr *orderRepository) FindUserIdFromOrderID(orderID int) (int, error) {
+	var userId int
+
+	err := orr.DB.Raw("SELECT user_id FROM orders WHERE order_id=?", orderID).Scan(&userId).Error
+	if err != nil {
+		return 0, err
+	}
+	return userId, nil
+}
+
+func (orr *orderRepository) ReturnOrder(id int) error {
+	err := orr.DB.Exec("UPDATE orders SET order_status='RETURNED' WHERE id=?", id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
