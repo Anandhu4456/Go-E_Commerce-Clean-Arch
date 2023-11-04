@@ -209,3 +209,13 @@ func (orr *orderRepository) CheckOrder(orderID string, userID int) error {
 	}
 	return nil
 }
+
+func (orr *orderRepository) GetOrderDetail(orderID string) (domain.Order, error) {
+	var orderDetails domain.Order
+
+	err := orr.DB.Raw("SELECT * FROM orders WHERE order_id=?", orderID).Scan(&orderDetails).Error
+	if err != nil {
+		return domain.Order{}, err
+	}
+	return orderDetails, nil
+}
