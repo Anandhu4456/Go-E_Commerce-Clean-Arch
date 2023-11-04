@@ -219,3 +219,13 @@ func (orr *orderRepository) GetOrderDetail(orderID string) (domain.Order, error)
 	}
 	return orderDetails, nil
 }
+
+func (orr *orderRepository) FindAmountFromOrderID(orderID int) (float64, error) {
+	var amount float64
+
+	err := orr.DB.Raw("SELECT price FROM orders WHERE order_id=?", orderID).Scan(&amount).Error
+	if err != nil {
+		return 0, err
+	}
+	return amount, nil
+}
