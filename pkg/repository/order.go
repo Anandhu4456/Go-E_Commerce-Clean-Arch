@@ -247,3 +247,13 @@ func (orr *orderRepository) ReturnOrder(id int) error {
 	}
 	return nil
 }
+
+func (orr *orderRepository) CheckOrderStatus(orderID int) (string, error) {
+	var orderStatus string
+
+	err := orr.DB.Raw("SELECT order_status FROM orders WHERE order_id=?", orderID).Scan(&orderStatus).Error
+	if err != nil {
+		return "", err
+	}
+	return orderStatus, nil
+}
