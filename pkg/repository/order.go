@@ -257,3 +257,12 @@ func (orr *orderRepository) CheckOrderStatus(orderID int) (string, error) {
 	}
 	return orderStatus, nil
 }
+
+func (orr *orderRepository) CheckPaymentStatus(orderID int) (string, error) {
+	var paymentStatus string
+	err := orr.DB.Raw("SELECT payment_status FROM orders WHERE order_id=?", orderID).Scan(&paymentStatus).Error
+	if err != nil {
+		return "", err
+	}
+	return paymentStatus, nil
+}
