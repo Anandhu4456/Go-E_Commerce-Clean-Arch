@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -25,4 +26,14 @@ func (otr *otpRepository) FindUserByMobileNumber(phone string) bool {
 		return false
 	}
 	return count > 0
+}
+
+func (otr *otpRepository) UserDetailsUsingPhone(phone string) (models.UserResponse, error) {
+	var userDetails models.UserResponse
+
+	err := otr.DB.Raw("SELECT * FROM users WHERE phone=?", phone).Scan(&userDetails).Error
+	if err != nil {
+		return models.UserResponse{}, err
+	}
+	return userDetails, nil
 }
