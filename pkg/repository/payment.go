@@ -25,3 +25,12 @@ func (pr *paymentRepository) AddNewPaymentMethod(paymentMethod string) error {
 	}
 	return nil
 }
+
+func (pr *paymentRepository)RemovePaymentMethod(paymentMethodId int) error{
+	query:=`DELETE FROM payment_methods WHERE id=?`
+
+	if err:=pr.DB.Exec(query,paymentMethodId).Error;err!=nil{
+		return err
+	}
+	return nil
+}
