@@ -53,3 +53,13 @@ func (pr *paymentRepository) FindUsername(user_id int) (string, error) {
 	}
 	return userName, nil
 }
+
+func (pr *paymentRepository) FindPrice(order_id int) (float64, error) {
+	var price float64
+
+	err := pr.DB.Raw("SELECT price FROM orders WHERE id=?", order_id).Scan(&price).Error
+	if err != nil {
+		return 0, err
+	}
+	return price, nil
+}
