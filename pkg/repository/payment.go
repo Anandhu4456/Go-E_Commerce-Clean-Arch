@@ -38,9 +38,18 @@ func (pr *paymentRepository) RemovePaymentMethod(paymentMethodId int) error {
 
 func (pr *paymentRepository) GetPaymentMethods() ([]domain.PaymentMethod, error) {
 	var paymentMethods []domain.PaymentMethod
-	err := pr.DB.Raw("SELECT * FROM payment_methods").Error
+	err := pr.DB.Raw("SELECT * FROM payment_methods").Scan(&paymentMethods).Error
 	if err != nil {
 		return []domain.PaymentMethod{}, err
 	}
 	return paymentMethods, nil
+}
+
+func (pr *paymentRepository) FindUsername(user_id int) (string, error) {
+	var userName string
+	err := pr.DB.Raw("SELECT name FROM users WHERE id=?", user_id).Scan(&userName).Error
+	if err != nil {
+		return "", err
+	}
+	return userName, nil
 }
