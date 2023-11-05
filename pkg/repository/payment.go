@@ -16,3 +16,12 @@ func NewPaymentRepository(DB *gorm.DB) interfaces.PaymentRepository {
 		DB: DB,
 	}
 }
+
+func (pr *paymentRepository) AddNewPaymentMethod(paymentMethod string) error {
+	query := `INSERT INTO payment_methods(payment_method)VALUES(?)`
+
+	if err := pr.DB.Exec(query, paymentMethod).Error; err != nil {
+		return err
+	}
+	return nil
+}
