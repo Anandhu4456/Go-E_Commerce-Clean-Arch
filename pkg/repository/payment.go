@@ -63,3 +63,12 @@ func (pr *paymentRepository) FindPrice(order_id int) (float64, error) {
 	}
 	return price, nil
 }
+
+func (pr *paymentRepository) UpdatePaymentDetails(orderId, paymentId, razorId string) error {
+	status := "PAID"
+	query := `UPDATE orders SET payment_status=$1,payment_id=$3 WHERE id=$2`
+	if err := pr.DB.Exec(query, status, orderId, paymentId).Error; err != nil {
+		return err
+	}
+	return nil
+}
