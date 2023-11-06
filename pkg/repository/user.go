@@ -80,3 +80,13 @@ func (ur *userRepository) AddAddress(id int, address models.AddAddress, result b
 	}
 	return nil
 }
+
+func (ur *userRepository) CheckIfFirstAddress(id int) bool {
+	var addressCount int
+	err := ur.DB.Raw("SELECT COUNT(*)FROM addresses WHERE user_id=?", id).Scan(&addressCount).Error
+	if err != nil {
+		return false
+	}
+	// if addresscount >0 there is already a address
+	return addressCount > 0
+}
