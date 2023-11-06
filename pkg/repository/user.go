@@ -57,3 +57,12 @@ func (ur *userRepository) FindUserIDByOrderID(orderID int) (int, error) {
 	}
 	return userId, nil
 }
+
+func (ur *userRepository) SignUp(user models.UserDetails) (models.UserResponse, error) {
+	var userResponse models.UserResponse
+	err := ur.DB.Exec("INSERT INTO users(name,email,username,phone,password)VALUES(?,?,?,?,?)RETURNING id,name,email,phone", user.Name, user.Email, user.Username, user.Phone, user.Password).Scan(&userResponse).Error
+	if err != nil {
+		return models.UserResponse{}, err
+	}
+	return userResponse, nil
+}
