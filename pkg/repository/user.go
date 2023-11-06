@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -35,4 +38,13 @@ func (ur *userRepository) UserBlockStatus(email string) (bool, error) {
 		return false, err
 	}
 	return permission, nil
+}
+
+func (ur *userRepository) FindUserByEmail(user models.UserLogin) (models.UserResponse, error) {
+	var userResponse models.UserResponse
+	err := ur.DB.Raw("SELECT * FROM users WHERE email=? AND permission=true", user.Email).Scan(&userResponse).Error
+	if err != nil {
+		return models.UserResponse{}, errors.New("no user found")
+	}
+	return userResponse, nil
 }
