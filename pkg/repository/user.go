@@ -17,3 +17,14 @@ func NewUserRepository(DB *gorm.DB)interfaces.UserRepository{
 		DB:DB,
 	}
 }
+
+func (ur *userRepository)CheckUserAvailability(email string) bool{
+	var userCount int
+
+	err:=ur.DB.Raw("SELECT COUNT(*) FROM users WHERE email=?",email).Scan(&userCount).Error
+	if err!=nil{
+		return false
+	}
+	// if count greater than 0, user already exist
+	return userCount >0
+}
