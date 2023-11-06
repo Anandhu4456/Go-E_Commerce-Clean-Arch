@@ -66,3 +66,17 @@ func (ur *userRepository) SignUp(user models.UserDetails) (models.UserResponse, 
 	}
 	return userResponse, nil
 }
+
+func (ur *userRepository) AddAddress(id int, address models.AddAddress, result bool) error {
+	query := `
+	
+	INSERT INTO addresses(user_id,name,house_name,street,city,state,pin,"default")
+	VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+	RETURNING id
+	`
+	err := ur.DB.Exec(query, id, address.Name, address.HouseName, address.Street, address.City, address.State, address.Pin, result).Error
+	if err != nil {
+		return errors.New("adding address failed")
+	}
+	return nil
+}
