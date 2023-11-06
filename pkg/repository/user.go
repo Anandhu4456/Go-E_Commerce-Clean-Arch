@@ -48,3 +48,12 @@ func (ur *userRepository) FindUserByEmail(user models.UserLogin) (models.UserRes
 	}
 	return userResponse, nil
 }
+
+func (ur *userRepository) FindUserIDByOrderID(orderID int) (int, error) {
+	var userId int
+	err := ur.DB.Raw("SELECT user_id FROM orders WHERE order_id=?", orderID).Scan(&userId).Error
+	if err != nil {
+		return 0, errors.New("user id not found")
+	}
+	return userId, nil
+}
