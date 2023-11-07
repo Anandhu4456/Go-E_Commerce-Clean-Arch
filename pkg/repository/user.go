@@ -127,3 +127,12 @@ func (ur *userRepository) GetPassword(id int) (string, error) {
 	}
 	return password, nil
 }
+
+func (ur *userRepository) FindIdFromPhone(phone string) (int, error) {
+	var userid int
+	err := ur.DB.Raw("SELECT id FROM users WHERE phone=?", phone).Scan(&userid).Error
+	if err != nil {
+		return 0, err
+	}
+	return userid, nil
+}
