@@ -118,3 +118,12 @@ func (ur *userRepository) ChangePassword(id int, password string) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) GetPassword(id int) (string, error) {
+	var password string
+	err := ur.DB.Raw("SELECT password FROM users WHERE id=?", id).Scan(&password).Error
+	if err != nil {
+		return "", errors.New("password getting failed")
+	}
+	return password, nil
+}
