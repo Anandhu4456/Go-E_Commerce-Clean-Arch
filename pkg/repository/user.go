@@ -151,3 +151,10 @@ func (ur *userRepository) EditEmail(id int, email string) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) EditPhone(id int, phone string) error {
+	if err := ur.DB.Exec("UPDATE users SET phone=?,WHERE id=?", phone, id).Error; err != nil {
+		return errors.New("error while changing phone number")
+	}
+	return nil
+}
