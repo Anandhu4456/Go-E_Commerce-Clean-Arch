@@ -183,10 +183,22 @@ func (ur *userRepository) ClearCart(cartID int) error {
 func (ur *userRepository) UpdateQuantityAdd(id, inv_id int) error {
 	query := `
 	UPDATE line_items SET quantity=quantity+1 
-	WHERE cart_id=?,inventory_id=?
+	WHERE cart_id=? AND inventory_id=?
 	`
 	if err := ur.DB.Exec(query, id, inv_id).Error; err != nil {
 		return errors.New("failed to add quantity")
+	}
+	return nil
+}
+
+func (ur *userRepository) UpdateQuantityLess(id, inv_id int) error {
+	query :=
+		`
+	UPDATE line_items SET quantity=quantity-1
+	WHERE cart_id=? AND inventory_id=?
+	`
+	if err := ur.DB.Exec(query, id, inv_id).Error; err != nil {
+		return errors.New("failed to decrease quantity")
 	}
 	return nil
 }
