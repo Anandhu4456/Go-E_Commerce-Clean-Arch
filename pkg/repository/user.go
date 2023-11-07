@@ -260,3 +260,11 @@ func (ur *userRepository) FindPrice(inventory_id int) (float64, error) {
 	}
 	return price, nil
 }
+
+func (ur *userRepository) FindCategory(inventory_id int) (int, error) {
+	var categoryId int
+	if err := ur.DB.Raw("SELECT category_id FROM inventories WHERE id=?", inventory_id).Scan(&categoryId).Error; err != nil {
+		return 0, errors.New("category id not found")
+	}
+	return categoryId, nil
+}
