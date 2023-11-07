@@ -202,3 +202,12 @@ func (ur *userRepository) UpdateQuantityLess(id, inv_id int) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) FindUserByOrderID(orderId string) (domain.User, error) {
+	var userDetails domain.User
+	err := ur.DB.Raw("SELECT users.name,users.email,users.phone FROM users JOIN orders ON orders.user_id=users.id WHERE order_id=?", orderId).Scan(&userDetails).Error
+	if err != nil {
+		return domain.User{}, errors.New("user not found with order id")
+	}
+	return userDetails, nil
+}

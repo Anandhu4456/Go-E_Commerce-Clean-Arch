@@ -15,6 +15,7 @@ type UserRepository interface {
 	CheckIfFirstAddress(id int) bool
 	GetUserDetails(id int) (models.UserResponse, error)
 	FindUserIDByOrderID(orderID int) (int, error)
+	FindUserByOrderID(orderId string)(domain.User,error)
 	ChangePassword(id int, password string) error
 	GetPassword(id int) (string, error)
 	FindIdFromPhone(phone string) (int, error)
