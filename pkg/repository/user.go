@@ -211,3 +211,11 @@ func (ur *userRepository) FindUserByOrderID(orderId string) (domain.User, error)
 	}
 	return userDetails, nil
 }
+
+func (ur *userRepository) GetCartID(id int) (int, error) {
+	var cartid int
+	if err := ur.DB.Raw("SELECT id FROM cart_id WHERE user_id=?", id).Scan(&cartid).Error; err != nil {
+		return 0, errors.New("cart id not found")
+	}
+	return cartid, nil
+}
