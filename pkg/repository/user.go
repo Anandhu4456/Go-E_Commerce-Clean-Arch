@@ -236,3 +236,11 @@ func (ur *userRepository) GetProductsInCart(cart_id, page, limit int) ([]int, er
 	}
 	return cartProducts, nil
 }
+
+func (ur *userRepository) FindProductNames(inventory_id int) (string, error) {
+	var productName string
+	if err := ur.DB.Raw("SELECT product_name FROM inventories WHERE id=?", inventory_id).Scan(&productName).Error; err != nil {
+		return "", errors.New("product name not found")
+	}
+	return productName, nil
+}
