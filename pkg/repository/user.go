@@ -110,3 +110,11 @@ func (ur *userRepository) GetUserDetails(id int) (models.UserResponse, error) {
 	}
 	return userDetails, nil
 }
+
+func (ur *userRepository) ChangePassword(id int, password string) error {
+	err := ur.DB.Exec("UPDATE users SET password=? WHERE id=?", password, id).Error
+	if err != nil {
+		return errors.New("password changing failed")
+	}
+	return nil
+}
