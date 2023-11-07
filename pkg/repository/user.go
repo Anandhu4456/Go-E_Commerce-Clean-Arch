@@ -165,3 +165,10 @@ func (ur *userRepository) EditUsername(id int, username string) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) RemoveFromCart(id int, inventoryID int) error {
+	if err := ur.DB.Exec("DELETE FROM line_items WHERE id=? AND inventory_id=?", id, inventoryID).Error; err != nil {
+		return errors.New("item not removed")
+	}
+	return nil
+}
