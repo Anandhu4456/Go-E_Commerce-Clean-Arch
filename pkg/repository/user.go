@@ -158,3 +158,10 @@ func (ur *userRepository) EditPhone(id int, phone string) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) EditUsername(id int, username string) error {
+	if err := ur.DB.Exec("UPDATE users SET username=? WHERE id=?", username, id).Error; err != nil {
+		return errors.New("error while changing username")
+	}
+	return nil
+}
