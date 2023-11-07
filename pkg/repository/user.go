@@ -244,3 +244,11 @@ func (ur *userRepository) FindProductNames(inventory_id int) (string, error) {
 	}
 	return productName, nil
 }
+
+func (ur *userRepository) FindCartQuantity(cart_id, inventory_id int) (int, error) {
+	var quantity int
+	if err := ur.DB.Raw("SELECT quantity FROM line_items WHERE cart_id=? AND inventory_id=?", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
+		return 0, errors.New("quantity not found")
+	}
+	return quantity, nil
+}
