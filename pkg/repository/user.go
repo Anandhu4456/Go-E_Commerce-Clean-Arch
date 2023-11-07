@@ -219,3 +219,20 @@ func (ur *userRepository) GetCartID(id int) (int, error) {
 	}
 	return cartid, nil
 }
+
+func (ur *userRepository) GetProductsInCart(cart_id, page, limit int) ([]int, error) {
+	var cartProducts []int
+
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	err := ur.DB.Raw("SELECT inventory_id FROM line_items WHERE cart_id=?,limit=?,offset=?", cart_id, limit, offset).Scan(&cartProducts).Error
+	if err != nil {
+		return []int{}, err
+	}
+	return cartProducts, nil
+}
