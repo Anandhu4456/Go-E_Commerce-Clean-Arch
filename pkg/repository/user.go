@@ -172,3 +172,10 @@ func (ur *userRepository) RemoveFromCart(id int, inventoryID int) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) ClearCart(cartID int) error {
+	if err := ur.DB.Exec("DELETE FROM line_items WHERE cart_id=?", cartID).Error; err != nil {
+		return errors.New("cart not cleared")
+	}
+	return nil
+}
