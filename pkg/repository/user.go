@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
@@ -89,4 +90,23 @@ func (ur *userRepository) CheckIfFirstAddress(id int) bool {
 	}
 	// if addresscount >0 there is already a address
 	return addressCount > 0
+}
+
+func (ur *userRepository) GetAddresses(id int) ([]domain.Address, error) {
+	var getAddress []domain.Address
+	err := ur.DB.Raw("SELECT * FROM addresses WHERE id=?", id).Scan(&getAddress).Error
+	if err != nil {
+		return []domain.Address{}, errors.New("failed to getting address")
+	}
+	return getAddress, nil
+}
+
+func (ur *userRepository) GetUserDetails(id int) (models.UserResponse, error) {
+	var userDetails models.UserResponse
+
+	err := ur.DB.Raw("SELECT * FROM users WHERE id=?", id).Scan(&userDetails).Error
+	if err != nil {
+		return models.UserResponse{}, errors.New("error while getting user details")
+	}
+	return userDetails, nil
 }
