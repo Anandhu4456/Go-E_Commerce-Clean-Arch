@@ -136,3 +136,11 @@ func (ur *userRepository) FindIdFromPhone(phone string) (int, error) {
 	}
 	return userid, nil
 }
+
+func (ur *userRepository) EditName(id int, name string) error {
+	err := ur.DB.Exec("UPDATE users SET name=? WHERE id=?", name, id).Error
+	if err != nil {
+		return errors.New("error while editing name")
+	}
+	return nil
+}
