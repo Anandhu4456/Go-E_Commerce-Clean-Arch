@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
@@ -87,4 +88,12 @@ func (wr *walletRepository) GetHistory(walletId, page, limit int) ([]domain.Wall
 		return []domain.WalletHistory{}, errors.New("wallet histroy not found")
 	}
 	return walletHistory, nil
+}
+
+func (wr *walletRepository) AddHistory(amount, walletId int, purpose string) error {
+	err := wr.DB.Exec("INSERT INTO wallet_histories (wallet_id,amount,purpose,time)VALUES(?,?,?,?)", walletId, amount, purpose, time.Now()).Error
+	if err != nil {
+		return errors.New("history adding failed")
+	}
+	return nil
 }
