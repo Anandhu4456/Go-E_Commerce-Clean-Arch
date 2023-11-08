@@ -24,3 +24,12 @@ func (wr *walletRepository) CreditToUserWallet(amount float64, walletId int) err
 	}
 	return nil
 }
+
+func (wr *walletRepository) FindUserIdFromOrderId(id int) (int, error) {
+	var userId int
+	err := wr.DB.Raw("SELECT user_id FROM orders WHERE order_id=?", id).Scan(&userId).Error
+	if err != nil {
+		return 0, errors.New("user id not found")
+	}
+	return userId, nil
+}
