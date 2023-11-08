@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"gorm.io/gorm"
 )
@@ -68,4 +69,22 @@ func (wr *walletRepository) GetBalance(walletId int) (int, error) {
 		return 0, errors.New("balance not found")
 	}
 	return int(balance), nil
+}
+
+func (wr *walletRepository) GetHistory(walletId, page, limit int) ([]domain.WalletHistory, error) {
+	var walletHistory []domain.WalletHistory
+
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+
+	err := wr.DB.Raw("SELECT * FROM wallet_histories WHERE wallet_id=? limit ? offset ?", walletId, limit, offset).Scan(&walletHistory).Error
+	if err != nil {
+		return []domain.WalletHistory{}, errors.New("wallet histroy not found")
+	}
+	return walletHistory, nil
 }
