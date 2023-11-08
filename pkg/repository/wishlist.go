@@ -87,3 +87,10 @@ func (wlr *wishlistReposotory) FindCategory(inventory_id int) (string, error) {
 	}
 	return category, nil
 }
+
+func (wlr *wishlistReposotory) RemoveFromWishlist(wishlistId, inventoryId int) error {
+	if err := wlr.DB.Raw("DELETE FROM wishlist_item WHERE wishlist_id=? AND inventory_id=?", wishlistId, inventoryId).Error; err != nil {
+		return errors.New("remove from wishlist failed")
+	}
+	return nil
+}
