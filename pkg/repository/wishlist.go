@@ -45,3 +45,12 @@ func (wlr *wishlistReposotory) GetWishlist(id int) ([]models.GetWishlist, error)
 	}
 	return getWishlist, nil
 }
+
+func (wlr *wishlistReposotory) GetProductsInWishlist(wishlistId int) ([]int, error) {
+	var productsInWishlist []int
+
+	if err := wlr.DB.Raw("SELECT inventory_id FROM wishlist_items WHERE wishlist_id", wishlistId).Scan(&productsInWishlist).Error; err != nil {
+		return []int{}, err
+	}
+	return productsInWishlist, nil
+}
