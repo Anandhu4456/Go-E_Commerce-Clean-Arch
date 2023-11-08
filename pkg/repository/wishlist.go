@@ -63,3 +63,11 @@ func (wlr *wishlistReposotory) FindProductNames(inventory_id int) (string, error
 	}
 	return productName, nil
 }
+
+func (wlr *wishlistReposotory) FindPrice(inventory_id int) (float64, error) {
+	var price float64
+	if err := wlr.DB.Raw("SELECT price FROM inventories WHERE inventory_id=?", inventory_id).Scan(&price).Error; err != nil {
+		return 0, errors.New("price not found")
+	}
+	return price, nil
+}
