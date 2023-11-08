@@ -60,3 +60,12 @@ func (wr *walletRepository) CreateNewWallet(userId int) (int, error) {
 	}
 	return walletId, nil
 }
+
+func (wr *walletRepository) GetBalance(walletId int) (int, error) {
+	var balance float64
+
+	if err := wr.DB.Raw("SELECT amount FROM wallets WHERE id=?", walletId).Scan(&balance).Error; err != nil {
+		return 0, errors.New("balance not found")
+	}
+	return int(balance), nil
+}
