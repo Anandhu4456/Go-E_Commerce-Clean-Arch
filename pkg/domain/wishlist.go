@@ -12,7 +12,7 @@ type WishList struct {
 
 type WishlistItems struct {
 	ID          uint      `json:"id" gorm:"primarykey"`
-	WishlistID  uint      `json:"cart_id" gorm:"not null"`
+	WishlistID  uint      `json:"wishlist_id" gorm:"not null"`
 	Wishlist    WishList  `json:"-" gorm:"foreignkey:WishlistID"`
 	InventoryID uint      `json:"inventory_id" gorm:"not null"`
 	Inventory   Inventory `json:"-" gorm:"foreignkey:InventoryID"`
