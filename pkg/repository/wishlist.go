@@ -89,8 +89,15 @@ func (wlr *wishlistReposotory) FindCategory(inventory_id int) (string, error) {
 }
 
 func (wlr *wishlistReposotory) RemoveFromWishlist(wishlistId, inventoryId int) error {
-	if err := wlr.DB.Raw("DELETE FROM wishlist_item WHERE wishlist_id=? AND inventory_id=?", wishlistId, inventoryId).Error; err != nil {
+	if err := wlr.DB.Exec("DELETE FROM wishlist_item WHERE wishlist_id=? AND inventory_id=?", wishlistId, inventoryId).Error; err != nil {
 		return errors.New("remove from wishlist failed")
+	}
+	return nil
+}
+
+func (wlr *wishlistReposotory) AddWishlistItem(wishlistId, inventoryId int) error {
+	if err := wlr.DB.Exec("INSERT INTO wishlist_item(wishlist_id,inventory_id)VALUES(?,?)", wishlistId, inventoryId).Error; err != nil {
+		return err
 	}
 	return nil
 }
