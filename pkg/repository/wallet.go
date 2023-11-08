@@ -48,3 +48,15 @@ func (wr *walletRepository) FindWalletIdFromUserId(userId int) (int, error) {
 	}
 	return walletId, nil
 }
+
+func (wr *walletRepository) CreateNewWallet(userId int) (int, error) {
+	var walletId int
+	err := wr.DB.Exec("INSERT INTO wallets(user_id,amount)VALUES(?,?)", userId, 0).Error
+	if err != nil {
+		return 0, err
+	}
+	if err := wr.DB.Raw("SELECT id FROM wallet WHERE user_id=$1", userId).Scan(&walletId).Error; err != nil {
+		return 0, err
+	}
+	return walletId, nil
+}
