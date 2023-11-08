@@ -71,3 +71,19 @@ func (wlr *wishlistReposotory) FindPrice(inventory_id int) (float64, error) {
 	}
 	return price, nil
 }
+
+func (wlr *wishlistReposotory) FindCategory(inventory_id int) (string, error) {
+	var category string
+
+	query := `
+	
+	SELECT categories.category FROM invenotries
+	JOIN categories ON inventories.category_id=category.id
+	WHERE inventory_id=?
+
+	`
+	if err := wlr.DB.Raw(query, inventory_id).Scan(&category).Error; err != nil {
+		return "", errors.New("category not found")
+	}
+	return category, nil
+}
