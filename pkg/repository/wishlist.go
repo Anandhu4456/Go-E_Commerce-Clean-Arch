@@ -101,3 +101,15 @@ func (wlr *wishlistReposotory) AddWishlistItem(wishlistId, inventoryId int) erro
 	}
 	return nil
 }
+
+func (wlr *wishlistReposotory) CreateNewWishlist(user_id int) (int, error) {
+	var wishlistId int
+
+	if err := wlr.DB.Exec("INSERT INTO wishlist(user_id)VALUES(?)", user_id).Error; err != nil {
+		return 0, errors.New("wishlist creation failed")
+	}
+	if err := wlr.DB.Raw("SELECT id FROM wishlist WHERE user_id", user_id).Scan(&wishlistId).Error; err != nil {
+		return 0, errors.New("wishlist id not found")
+	}
+	return wishlistId, nil
+}
