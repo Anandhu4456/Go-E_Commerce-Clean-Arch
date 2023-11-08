@@ -33,3 +33,18 @@ func (wr *walletRepository) FindUserIdFromOrderId(id int) (int, error) {
 	}
 	return userId, nil
 }
+
+func (wr *walletRepository) FindWalletIdFromUserId(userId int) (int, error) {
+	var walletCount int
+	if err := wr.DB.Raw("SELECT COUNT(*)FROM wallets WHERE user_id=?", userId).Scan(&walletCount).Error; err != nil {
+		return 0, errors.New("wallet not found")
+	}
+	var walletId int
+	if walletCount > 0 {
+		err := wr.DB.Raw("SELECT id FROM wallets WHERE user_id=?", userId).Scan(&walletId).Error
+		if err != nil {
+			return 0, errors.New("wallet id not found")
+		}
+	}
+	return walletId, nil
+}
