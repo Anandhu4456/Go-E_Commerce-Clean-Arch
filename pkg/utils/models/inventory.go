@@ -37,7 +37,7 @@ type ImagesInfo struct {
 	ImageUrl string `json:"image_url"`
 }
 
-type InvenoryDetails struct {
+type InventoryDetails struct {
 	Inventory        Inventory
 	AdditionalImages []ImagesInfo
 }
