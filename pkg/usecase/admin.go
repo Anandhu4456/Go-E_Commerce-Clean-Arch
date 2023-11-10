@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"golang.org/x/crypto/bcrypt"
