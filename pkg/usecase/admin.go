@@ -61,3 +61,19 @@ func (au *adminUsecase) BlockUser(id string) error {
 	}
 	return nil
 }
+
+func (au *adminUsecase) UnblockUser(id string) error {
+	user, err := au.adminRepository.GetUserById(id)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !user.Permission {
+		// means that user is blocked(false)..then,
+		user.Permission = true
+	}
+	err = au.adminRepository.UpdateBlockUserById(user)
+	if err != nil {
+		return errors.New("error in unblock user")
+	}
+	return nil
+}
