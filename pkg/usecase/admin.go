@@ -44,3 +44,20 @@ func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (models.Adm
 		Token:    token,
 	}, nil
 }
+
+func (au *adminUsecase) BlockUser(id string) error {
+	user, err := au.adminRepository.GetUserById(id)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !user.Permission {
+		return errors.New("already blocked")
+	} else {
+		user.Permission = false
+	}
+	err = au.adminRepository.UpdateBlockUserById(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
