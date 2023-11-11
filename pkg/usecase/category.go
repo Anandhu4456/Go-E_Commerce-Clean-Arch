@@ -15,7 +15,7 @@ type categoryUsecase struct {
 // constructor function
 
 func NewCategoryUsecase(repo interfaces.CategoryRepository) services.CategoryUsecase {
-	return categoryUsecase{
+	return &categoryUsecase{
 		repo: repo,
 	}
 }
