@@ -50,3 +50,11 @@ func (catU *categoryUsecase) DeleteCategory(categoryId string) error {
 	}
 	return nil
 }
+
+func (catU *categoryUsecase) GetCategories(page, limit int) ([]domain.Category, error) {
+	categories, err := catU.repo.GetCategories(page, limit)
+	if err != nil {
+		return []domain.Category{}, errors.New("categories not found")
+	}
+	return categories, nil
+}
