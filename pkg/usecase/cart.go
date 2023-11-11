@@ -5,6 +5,7 @@ import (
 
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
 type cartUsecase struct {
@@ -62,4 +63,34 @@ func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
 		return errors.New("product adding failed")
 	}
 	return nil
+}
+
+func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error){
+
+	// Getting address
+	address,err:=cu.cartRepo.GetAddresses(id)
+	if err!=nil{
+		return models.CheckOut{},errors.New("address not found")
+	}
+	products,err:=cu.userUsecase.GetCart(id,0,0)
+	if err!=nil{
+		return models.CheckOut{},err
+	}
+	paymentMethod,err:=cu.paymentUsecase.GetPaymentMethods()
+	if err!=nil{
+		return models.CheckOut{},err
+	}
+	var price float64
+
+	for _,items:=range products{
+		price = price+items.DiscoundPrice
+	}
+
+	var checkOut models.CheckOut
+	checkOut.Addresses = address
+	checkOut.Products = products
+	checkOut.PaymentMethods = paymentMethod
+	checkOut.TotalPrice = price
+
+	return checkOut,nil
 }
