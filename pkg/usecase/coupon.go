@@ -33,3 +33,11 @@ func (coupU *couponUsecase) MakeCouponInvalid(id int) error {
 	}
 	return nil
 }
+
+func (coupU *couponUsecase) GetCoupons(page, limit int) ([]domain.Coupon, error) {
+	coupons, err := coupU.couponRepo.GetCoupons(page, limit)
+	if err != nil {
+		return []domain.Coupon{}, err
+	}
+	return coupons, nil
+}
