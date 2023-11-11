@@ -42,3 +42,11 @@ func (catU *categoryUsecase) UpdateCategory(currrent, new string) (domain.Catego
 	}
 	return newCat, nil
 }
+
+func (catU *categoryUsecase) DeleteCategory(categoryId string) error {
+	err := catU.repo.DeleteCategory(categoryId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
