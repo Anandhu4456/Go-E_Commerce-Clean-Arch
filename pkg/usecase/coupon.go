@@ -26,3 +26,10 @@ func (coupU *couponUsecase) Addcoupon(coupon domain.Coupon) error {
 	}
 	return nil
 }
+
+func (coupU *couponUsecase) MakeCouponInvalid(id int) error {
+	if err := coupU.MakeCouponInvalid(id); err != nil {
+		return err
+	}
+	return nil
+}
