@@ -63,3 +63,10 @@ func (invU *inventoryUsecase) UpdateInventory(invID int, invData models.UpdateIn
 	}
 	return newinventory, nil
 }
+
+func (invU *inventoryUsecase) DeleteInventory(id string) error {
+	if err := invU.invRepo.DeleteInventory(id); err != nil {
+		return err
+	}
+	return nil
+}
