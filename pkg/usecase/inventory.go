@@ -20,17 +20,30 @@ func NewInventoryUsecase(invRepo interfaces.InventoryRespository) services.Inven
 	}
 }
 
-func (invU *inventoryUsecase) AddInventory(inventory models.Inventory, image *multipart.FileHeader) (models.InventoryResponse, error){
-	url,err:=helper.AddImageToS3(image)
-	if err!=nil{
-		return models.InventoryResponse{},err
+func (invU *inventoryUsecase) AddInventory(inventory models.Inventory, image *multipart.FileHeader) (models.InventoryResponse, error) {
+	url, err := helper.AddImageToS3(image)
+	if err != nil {
+		return models.InventoryResponse{}, err
 	}
 	inventory.Image = url
-	
+
 	// Send the url and save in db
-	inventoryResponse,err:=invU.invRepo.AddInventory(inventory,url)
-	if err!=nil{
-		return models.InventoryResponse{},err
+	inventoryResponse, err := invU.invRepo.AddInventory(inventory, url)
+	if err != nil {
+		return models.InventoryResponse{}, err
 	}
-	return inventoryResponse,nil
+	return inventoryResponse, nil
+}
+
+func (invU *inventoryUsecase) UpdateInventory(invID int, invData models.UpdateInventory) (models.Inventory, error) {
+	url, err := helper.AddImageToS3(image)
+	if err != nil {
+		return models.Inventory{}, err
+	}
+
+	inventoryResponse, err := invU.invRepo.UpdateImage(invID, url)
+	if err != nil {
+		return models.Inventory{}, err
+	}
+	return inventoryResponse, nil
 }
