@@ -35,7 +35,7 @@ func (invU *inventoryUsecase) AddInventory(inventory models.Inventory, image *mu
 	return inventoryResponse, nil
 }
 
-func (invU *inventoryUsecase) UpdateInventory(invID int, invData models.UpdateInventory) (models.Inventory, error) {
+func (invU *inventoryUsecase) UpdateImage(invID int, image *multipart.FileHeader) (models.Inventory, error) {
 	url, err := helper.AddImageToS3(image)
 	if err != nil {
 		return models.Inventory{}, err
