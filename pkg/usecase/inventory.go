@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"mime/multipart"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
@@ -46,4 +47,19 @@ func (invU *inventoryUsecase) UpdateImage(invID int, image *multipart.FileHeader
 		return models.Inventory{}, err
 	}
 	return inventoryResponse, nil
+}
+
+func (invU *inventoryUsecase) UpdateInventory(invID int, invData models.UpdateInventory) (models.Inventory, error) {
+	result, err := invU.invRepo.CheckInventory(invID)
+	if err != nil {
+		return models.Inventory{}, err
+	}
+	if !result {
+		return models.Inventory{}, errors.New("there is no inventory as you mentioned")
+	}
+	newinventory, err := invU.invRepo.UpdateInventory(invID, invData)
+	if err != nil {
+		return models.Inventory{}, err
+	}
+	return newinventory, nil
 }
