@@ -24,7 +24,7 @@ func NewInventoryRepository(DB *gorm.DB) interfaces.InventoryRespository {
 func (ir *inventoryRespository) AddInventory(inventory models.Inventory, url string) (models.InventoryResponse, error) {
 	var inventoryResp models.InventoryResponse
 
-	query := `INSERT INTO inventories (categori_id,product_name,description,stock,price,image)
+	query := `INSERT INTO inventories (category_id,product_name,description,stock,price,image)
 	VALUES(?,?,?,?,?,?)RETURNING id`
 
 	err := ir.DB.Raw(query, inventory.CategoryID, inventory.ProductName, inventory.Description, inventory.Stock, inventory.Price, inventory.Image, url).Scan(&inventoryResp.ProductID).Error
