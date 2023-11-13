@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"mime/multipart"
+	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
@@ -69,4 +70,23 @@ func (invU *inventoryUsecase) DeleteInventory(id string) error {
 		return err
 	}
 	return nil
+}
+
+func (invU *inventoryUsecase) ShowIndividualProducts(id string) (models.InventoryDetails, error) {
+	product, err := invU.invRepo.ShowIndividualProducts(id)
+	if err != nil {
+		return models.InventoryDetails{}, err
+	}
+	productId, err := strconv.Atoi(id)
+	if err != nil {
+		return models.InventoryDetails{}, err
+	}
+	var AdditionalImage []models.ImagesInfo
+	AdditionalImage, err = invU.invRepo.GetImagesFromInventoryId(productId)
+	if err != nil {
+		return models.InventoryDetails{}, err
+	}
+	InvDetails := models.InventoryDetails{Inventory: product, AdditionalImages: AdditionalImage}
+	return InvDetails, nil
+
 }
