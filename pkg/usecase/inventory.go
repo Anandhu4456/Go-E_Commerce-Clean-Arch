@@ -106,3 +106,11 @@ func (invU *inventoryUsecase) SearchProducts(key string, page, limit int) ([]mod
 	}
 	return productsDetails, nil
 }
+
+func (invU *inventoryUsecase) GetCategoryProducts(catID int, page, limit int) ([]models.InventoryList, error) {
+	productsDetails, err := invU.invRepo.GetCategoryProducts(catID, page, limit)
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return productsDetails, nil
+}
