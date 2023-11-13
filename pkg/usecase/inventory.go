@@ -88,5 +88,13 @@ func (invU *inventoryUsecase) ShowIndividualProducts(id string) (models.Inventor
 	}
 	InvDetails := models.InventoryDetails{Inventory: product, AdditionalImages: AdditionalImage}
 	return InvDetails, nil
+}
 
+func (invU *inventoryUsecase) ListProducts(page int, limit int) ([]models.InventoryList, error) {
+	productDetails, err := invU.invRepo.ListProducts(page, limit)
+
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return productDetails, nil
 }
