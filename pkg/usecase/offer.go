@@ -1,17 +1,28 @@
 package usecase
 
 import (
-	interfaces"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
-	services"github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"errors"
+
+	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
-type offerUsecase struct{
+type offerUsecase struct {
 	offerRepo interfaces.OfferRepository
 }
+
 // constructor function
 
-func NewOfferUsecase(offerRepo interfaces.OfferRepository)services.OfferUsecase{
+func NewOfferUsecase(offerRepo interfaces.OfferRepository) services.OfferUsecase {
 	return &offerUsecase{
 		offerRepo: offerRepo,
 	}
+}
+
+func (offU *offerUsecase) AddNewOffer(model models.CreateOffer) error {
+	if err := offU.offerRepo.AddNewOffer(model); err != nil {
+		return errors.New("adding offer failed")
+	}
+	return nil
 }
