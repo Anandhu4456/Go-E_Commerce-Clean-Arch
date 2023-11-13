@@ -125,3 +125,10 @@ func (invU *inventoryUsecase) AddImage(product_id int, image *multipart.FileHead
 	}
 	return inventoryResponse, nil
 }
+
+func (invU *inventoryUsecase) DeleteImage(product_id, image_id int) error {
+	if err := invU.invRepo.DeleteImage(product_id, image_id); err != nil {
+		return errors.New("image not deleted")
+	}
+	return nil
+}
