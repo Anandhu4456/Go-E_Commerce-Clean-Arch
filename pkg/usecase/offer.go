@@ -26,3 +26,10 @@ func (offU *offerUsecase) AddNewOffer(model models.CreateOffer) error {
 	}
 	return nil
 }
+
+func (offU *offerUsecase) MakeOfferExpire(catID int) error {
+	if err := offU.offerRepo.MakeOfferExpired(catID); err != nil {
+		return err
+	}
+	return nil
+}
