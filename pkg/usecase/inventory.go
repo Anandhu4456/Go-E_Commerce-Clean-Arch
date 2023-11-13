@@ -98,3 +98,11 @@ func (invU *inventoryUsecase) ListProducts(page int, limit int) ([]models.Invent
 	}
 	return productDetails, nil
 }
+
+func (invU *inventoryUsecase) SearchProducts(key string, page, limit int) ([]models.InventoryList, error) {
+	productsDetails, err := invU.invRepo.SearchProducts(key, page, limit)
+	if err != nil {
+		return []models.InventoryList{}, err
+	}
+	return productsDetails, nil
+}
