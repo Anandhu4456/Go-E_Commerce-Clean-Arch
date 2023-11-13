@@ -114,3 +114,14 @@ func (invU *inventoryUsecase) GetCategoryProducts(catID int, page, limit int) ([
 	}
 	return productsDetails, nil
 }
+
+func (invU *inventoryUsecase) AddImage(product_id int, image *multipart.FileHeader) (models.InventoryResponse, error) {
+	// adding the image to Aws s3 bucket
+	imageUrl, err := helper.AddImageToS3(image)
+
+	inventoryResponse, err := invU.invRepo.AddImage(product_id, imageUrl)
+	if err != nil {
+		return models.InventoryResponse{}, err
+	}
+	return inventoryResponse, nil
+}
