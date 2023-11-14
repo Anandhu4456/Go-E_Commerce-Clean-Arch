@@ -11,3 +11,12 @@ type orderUsecase struct{
 	walletRepo interfaces.WalletRepository
 	couponRepo interfaces.CouponRepository
 }
+
+func NewOrderUsecase(orderRepo interfaces.OrderRepository, userUsecase services.UserUsecase,walletRepo interfaces.WalletRepository,couponRepo interfaces.CouponRepository)*orderUsecase{
+	return &orderUsecase{
+		orderRepo: orderRepo,
+		userUsecase: userUsecase,
+		walletRepo: walletRepo,
+		couponRepo: couponRepo,
+	}
+}
