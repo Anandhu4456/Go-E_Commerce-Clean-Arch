@@ -72,4 +72,8 @@ func (orU *orderUsecase) OrderItemsFromCart(userid int, order models.Order, coup
 		}
 		invoiceItems = append(invoiceItems, inventory)
 	}
+	// Create single invoice
+	invoice:=pdf.CreateInvoice("Your Store","www.your.store",invoiceItems)
+	pdf.GenerateInvoicePdf(*invoice)
+	fmt.Printf("The Total Invoice Amount Is : %f ",invoice.CalculateInvoiceTotalAmount())
 }
