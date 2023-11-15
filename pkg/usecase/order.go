@@ -76,4 +76,21 @@ func (orU *orderUsecase) OrderItemsFromCart(userid int, order models.Order, coup
 	invoice:=pdf.CreateInvoice("Your Store","www.your.store",invoiceItems)
 	pdf.GenerateInvoicePdf(*invoice)
 	fmt.Printf("The Total Invoice Amount Is : %f ",invoice.CalculateInvoiceTotalAmount())
+
+	// Cash on Delivery
+
+	if order.PaymentId ==1{
+		order_id,err:=orU.orderRepo.OrderItems(userid,order,total)
+		if err!=nil{
+			return "",err
+		}
+		if err:=orU.orderRepo.AddOrderProducts(order_id,cart);err!=nil{
+			return "",err
+		}
+
+		cart_id,_:=orU.userUsecase.GetCartID(userid)
+		if err:=orU.userUsecase.ClearCart(cart_id);err!=nil{
+			return "",err
+		}
+	}
 }
