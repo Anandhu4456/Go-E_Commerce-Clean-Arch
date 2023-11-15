@@ -149,3 +149,10 @@ func (orU *orderUsecase) EditOrderStatus(status string, id int) error {
 	}
 	return nil
 }
+
+func (orU *orderUsecase) MarkAsPaid(orderID int) error {
+	if err := orU.orderRepo.MarkAsPaid(orderID); err != nil {
+		return err
+	}
+	return nil
+}
