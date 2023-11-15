@@ -92,5 +92,17 @@ func (orU *orderUsecase) OrderItemsFromCart(userid int, order models.Order, coup
 		if err:=orU.userUsecase.ClearCart(cart_id);err!=nil{
 			return "",err
 		}
+	}else if order.PaymentId == 2{
+		// Razor pay
+		order_id,err:=orU.orderRepo.OrderItems(userid,order,total)
+		if err!=nil{
+			return "",err
+		}
+		if err:=orU.orderRepo.AddOrderProducts(order_id,cart);err!=nil{
+			return "",err
+		}
+		link:=fmt.Sprintf("https://yoursstore.online/users/payment/razorpay?id=%d",order_id)
+		return link,err
+
 	}
 }
