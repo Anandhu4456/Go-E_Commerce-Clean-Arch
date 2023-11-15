@@ -142,3 +142,10 @@ func (orU *orderUsecase) OrderItemsFromCart(userid int, order models.Order, coup
 	}
 	return "", nil
 }
+
+func (orU *orderUsecase) EditOrderStatus(status string, id int) error {
+	if err := orU.orderRepo.EditOrderStatus(status, id); err != nil {
+		return err
+	}
+	return nil
+}
