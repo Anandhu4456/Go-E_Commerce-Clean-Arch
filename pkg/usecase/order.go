@@ -156,3 +156,15 @@ func (orU *orderUsecase) MarkAsPaid(orderID int) error {
 	}
 	return nil
 }
+
+func (orU *orderUsecase)AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error){
+
+	if status!= "PENDING" && status!="SHIPPED" && status!="CANCELLED" && status!="RETURNED" && status!="DELIVERED"{
+		return []domain.OrderDetails{},errors.New("invalid order status")
+	}
+	orders,err:=orU.orderRepo.AdminOrders(page,limit,status)
+	if err!=nil{
+		return []domain.OrderDetails{},err
+	}
+	return orders,nil
+}
