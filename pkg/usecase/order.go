@@ -3,8 +3,10 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	pdf "github.com/Anandhu4456/go-Ecommerce/pkg/helper/pdf"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
@@ -157,14 +159,48 @@ func (orU *orderUsecase) MarkAsPaid(orderID int) error {
 	return nil
 }
 
-func (orU *orderUsecase)AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error){
+func (orU *orderUsecase) AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error) {
 
-	if status!= "PENDING" && status!="SHIPPED" && status!="CANCELLED" && status!="RETURNED" && status!="DELIVERED"{
-		return []domain.OrderDetails{},errors.New("invalid order status")
+	if status != "PENDING" && status != "SHIPPED" && status != "CANCELLED" && status != "RETURNED" && status != "DELIVERED" {
+		return []domain.OrderDetails{}, errors.New("invalid order status")
 	}
-	orders,err:=orU.orderRepo.AdminOrders(page,limit,status)
-	if err!=nil{
-		return []domain.OrderDetails{},err
+	orders, err := orU.orderRepo.AdminOrders(page, limit, status)
+	if err != nil {
+		return []domain.OrderDetails{}, err
 	}
-	return orders,nil
+	return orders, nil
+}
+
+func (orU *orderUsecase) DailyOrders() (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, time.UTC)
+	SalesReport.Orders, _ = orU.orderRepo.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+
+	for _, items := range SalesReport.Orders {
+		total += items.Price
+	}
+	SalesReport.TotalRevenue = total
+
+	products, err := orU.orderRepo.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIds := helper.FindMostBroughtProduct(products)
+
+	var bestSellers []string
+
+	for _, items := range bestSellers {
+
+		product, err := orU.orderRepo.GetProductNameFromId(items)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers = append(bestSellers, product)
+	}
+	SalesReport.BestSellers = bestSellers
+
+	return SalesReport, nil
 }
