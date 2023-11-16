@@ -272,3 +272,36 @@ func (orU *orderUsecase)MonthlyOrders() (domain.SalesReport, error){
 
 	return SalesReport, nil
 }
+func(orU *orderUsecase)AnnualOrders() (domain.SalesReport, error){
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := time.Date(endDate.Year(),1,1,0,0,0,0,time.UTC)
+	SalesReport.Orders, _ = orU.orderRepo.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+
+	for _, items := range SalesReport.Orders {
+		total += items.Price
+	}
+	SalesReport.TotalRevenue = total
+
+	products, err := orU.orderRepo.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIds := helper.FindMostBroughtProduct(products)
+
+	var bestSellers []string
+
+	for _, items := range bestSellers {
+
+		product, err := orU.orderRepo.GetProductNameFromId(items)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers = append(bestSellers, product)
+	}
+	SalesReport.BestSellers = bestSellers
+
+	return SalesReport, nil
+}
