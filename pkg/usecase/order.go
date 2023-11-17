@@ -395,31 +395,31 @@ func (orU *orderUsecase) ReturnOrder(id int) error {
 	}
 	return nil
 }
-func (orU *orderUsecase)CancelOrder(id, orderid int) error{
+func (orU *orderUsecase) CancelOrder(id, orderid int) error {
 
-	status,err:=orU.orderRepo.CheckOrderStatus(orderid)
-	if err!=nil{
+	status, err := orU.orderRepo.CheckOrderStatus(orderid)
+	if err != nil {
 		return err
 	}
-	if status == "CANCELLED"{
+	if status == "CANCELLED" {
 		return errors.New("item already cancelled")
 	}
-	if status == "DELIVERED"{
+	if status == "DELIVERED" {
 		errors.New("item delivered")
 	}
 
-	if status == "PENDING" || status == "SHIPPED"{
-		if err:=orU.orderRepo.CancelOrder(orderid);err!=nil{
+	if status == "PENDING" || status == "SHIPPED" {
+		if err := orU.orderRepo.CancelOrder(orderid); err != nil {
 			return err
 		}
 	}
 	// check if already payed
 
-	paymentStatus,err:=orU.orderRepo.CheckPaymentStatus(orderid)
-	if err!=nil{
+	paymentStatus, err := orU.orderRepo.CheckPaymentStatus(orderid)
+	if err != nil {
 		return err
 	}
-	if paymentStatus!="PAID"{
+	if paymentStatus != "PAID" {
 		return nil
 	}
 
