@@ -7,6 +7,7 @@ import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
 type otpUsecase struct {
@@ -33,4 +34,24 @@ func (otU *otpUsecase) SendOTP(phone string) error {
 		return errors.New("error occured while generating OTP")
 	}
 	return nil
+}
+
+func (otU *otpUsecase) VerifyOTP(code models.VerifyData) (models.UserToken, error) {
+	helper.TwilioSetup(otU.cfg.ACCOUNTSID, otU.cfg.AUTHTOKEN)
+	if err := helper.TwiloVerifyOTP(otU.cfg.SERVICEID, code.Code, code.PhoneNumber); err != nil {
+		return models.UserToken{}, errors.New("error while verifying OTP")
+	}
+	// getting user details to generate user token after verify OTP
+	userDetails, err := otU.otpRepo.UserDetailsUsingPhone(code.PhoneNumber)
+	if err != nil {
+		return models.UserToken{}, err
+	}
+	tokenString, err := helper.GenerateUserToken(userDetails)
+	if err != nil {
+		return models.UserToken{}, err
+	}
+	return models.UserToken{
+		Username: userDetails.Username,
+		Token:    tokenString,
+	}, nil
 }
