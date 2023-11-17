@@ -395,3 +395,67 @@ func (orU *orderUsecase) ReturnOrder(id int) error {
 	}
 	return nil
 }
+func (orU *orderUsecase)CancelOrder(id, orderid int) error{
+
+	status,err:=orU.orderRepo.CheckOrderStatus(orderid)
+	if err!=nil{
+		return err
+	}
+	if status == "CANCELLED"{
+		return errors.New("item already cancelled")
+	}
+	if status == "DELIVERED"{
+		errors.New("item delivered")
+	}
+
+	if status == "PENDING" || status == "SHIPPED"{
+		if err:=orU.orderRepo.CancelOrder(orderid);err!=nil{
+			return err
+		}
+	}
+	// check if already payed
+
+	paymentStatus,err:=orU.orderRepo.CheckPaymentStatus(orderid)
+	if err!=nil{
+		return err
+	}
+	if paymentStatus!="PAID"{
+		return nil
+	}
+
+	// find amount
+	amount, err := orU.orderRepo.FindAmountFromOrderID(id)
+	fmt.Println(amount)
+	if err != nil {
+		return err
+	}
+	// find the user
+
+	userId, err := orU.orderRepo.FindUserIdFromOrderID(id)
+	fmt.Println(userId)
+	if err != nil {
+		return err
+	}
+	// find if the user having a wallet
+	walletId, err := orU.walletRepo.FindWalletIdFromUserId(userId)
+	fmt.Println(walletId)
+	if err != nil {
+		return err
+	}
+	// if no wallet,create new wallet for user
+
+	if walletId == 0 {
+		walletId, err = orU.walletRepo.CreateNewWallet(userId)
+		if err != nil {
+			return err
+		}
+	}
+	// credit the amount into user wallet
+	if err := orU.walletRepo.CreditToUserWallet(amount, walletId); err != nil {
+		return err
+	}
+	if err := orU.walletRepo.AddHistory(int(amount), walletId, "CANCELLATION REFUND"); err != nil {
+		return err
+	}
+	return nil
+}
