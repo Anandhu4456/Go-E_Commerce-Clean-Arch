@@ -339,3 +339,59 @@ func (orU *orderUsecase) CustomDateOrders(dates models.CustomDates) (domain.Sale
 
 	return SalesReport, nil
 }
+
+func (orU *orderUsecase) ReturnOrder(id int) error {
+
+	status, err := orU.orderRepo.CheckOrderStatus(id)
+	if err != nil {
+		return err
+	}
+	if status == "RETURNED" {
+		return errors.New("item already returned")
+	}
+
+	if status != "DELIVERED" {
+		errors.New("user is trying to return an item which is still not delivered")
+	}
+
+	// make order is return order
+	if err := orU.orderRepo.ReturnOrder(id); err != nil {
+		return err
+	}
+	// find amount to return to user
+
+	amount, err := orU.orderRepo.FindAmountFromOrderID(id)
+	fmt.Println(amount)
+	if err != nil {
+		return err
+	}
+	// find the user
+
+	userId, err := orU.orderRepo.FindUserIdFromOrderID(id)
+	fmt.Println(userId)
+	if err != nil {
+		return err
+	}
+	// find if the user having a wallet
+	walletId, err := orU.walletRepo.FindWalletIdFromUserId(userId)
+	fmt.Println(walletId)
+	if err != nil {
+		return err
+	}
+	// if no wallet,create new wallet for user
+
+	if walletId == 0 {
+		walletId, err = orU.walletRepo.CreateNewWallet(userId)
+		if err != nil {
+			return err
+		}
+	}
+	// credit the amount into user wallet
+	if err := orU.walletRepo.CreditToUserWallet(amount, walletId); err != nil {
+		return err
+	}
+	if err := orU.walletRepo.AddHistory(int(amount), walletId, "RETURNED FUND"); err != nil {
+		return err
+	}
+	return nil
+}
