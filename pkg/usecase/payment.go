@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 )
@@ -38,4 +39,12 @@ func (payU *paymentUsecase) RemovePaymentMethod(paymentMethodID int) error {
 		return err
 	}
 	return nil
+}
+
+func (payU *paymentUsecase) GetPaymentMethods() ([]domain.PaymentMethod, error) {
+	paymentMethods, err := payU.paymentRepo.GetPaymentMethods()
+	if err != nil {
+		return []domain.PaymentMethod{}, err
+	}
+	return paymentMethods, nil
 }
