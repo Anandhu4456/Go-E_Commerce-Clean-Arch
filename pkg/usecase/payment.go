@@ -101,3 +101,29 @@ func (payU *paymentUsecase) MakePaymentRazorPay(orderID string, userID int) (mod
 
 	return orderDetails, nil
 }
+
+func (payU *paymentUsecase) VerifyPayment(paymentID string, razorID string, orderID string) error {
+
+	if err := payU.paymentRepo.UpdatePaymentDetails(orderID, paymentID, razorID); err != nil {
+		return err
+	}
+
+	// Clear cart
+	orderIdInt, err := strconv.Atoi(orderID)
+	if err != nil {
+		return err
+	}
+
+	userId, err := payU.userRepo.FindUserIDByOrderID(orderIdInt)
+	if err != nil {
+		return err
+	}
+	cartId, err := payU.userRepo.GetCartID(userId)
+	if err != nil {
+		return err
+	}
+	if err := payU.userRepo.ClearCart(cartId); err != nil {
+		return err
+	}
+	return nil
+}
