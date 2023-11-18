@@ -29,3 +29,13 @@ func (payU *paymentUsecase) AddNewPaymentMethod(paymentMethod string) error {
 	}
 	return nil
 }
+
+func (payU *paymentUsecase) RemovePaymentMethod(paymentMethodID int) error {
+	if paymentMethodID == 0 {
+		return errors.New("enter method id")
+	}
+	if err := payU.paymentRepo.RemovePaymentMethod(paymentMethodID); err != nil {
+		return err
+	}
+	return nil
+}
