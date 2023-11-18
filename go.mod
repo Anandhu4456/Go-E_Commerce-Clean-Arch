@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/joho/godotenv v1.5.1
+	github.com/razorpay/razorpay-go v1.2.0
 	github.com/spf13/viper v1.17.0
 	golang.org/x/crypto v0.13.0
 	gorm.io/driver/postgres v1.5.3
