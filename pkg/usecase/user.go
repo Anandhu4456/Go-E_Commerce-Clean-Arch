@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
@@ -74,4 +75,12 @@ func (usrU *userUsecase) AddAddress(id int, address models.AddAddress) error {
 		return err
 	}
 	return nil
+}
+
+func (usrU *userUsecase) GetAddresses(id int) ([]domain.Address, error) {
+	addresses, err := usrU.userRepo.GetAddresses(id)
+	if err != nil {
+		return []domain.Address{}, err
+	}
+	return addresses, nil
 }
