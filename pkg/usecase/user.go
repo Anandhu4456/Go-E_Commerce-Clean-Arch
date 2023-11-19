@@ -60,3 +60,18 @@ func (usrU *userUsecase) Login(user models.UserLogin) (models.UserToken, error) 
 		Token:    tokenString,
 	}, nil
 }
+
+func (usrU *userUsecase) AddAddress(id int, address models.AddAddress) error {
+	rslt := usrU.userRepo.CheckIfFirstAddress(id)
+	var checkAddress bool
+
+	if !rslt {
+		checkAddress = true
+	} else {
+		checkAddress = false
+	}
+	if err := usrU.userRepo.AddAddress(id, address, checkAddress); err != nil {
+		return err
+	}
+	return nil
+}
