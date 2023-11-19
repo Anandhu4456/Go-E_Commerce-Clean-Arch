@@ -84,3 +84,11 @@ func (usrU *userUsecase) GetAddresses(id int) ([]domain.Address, error) {
 	}
 	return addresses, nil
 }
+
+func (usrU *userUsecase) GetUserDetails(id int) (models.UserResponse, error) {
+	userDetails, err := usrU.userRepo.GetUserDetails(id)
+	if err != nil {
+		return models.UserResponse{}, err
+	}
+	return userDetails, nil
+}
