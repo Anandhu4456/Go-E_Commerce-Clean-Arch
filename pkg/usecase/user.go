@@ -143,3 +143,11 @@ func (usrU *userUsecase) ChangePassword(id int, old string, password string, rep
 	}
 	return usrU.userRepo.ChangePassword(id, string(newPass))
 }
+
+func (usrU *userUsecase) GetCartID(userID int) (int, error) {
+	cartId, err := usrU.userRepo.GetCartID(userID)
+	if err != nil {
+		return 0, errors.New("couldn't get cart id")
+	}
+	return cartId, nil
+}
