@@ -125,3 +125,21 @@ func (usrU *userUsecase) GetUserDetails(id int) (models.UserResponse, error) {
 	}
 	return userDetails, nil
 }
+
+func (usrU *userUsecase) ChangePassword(id int, old string, password string, repassword string) error {
+	userPass, err := usrU.userRepo.GetPassword(id)
+	if err != nil {
+		return errors.New("couldn't get user password")
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(userPass), []byte(old)); err != nil {
+		return errors.New("password incorrect")
+	}
+	if password != repassword {
+		return errors.New("password doesn't match")
+	}
+	newPass, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return err
+	}
+	return usrU.userRepo.ChangePassword(id, string(newPass))
+}
