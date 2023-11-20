@@ -62,6 +62,39 @@ func (usrU *userUsecase) Login(user models.UserLogin) (models.UserToken, error) 
 	}, nil
 }
 
+func (usrU *userUsecase) SignUp(user models.UserDetails) (models.UserToken, error) {
+	// check the user exist or not,if exist show the error(its a signup function)
+
+	userExist := usrU.userRepo.CheckUserAvailability(user.Email)
+	if userExist {
+		return models.UserToken{}, errors.New("user already exist please sign in")
+	}
+	if user.Password != user.ConfirmPassword {
+		return models.UserToken{}, errors.New("password does't match")
+	}
+	// hash the password
+	hashedPass, err := helper.PasswordHashing(user.Password)
+	if err != nil {
+		return models.UserToken{}, err
+	}
+	user.Password = hashedPass
+	// insert the user into database
+	userData, err := usrU.userRepo.SignUp(user)
+	if err != nil {
+		return models.UserToken{}, err
+	}
+	// create jwt token for user
+	tokenString, err := helper.GenerateUserToken(userData)
+	if err != nil {
+		return models.UserToken{}, errors.New("couldn't create token for user due to some internal error")
+	}
+	return models.UserToken{
+		Username: user.Username,
+		Token:    tokenString,
+	}, nil
+
+}
+
 func (usrU *userUsecase) AddAddress(id int, address models.AddAddress) error {
 	rslt := usrU.userRepo.CheckIfFirstAddress(id)
 	var checkAddress bool
