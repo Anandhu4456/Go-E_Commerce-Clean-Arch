@@ -283,3 +283,10 @@ func (usrU *userUsecase) UpdateQuantityAdd(id, inv_id int) error {
 	}
 	return nil
 }
+
+func (usrU *userUsecase) UpdateQuantityLess(id, inv_id int) error {
+	if err := usrU.userRepo.UpdateQuantityLess(id, inv_id); err != nil {
+		return err
+	}
+	return nil
+}
