@@ -44,3 +44,21 @@ func (ch *CartHandler) AddtoCart(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully added To cart", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (ch *CartHandler) CheckOut(c *gin.Context) {
+	userId, err := helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	products, err := ch.cartUsecase.CheckOut(userId)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not open checkout", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
