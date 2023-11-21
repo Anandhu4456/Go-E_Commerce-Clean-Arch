@@ -2,7 +2,6 @@ package handlers
 
 import (
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/gin-gonic/gin"
 )
 
