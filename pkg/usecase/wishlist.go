@@ -81,3 +81,11 @@ func (wlU *wishlistUsecase) GetWishlist(id int) ([]models.GetWishlist, error) {
 	}
 	return getWishlist, nil
 }
+
+func (wlU *wishlistUsecase) RemoveFromWishlist(id int, inventoryID int) error {
+	err := wlU.wishRepo.RemoveFromWishlist(id, inventoryID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
