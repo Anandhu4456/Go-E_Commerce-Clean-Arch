@@ -41,3 +41,15 @@ func (ah *AdminHandler) LoginHandler(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Admin authenticated successfully", admin, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (ah *AdminHandler) BlockUser(c *gin.Context) {
+	id := c.Query("id")
+	err := ah.adminUsecase.BlockUser(id)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "cant block", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "blocked the user", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
