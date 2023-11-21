@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -54,14 +55,39 @@ func (ah *AdminHandler) BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-func (ah *AdminHandler)UnblockUser(c *gin.Context){
-	id :=c.Query("id")
-	err:=ah.adminUsecase.UnblockUser(id)
-	if err!=nil{
-		errRes:=response.ClientResponse(http.StatusBadRequest,"can't unblock user",nil,err.Error())
-		c.JSON(http.StatusBadRequest,errRes)
+func (ah *AdminHandler) UnblockUser(c *gin.Context) {
+	id := c.Query("id")
+	err := ah.adminUsecase.UnblockUser(id)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "can't unblock user", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	successRes:=response.ClientResponse(http.StatusOK,"unblocked user",nil,nil)
-	c.JSON(http.StatusOK,successRes)
+	successRes := response.ClientResponse(http.StatusOK, "unblocked user", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (ah *AdminHandler) GetUsers(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	users, err := ah.adminUsecase.GetUsers(page, limit)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the users", users, nil)
+	c.JSON(http.StatusOK, successRes)
 }
