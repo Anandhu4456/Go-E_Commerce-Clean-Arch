@@ -268,3 +268,11 @@ func (usrU *userUsecase) RemoveFromCart(id int, inventoryID int) error {
 	}
 	return nil
 }
+
+func (usrU *userUsecase) ClearCart(cartID int) error {
+	err := usrU.userRepo.ClearCart(cartID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
