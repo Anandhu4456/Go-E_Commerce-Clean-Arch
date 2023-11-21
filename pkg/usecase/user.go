@@ -290,3 +290,26 @@ func (usrU *userUsecase) UpdateQuantityLess(id, inv_id int) error {
 	}
 	return nil
 }
+
+func (usrU *userUsecase) GetWallet(id, page, limit int) (models.Wallet, error) {
+	// Get wallet id
+	walletId, err := usrU.walletRepo.FindWalletIdFromUserId(id)
+	if err != nil {
+		return models.Wallet{}, errors.New("couldn't find wallet id from user id")
+	}
+	// Get wallet balance
+	balance, err := usrU.walletRepo.GetBalance(walletId)
+	if err != nil {
+		return models.Wallet{}, errors.New("couldn't find wallet balance")
+	}
+	// Get wallet history(history with amount,purpose,time,walletId)
+	history, err := usrU.walletRepo.GetHistory(walletId, page, limit)
+	if err != nil {
+		return models.Wallet{}, errors.New("couldn't find wallet history")
+	}
+	var wallet models.Wallet
+	wallet.Balance = balance
+	wallet.History = history
+
+	return wallet, nil
+}
