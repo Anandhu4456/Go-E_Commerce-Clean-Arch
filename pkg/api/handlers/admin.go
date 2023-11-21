@@ -53,3 +53,15 @@ func (ah *AdminHandler) BlockUser(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "blocked the user", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (ah *AdminHandler)UnblockUser(c *gin.Context){
+	id :=c.Query("id")
+	err:=ah.adminUsecase.UnblockUser(id)
+	if err!=nil{
+		errRes:=response.ClientResponse(http.StatusBadRequest,"can't unblock user",nil,err.Error())
+		c.JSON(http.StatusBadRequest,errRes)
+		return
+	}
+	successRes:=response.ClientResponse(http.StatusOK,"unblocked user",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+}
