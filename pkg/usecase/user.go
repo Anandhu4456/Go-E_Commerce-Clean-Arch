@@ -259,5 +259,12 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for i := range getCart {
 		getCart[i].DiscoundPrice = (getCart[i].Total) - (getCart[i].Total * float64(offers[i]) / 100)
 	}
-	return getCart,nil
+	return getCart, nil
+}
+func (usrU *userUsecase) RemoveFromCart(id int, inventoryID int) error {
+	err := usrU.userRepo.RemoveFromCart(id, inventoryID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
