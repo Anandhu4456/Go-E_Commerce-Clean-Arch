@@ -89,3 +89,23 @@ func (wlU *wishlistUsecase) RemoveFromWishlist(id int, inventoryID int) error {
 	}
 	return nil
 }
+
+func (wlU *wishlistUsecase) AddToWishlist(user_id, inventory_id int) error {
+	// Find user wishlist id
+	wishlistId, err := wlU.wishRepo.GetWishlistId(user_id)
+	if err != nil {
+		return errors.New("couldn't find wishlist id")
+	}
+	// If user has no cart,create new cart
+	if wishlistId == 0 {
+		wishlistId, err := wlU.wishRepo.CreateNewWishlist(user_id)
+		if err != nil {
+			return err
+		}
+		// Add products to line items
+		if err := wlU.wishRepo.AddWishlistItem(wishlistId, inventory_id); err != nil {
+			return errors.New("add to wishlist failed")
+		}
+		return nil
+	}
+}
