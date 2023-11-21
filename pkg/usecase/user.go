@@ -276,3 +276,10 @@ func (usrU *userUsecase) ClearCart(cartID int) error {
 	}
 	return nil
 }
+
+func (usrU *userUsecase) UpdateQuantityAdd(id, inv_id int) error {
+	if err := usrU.userRepo.UpdateQuantityAdd(id, inv_id); err != nil {
+		return err
+	}
+	return nil
+}
