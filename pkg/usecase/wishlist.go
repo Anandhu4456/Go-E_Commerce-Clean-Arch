@@ -106,6 +106,7 @@ func (wlU *wishlistUsecase) AddToWishlist(user_id, inventory_id int) error {
 		if err := wlU.wishRepo.AddWishlistItem(wishlistId, inventory_id); err != nil {
 			return errors.New("add to wishlist failed")
 		}
-		return nil
+
 	}
+	return nil
 }
