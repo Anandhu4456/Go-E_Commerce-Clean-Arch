@@ -36,3 +36,21 @@ func (otH *OtpHandler) SendOTP(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "OTP send successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (otH *OtpHandler) VerifyOTP(c *gin.Context) {
+	var code models.VerifyData
+	if err := c.BindJSON(&code); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	users, err := otH.otpUsecase.VerifyOTP(code)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't verify OTP", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Verifyed OTP", users, nil)
+	c.SetCookie("Authorization", users.Token, 3600, "", "", true, false)
+	c.JSON(http.StatusOK, successRes)
+}
