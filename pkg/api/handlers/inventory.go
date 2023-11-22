@@ -54,3 +54,30 @@ func (coupH *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully made coupon as invalid", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (coupH *CouponHandler) Coupons(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	coupons, err := coupH.couponUsecase.GetCoupons(page, limit)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get coupons", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "coupons get successfully", coupons, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}
