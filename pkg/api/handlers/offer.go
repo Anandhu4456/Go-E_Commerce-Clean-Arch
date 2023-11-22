@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -35,5 +36,22 @@ func (offH *OfferHandler) AddOffer(c *gin.Context) {
 		return
 	}
 	successRes := response.ClientResponse(http.StatusOK, "offer added successfully", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (offH *OfferHandler) ExpireValidity(c *gin.Context) {
+	catIdStr := c.Query("catID")
+	catId, err := strconv.Atoi(catIdStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := offH.offerUsecase.MakeOfferExpire(catId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "make offer expired failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully turned the offer invalid", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
