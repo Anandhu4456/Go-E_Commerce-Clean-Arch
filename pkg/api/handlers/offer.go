@@ -55,3 +55,29 @@ func (offH *OfferHandler) ExpireValidity(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully turned the offer invalid", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (offH *OfferHandler) Offers(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	offers, err := offH.offerUsecase.GetOffers(page, limit)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "couldn't get offers", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved the offers", offers, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}
