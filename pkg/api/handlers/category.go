@@ -52,3 +52,15 @@ func (catH *CategoryHandler) UpdateCategory(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "category updated successfully", updateRes, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (catH *CategoryHandler) DeleteCategory(c *gin.Context) {
+	// Find category id
+	categoryId := c.Query("id")
+	if err := catH.CategoryUsecase.DeleteCategory(categoryId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "category deleted", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
