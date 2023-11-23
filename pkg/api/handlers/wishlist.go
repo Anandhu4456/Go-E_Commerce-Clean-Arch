@@ -43,3 +43,32 @@ func (wiH *WishlistHandler) AddtoWishlist(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "added to wishlit", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (wiH *WishlistHandler) RemoveFromWishlist(c *gin.Context) {
+	id, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	wishlistId, err := wiH.wishlistUsecase.GetWishlistID(id)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "check parameters correctly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	inv, err := strconv.Atoi(c.Query("inventory"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "check parameters correctly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := wiH.wishlistUsecase.RemoveFromWishlist(wishlistId, inv); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "remove from wishlist failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "removed from wishlist", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
