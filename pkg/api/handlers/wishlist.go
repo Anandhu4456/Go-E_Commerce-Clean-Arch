@@ -72,3 +72,21 @@ func (wiH *WishlistHandler) RemoveFromWishlist(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "removed from wishlist", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (wiH *WishlistHandler) GetWishlist(c *gin.Context) {
+	id, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	products, err := wiH.wishlistUsecase.GetWishlist(id)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get products in wishlist", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved products from wishlist", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
