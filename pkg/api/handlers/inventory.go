@@ -116,6 +116,33 @@ func (invH *InventoryHandler) DeleteImage(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "deleted image successfully",nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "deleted image successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
+}
+
+func (invH *InventoryHandler) UpdateInventory(c *gin.Context) {
+	invIdStr := c.Query("id")
+	invId, err := strconv.Atoi(invIdStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "id is not valid", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	var invData models.UpdateInventory
+
+	if err := c.BindJSON(&invData); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	invRes, err := invH.inventoryUsecase.UpdateInventory(invId, invData)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "update inventory failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "updated inventory successfully", invRes, nil)
+	c.JSON(http.StatusOK, successRes)
+
 }
