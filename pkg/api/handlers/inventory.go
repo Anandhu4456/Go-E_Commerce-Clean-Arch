@@ -95,3 +95,27 @@ func (invH *InventoryHandler) AddImage(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "image added inventory successfully", InventoryRes, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) DeleteImage(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("product_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "inv id not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	imageId, err := strconv.Atoi(c.Query("image_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "image id not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	InventoryRes, err := invH.inventoryUsecase.DeleteImage(productId, imageId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't remove the image", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "deleted image successfully", InventoryRes, nil)
+	c.JSON(http.StatusOK, successRes)
+}
