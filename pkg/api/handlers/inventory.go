@@ -71,3 +71,27 @@ func (invH *InventoryHandler) AddInventory(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully added inventory", InventoryResp, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) AddImage(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Request.FormValue("product_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	image, err := c.FormFile("image")
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from form error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	InventoryRes, err := invH.inventoryUsecase.AddImage(productId, image)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "adding image failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "image added inventory successfully", InventoryRes, nil)
+	c.JSON(http.StatusOK, successRes)
+}
