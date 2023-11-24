@@ -146,3 +146,28 @@ func (invH *InventoryHandler) UpdateInventory(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
+
+func (invH *InventoryHandler) UpdateImage(c *gin.Context) {
+	invIdStr := c.Query("inventory_id")
+	invId, err := strconv.Atoi(invIdStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "id is not valid", nil, err.Error())
+		c.JSON(http.StatusOK, errRes)
+		return
+	}
+	image, err := c.FormFile("image")
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "retrieve image from form failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	invRes, err := invH.inventoryUsecase.UpdateImage(invId, image)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "update image failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "updated image successfully", invRes, nil)
+	c.JSON(http.StatusOK, successRes)
+}
