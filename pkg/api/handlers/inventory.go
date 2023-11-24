@@ -183,3 +183,16 @@ func (invH *InventoryHandler) DeleteInventory(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "deleted inventory successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
+	id := c.Query("inventory_id")
+	products, err := invH.inventoryUsecase.ShowIndividualProducts(id)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "path variables in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "products details retrieved successfully", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
