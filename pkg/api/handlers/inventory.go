@@ -171,3 +171,15 @@ func (invH *InventoryHandler) UpdateImage(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "updated image successfully", invRes, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) DeleteInventory(c *gin.Context) {
+	invId := c.Query("id")
+	if err := invH.inventoryUsecase.DeleteInventory(invId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "delete inventory failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "deleted inventory successfully", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
