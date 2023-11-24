@@ -109,13 +109,13 @@ func (invH *InventoryHandler) DeleteImage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	InventoryRes, err := invH.inventoryUsecase.DeleteImage(productId, imageId)
+	err = invH.inventoryUsecase.DeleteImage(productId, imageId)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't remove the image", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "deleted image successfully", InventoryRes, nil)
+	successRes := response.ClientResponse(http.StatusOK, "deleted image successfully",nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
