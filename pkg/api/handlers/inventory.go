@@ -250,3 +250,29 @@ func (invH *InventoryHandler) SearchProducts(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully searched products", result, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) AdminListProdutcs(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	products, err := invH.inventoryUsecase.ListProducts(page, limit)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
