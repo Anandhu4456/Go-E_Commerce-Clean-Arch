@@ -196,3 +196,29 @@ func (invH *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "products details retrieved successfully", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (invH *InventoryHandler) ListProdutcs(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	products, err := invH.inventoryUsecase.ListProducts(page, limit)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
