@@ -106,3 +106,21 @@ func (orH *OrderHandler) CancelOrder(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully canceled the order", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (orH *OrderHandler) EditOrderStatus(c *gin.Context) {
+	status := c.Query("status")
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := orH.orderUsecase.EditOrderStatus(status, id); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "edit order status failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully edited order status", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
