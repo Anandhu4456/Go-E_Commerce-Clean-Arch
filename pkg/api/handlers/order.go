@@ -64,7 +64,7 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 	coupon := c.Query("coupon")
-	
+
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
@@ -79,5 +79,30 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully ordered", orderItemsString, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (orH *OrderHandler) CancelOrder(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	orderIdStr := c.Query("order_id")
+	orderId, err := strconv.Atoi(orderIdStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	if err := orH.orderUsecase.CancelOrder(userId, orderId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "cancel order failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully canceled the order", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
