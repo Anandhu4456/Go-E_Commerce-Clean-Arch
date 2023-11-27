@@ -63,13 +63,8 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	coupStr := c.Query("coupon")
-	coupon, err := strconv.Atoi(coupStr)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer failed", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+	coupon := c.Query("coupon")
+	
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
