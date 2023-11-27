@@ -174,6 +174,17 @@ func (orH *OrderHandler) AdminSalesDailyReport(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	successRes:=response.ClientResponse(http.StatusOK,"successfully got all records",salesReport,nil)
-	c.JSON(http.StatusOK,successRes)
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (orH *OrderHandler) AdminSalesWeeklyReports(c *gin.Context) {
+	salesReport, err := orH.orderUsecase.WeeklyOrders()
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
+	c.JSON(http.StatusOK, successRes)
 }
