@@ -124,3 +124,20 @@ func (orH *OrderHandler) EditOrderStatus(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully edited order status", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (orH *OrderHandler) MarkAsPaid(c *gin.Context) {
+	orderId, err := strconv.Atoi(c.Query("order_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := orH.orderUsecase.MarkAsPaid(orderId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "mark as paid failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully edited payment status", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
