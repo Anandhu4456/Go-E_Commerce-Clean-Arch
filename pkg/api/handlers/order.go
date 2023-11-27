@@ -199,3 +199,14 @@ func (orH *OrderHandler) AdminSalesMonthlyReport(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (orH *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
+	salesReport, err := orH.orderUsecase.AnnualOrders()
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
+	c.JSON(http.StatusOK, successRes)
+}
