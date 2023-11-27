@@ -6,6 +6,7 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
@@ -52,5 +53,36 @@ func (orH *OrderHandler) GetOrders(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully got orders", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	coupStr := c.Query("coupon")
+	coupon, err := strconv.Atoi(coupStr)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	var order models.Order
+	if err := c.BindJSON(&order); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	orderItemsString, err := orH.orderUsecase.OrderItemsFromCart(userId, order, coupon)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully ordered", orderItemsString, nil)
 	c.JSON(http.StatusOK, successRes)
 }
