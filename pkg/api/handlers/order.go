@@ -210,3 +210,21 @@ func (orH *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (orH *OrderHandler) AdminSaleCustomReport(c *gin.Context) {
+	var dates models.CustomDates
+	if err := c.BindJSON(&dates); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	salesReport, err := orH.orderUsecase.CustomDateOrders(dates)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
+	c.JSON(http.StatusOK, successRes)
+}
