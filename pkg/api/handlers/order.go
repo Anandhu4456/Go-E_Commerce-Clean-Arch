@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
@@ -244,4 +245,18 @@ func (orH *OrderHandler) ReturnOrder(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "return order successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
+}
+
+func (orH *OrderHandler) DownloadInvoice(c *gin.Context) {
+	// Set the appropriate header for the file download
+	c.Header("Content-Disposition", "attachment; filename=yoursstore_invoice.pdf")
+	c.Header("Content-Type", "application/pdf")
+
+	// Read the pdf file and write it to the response
+	pdfData, err := os.ReadFile("yoursstore_invoice.pdf")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read pdf file"})
+		return
+	}
+	c.Data(http.StatusOK, "application/pdf", pdfData)
 }
