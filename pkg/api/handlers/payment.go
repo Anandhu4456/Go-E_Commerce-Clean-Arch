@@ -81,3 +81,18 @@ func (payH *PaymentHandler) MakePamentRazorPay(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "razorpay.html", payDetails)
 }
+
+func (payH *PaymentHandler) VerifyPayment(c *gin.Context) {
+	paymentId := c.Query("payment_id")
+	razorId := c.Query("razor_id")
+	orderId := c.Query("order_id")
+
+	if err := payH.paymentUsecase.VerifyPayment(paymentId, razorId, orderId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't update payment details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully updated payment details", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
