@@ -49,3 +49,16 @@ func (payH *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "payment method removed successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (payH *PaymentHandler) GetPaymentMethods(c *gin.Context) {
+	paymentMethods, err := payH.paymentUsecase.GetPaymentMethods()
+
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get payment methods", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully collected payment methods", paymentMethods, nil)
+	c.JSON(http.StatusOK, successRes)
+}
