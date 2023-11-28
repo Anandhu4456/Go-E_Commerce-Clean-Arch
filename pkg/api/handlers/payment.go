@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -61,4 +62,22 @@ func (payH *PaymentHandler) GetPaymentMethods(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully collected payment methods", paymentMethods, nil)
 	c.JSON(http.StatusOK, successRes)
+}
+
+func (payH *PaymentHandler) MakePamentRazorPay(c *gin.Context) {
+	orderId := c.Query("id")
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id")
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	payDetails, err := payH.paymentUsecase.MakePaymentRazorPay(orderId, userId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't generate order details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	c.HTML(http.StatusOK, "razorpay.html", payDetails)
 }
