@@ -228,3 +228,20 @@ func (orH *OrderHandler) AdminSaleCustomReport(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", salesReport, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (orH *OrderHandler) ReturnOrder(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := orH.orderUsecase.ReturnOrder(id); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fileds provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "return order successfully", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
