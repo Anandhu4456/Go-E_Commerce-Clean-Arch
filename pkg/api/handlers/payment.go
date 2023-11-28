@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
@@ -29,5 +30,22 @@ func (payH *PaymentHandler) AddNewPaymentMethod(c *gin.Context) {
 		return
 	}
 	successRes := response.ClientResponse(http.StatusOK, "successfully added payment method", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (payH *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
+	methodId, err := strconv.Atoi(c.Query("payment_method_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := payH.paymentUsecase.RemovePaymentMethod(methodId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "payment method removal failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "payment method removed successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
