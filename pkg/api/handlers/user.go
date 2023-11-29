@@ -86,4 +86,25 @@ func (uH *UserHandler) EditUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
+
+	successRes:=response.ClientResponse(http.StatusOK,"successfully changed user details",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+}
+
+func (uH *UserHandler) GetAddresses(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	addresses, err := uH.userusecase.GetAddresses(userId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all addresses", addresses, nil)
+	c.JSON(http.StatusOK, successRes)
 }
