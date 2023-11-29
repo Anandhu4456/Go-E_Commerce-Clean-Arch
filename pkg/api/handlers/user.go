@@ -67,3 +67,23 @@ func (uH *UserHandler) ChangePassword(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "password changed successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) EditUser(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get bad request", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	var userData models.EditUser
+	if err := c.BindJSON(&userData); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := uH.userusecase.EditUser(userId, userData); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't change the user details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+}
