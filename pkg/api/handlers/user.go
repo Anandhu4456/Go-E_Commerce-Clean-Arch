@@ -139,3 +139,21 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully got all products in cart", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) GetUserDetails(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	userDetails, err := uH.userusecase.GetUserDetails(userId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got user details", userDetails, nil)
+	c.JSON(http.StatusOK, successRes)
+}
