@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
@@ -87,8 +88,8 @@ func (uH *UserHandler) EditUser(c *gin.Context) {
 		return
 	}
 
-	successRes:=response.ClientResponse(http.StatusOK,"successfully changed user details",nil,nil)
-	c.JSON(http.StatusOK,successRes)
+	successRes := response.ClientResponse(http.StatusOK, "successfully changed user details", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }
 
 func (uH *UserHandler) GetAddresses(c *gin.Context) {
@@ -106,5 +107,35 @@ func (uH *UserHandler) GetAddresses(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully got all addresses", addresses, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (uH *UserHandler) GetCart(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	products, err := uH.userusecase.GetCart(userId, page, limit)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't retrieve cart products", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all products in cart", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
