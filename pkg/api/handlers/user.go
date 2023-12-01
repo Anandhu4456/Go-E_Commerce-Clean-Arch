@@ -254,3 +254,32 @@ func (uH *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully added quantity", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	cartId, err := uH.userusecase.GetCartID(userId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get cart id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	invId, err := strconv.Atoi(c.Query("inventory_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := uH.userusecase.UpdateQuantityLess(cartId, invId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't subtract quantity", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully subtracted quantity", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
