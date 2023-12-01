@@ -157,3 +157,23 @@ func (uH *UserHandler) GetUserDetails(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully got user details", userDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) Login(c *gin.Context) {
+	var user models.UserLogin
+	if err := c.BindJSON(&user); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	userToken, err := uH.userusecase.Login(user)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "user couldn't login", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "user successfully logged in", userToken, nil)
+	// c.SetCookie("Authorization",userToken.Token,3600,"/","yoursstore.online",true,false)
+	c.SetCookie("Authorization", userToken.Token, 3600, "", "", true, false)
+	c.JSON(http.StatusOK, successRes)
+}
