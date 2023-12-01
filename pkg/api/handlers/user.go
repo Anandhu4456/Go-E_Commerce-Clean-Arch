@@ -177,3 +177,32 @@ func (uH *UserHandler) Login(c *gin.Context) {
 	c.SetCookie("Authorization", userToken.Token, 3600, "", "", true, false)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) RemoveFromCart(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't find user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	cartId, err := uH.userusecase.GetCartID(userId)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get cart id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	invId, err := strconv.Atoi(c.Query("inventory_id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	if err := uH.userusecase.RemoveFromCart(cartId, invId); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "remove from cart failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully removed from cart", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
