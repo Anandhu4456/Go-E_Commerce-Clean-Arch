@@ -68,7 +68,7 @@ func (payH *PaymentHandler) MakePamentRazorPay(c *gin.Context) {
 	orderId := c.Query("id")
 	userId, err := helper.GetUserId(c)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id")
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id",nil,err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
