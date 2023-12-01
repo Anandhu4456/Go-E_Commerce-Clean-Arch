@@ -32,7 +32,7 @@ func (catH *CategoryHandler) AddCategory(c *gin.Context) {
 	}
 	successRes := response.ClientResponse(http.StatusOK, "Category added successfully", categoryRes, nil)
 	c.JSON(http.StatusOK, successRes)
-	return
+	
 }
 
 func (catH *CategoryHandler) UpdateCategory(c *gin.Context) {

@@ -46,7 +46,7 @@ func (ch *CartHandler) AddtoCart(c *gin.Context) {
 }
 
 func (ch *CartHandler) CheckOut(c *gin.Context) {
-	userId, err := helper.GetUserID(c)
+	userId, err := helper.GetUserId(c)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
