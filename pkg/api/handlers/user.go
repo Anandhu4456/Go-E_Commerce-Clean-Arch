@@ -206,3 +206,22 @@ func (uH *UserHandler) RemoveFromCart(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully removed from cart", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) SignUp(c *gin.Context) {
+	var user models.UserDetails
+
+	if err := c.BindJSON(&user); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	userToken, err := uH.userusecase.SignUp(user)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't signup user", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully signed up", userToken, nil)
+	c.JSON(http.StatusOK, successRes)
+}
