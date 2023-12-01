@@ -283,3 +283,33 @@ func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully subtracted quantity", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (uH *UserHandler) GetWallet(c *gin.Context) {
+	userId, err := helper.GetUserId(c)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	wallet, err := uH.userusecase.GetWallet(userId, page, limit)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get wallet", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully get wallet", wallet, nil)
+	c.JSON(http.StatusOK, successRes)
+}
