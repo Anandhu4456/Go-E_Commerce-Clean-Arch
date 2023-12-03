@@ -192,7 +192,7 @@ func (orU *orderUsecase) DailyOrders() (domain.SalesReport, error) {
 
 	var bestSellers []string
 
-	for _, items := range bestSellers {
+	for _, items := range bestSellerIds {
 
 		product, err := orU.orderRepo.GetProductNameFromId(items)
 		if err != nil {
@@ -226,7 +226,7 @@ func (orU *orderUsecase) WeeklyOrders() (domain.SalesReport, error) {
 
 	var bestSellers []string
 
-	for _, items := range bestSellers {
+	for _, items := range bestSellerIds {
 
 		product, err := orU.orderRepo.GetProductNameFromId(items)
 		if err != nil {
@@ -260,7 +260,7 @@ func (orU *orderUsecase) MonthlyOrders() (domain.SalesReport, error) {
 
 	var bestSellers []string
 
-	for _, items := range bestSellers {
+	for _, items := range bestSellerIds {
 
 		product, err := orU.orderRepo.GetProductNameFromId(items)
 		if err != nil {
@@ -293,7 +293,7 @@ func (orU *orderUsecase) AnnualOrders() (domain.SalesReport, error) {
 
 	var bestSellers []string
 
-	for _, items := range bestSellers {
+	for _, items := range bestSellerIds {
 
 		product, err := orU.orderRepo.GetProductNameFromId(items)
 		if err != nil {
@@ -327,7 +327,7 @@ func (orU *orderUsecase) CustomDateOrders(dates models.CustomDates) (domain.Sale
 
 	var bestSellers []string
 
-	for _, items := range bestSellers {
+	for _, items := range bestSellerIds {
 
 		product, err := orU.orderRepo.GetProductNameFromId(items)
 		if err != nil {
