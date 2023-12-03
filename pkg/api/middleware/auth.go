@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+// middleware for admin authentication
 
 func AdminAuthMiddleware(c *gin.Context) {
 	token, _ := c.Cookie("Authorization")
