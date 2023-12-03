@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,4 +36,16 @@ func AdminAuthMiddleware(c *gin.Context) {
 		return
 	}
 	c.Next()
+}
+
+func validateToken(token string) (*jwt.Token, error) {
+	fmt.Println("token validating...")
+	jwtToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method:%v", t.Header["alg"])
+		}
+		secret := viper.GetString("KEY")
+		return []byte(secret), nil
+	})
+	return jwtToken, err
 }
