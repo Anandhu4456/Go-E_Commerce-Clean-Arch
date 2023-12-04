@@ -64,4 +64,12 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 		couponManagement.POST("/create", couponHandler.CreateNewCoupon)
 		couponManagement.POST("/expire", couponHandler.MakeCouponInvalid)
 	}
+	salesManagement := engine.Group("/sales")
+	{
+		salesManagement.GET("/daily", orderHandler.AdminSalesDailyReport)
+		salesManagement.GET("/weekly", orderHandler.AdminSalesWeeklyReports)
+		salesManagement.GET("/monthly", orderHandler.AdminSalesMonthlyReport)
+		salesManagement.GET("/annual", orderHandler.AdminSalesAnnualReport)
+		salesManagement.POST("/custom", orderHandler.AdminSaleCustomReport)
+	}
 }
