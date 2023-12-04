@@ -37,4 +37,10 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 		inventoryManagement.DELETE("/delete", inventoryHandler.DeleteInventory)
 	}
 
+	orderManagement := engine.Group("/orders")
+	{
+		orderManagement.GET("", orderHandler.AdminOrders)
+		orderManagement.PATCH("/edit/status", orderHandler.EditOrderStatus)
+		orderManagement.PATCH("/edit/mark-as-paid", orderHandler.MarkAsPaid)
+	}
 }
