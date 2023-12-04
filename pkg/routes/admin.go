@@ -43,4 +43,11 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 		orderManagement.PATCH("/edit/status", orderHandler.EditOrderStatus)
 		orderManagement.PATCH("/edit/mark-as-paid", orderHandler.MarkAsPaid)
 	}
+
+	paymentManangement := engine.Group("/paymentmethods")
+	{
+		paymentManangement.GET("/", paymentHandler.GetPaymentMethods)
+		paymentManangement.POST("/add", paymentHandler.AddNewPaymentMethod)
+		paymentManangement.DELETE("/delete", paymentHandler.RemovePaymentMethod)
+	}
 }
