@@ -50,4 +50,11 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 		paymentManangement.POST("/add", paymentHandler.AddNewPaymentMethod)
 		paymentManangement.DELETE("/delete", paymentHandler.RemovePaymentMethod)
 	}
+
+	offerManagement := engine.Group("/offers")
+	{
+		offerManagement.GET("", offerHandler.Offers)
+		offerManagement.POST("/create", offerHandler.AddOffer)
+		offerManagement.POST("/expire", offerHandler.ExpireValidity)
+	}
 }
