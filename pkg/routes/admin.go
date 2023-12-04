@@ -57,4 +57,11 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 		offerManagement.POST("/create", offerHandler.AddOffer)
 		offerManagement.POST("/expire", offerHandler.ExpireValidity)
 	}
+
+	couponManagement := engine.Group("/coupons")
+	{
+		couponManagement.GET("", couponHandler.Coupons)
+		couponManagement.POST("/create", couponHandler.CreateNewCoupon)
+		couponManagement.POST("/expire", couponHandler.MakeCouponInvalid)
+	}
 }
