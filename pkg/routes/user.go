@@ -12,6 +12,7 @@ func UserRoutes(engine *gin.RouterGroup,
 	inventoryHandler *handlers.InventoryHandler,
 	cartHandler *handlers.CartHandler,
 	orderHandler *handlers.OrderHandler,
+	couponHandler *handlers.CouponHandler,
 	paymentHandler *handlers.PaymentHandler,
 	wishlistHandler *handlers.WishlistHandler) {
 
@@ -69,6 +70,12 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			wishlist.GET("", wishlistHandler.GetWishlist)
 			wishlist.DELETE("/remove", wishlistHandler.RemoveFromWishlist)
+		}
+		checkout:=engine.Group("/checkout")
+		{
+			checkout.GET("",cartHandler.CheckOut)
+			checkout.GET("/download-invoice",orderHandler.DownloadInvoice)
+			checkout.POST("/order",orderHandler.OrderItemsFromCart)
 		}
 	}
 }
