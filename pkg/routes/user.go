@@ -57,6 +57,18 @@ func UserRoutes(engine *gin.RouterGroup,
 				orders.POST("return-order", orderHandler.ReturnOrder)
 			}
 		}
-		
+
+		cart := engine.Group("/cart")
+		{
+			cart.GET("", userHandler.GetCart)
+			cart.PATCH("/update-quantity-plus", userHandler.UpdateQuantityAdd)
+			cart.PATCH("/update-quantity-minus", userHandler.UpdateQuantityLess)
+			cart.DELETE("/remove", userHandler.RemoveFromCart)
+		}
+		wishlist := engine.Group("/wishlist")
+		{
+			wishlist.GET("", wishlistHandler.GetWishlist)
+			wishlist.DELETE("/remove", wishlistHandler.RemoveFromWishlist)
+		}
 	}
 }
