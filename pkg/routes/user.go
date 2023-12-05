@@ -23,11 +23,24 @@ func UserRoutes(engine *gin.RouterGroup,
 	// Auth middleware
 	engine.Use(middleware.UserAuthMiddleware)
 	{
-		payment:=engine.Group("/payment")
+		payment := engine.Group("/payment")
 		{
-			payment.GET("/razorpay",paymentHandler.MakePamentRazorPay)
-			payment.GET("/verify-status",paymentHandler.VerifyPayment)
+			payment.GET("/razorpay", paymentHandler.MakePamentRazorPay)
+			payment.GET("/verify-status", paymentHandler.VerifyPayment)
 		}
-		
+
+		home := engine.Group("/home")
+		{
+			home.POST("/add-to-cart", cartHandler.AddtoCart)
+			home.POST("/add-to-wishlist", wishlistHandler.AddtoWishlist)
+		}
+
+		profile := engine.Group("/profile")
+		{
+			profile.GET("/details", userHandler.GetUserDetails)
+			profile.GET("/address", userHandler.GetAddresses)
+			profile.POST("/address/add", userHandler.AddAddress)
+			profile.PATCH("/edit", userHandler.EditUser)
+		}
 	}
 }
