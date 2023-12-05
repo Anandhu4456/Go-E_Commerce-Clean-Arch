@@ -2,10 +2,13 @@ package helper
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 )
 
 func GetUserId(c *gin.Context) (int, error) {
@@ -17,7 +20,7 @@ func GetUserId(c *gin.Context) (int, error) {
 		return 0, errors.New("user id not found in context")
 	}
 	// using type assertion to chech the type of val is models.UserKey
-	
+
 	userkey, ok := val.(models.UserKey)
 	if !ok {
 		return 0, errors.New("user id type is not expected type")
@@ -28,4 +31,17 @@ func GetUserId(c *gin.Context) (int, error) {
 		return 0, errors.New("failed to convert user id to int")
 	}
 	return userId, nil
+}
+
+func GenerateUserToken(user models.UserResponse) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user":   user.Username,
+		"role":   "user",
+		"userId": user.Id,
+	})
+	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
+	if err == nil {
+		fmt.Println("token created")
+	}
+	return tokenString, nil
 }
