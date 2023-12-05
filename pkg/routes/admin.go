@@ -6,7 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*userHandler *handlers.UserHandler,*/, categoryHandler *handlers.CategoryHandler, inventoryHandler *handlers.InventoryHandler, orderHandler *handlers.OrderHandler, paymentHandler *handlers.PaymentHandler, offerHandler *handlers.OfferHandler, couponHandler *handlers.CouponHandler) {
+func AdminRoutes(engine *gin.RouterGroup,
+	adminHandler *handlers.AdminHandler,
+	// userHandler *handlers.UserHandler,
+	categoryHandler *handlers.CategoryHandler,
+	inventoryHandler *handlers.InventoryHandler,
+	orderHandler *handlers.OrderHandler,
+	paymentHandler *handlers.PaymentHandler,
+	offerHandler *handlers.OfferHandler,
+	couponHandler *handlers.CouponHandler) {
 	engine.POST("/adminlogin", adminHandler.LoginHandler)
 	{
 		engine.Use(middleware.AdminAuthMiddleware)
