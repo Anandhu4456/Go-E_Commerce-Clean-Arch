@@ -28,8 +28,8 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handlers.AdminHandler /*
 
 		inventoryManagement := engine.Group("/inventories")
 		{
-			inventoryManagement.GET("", inventoryHandler.ListProdutcs)
-			inventoryManagement.GET("/details", inventoryHandler.ShowIndividualProducts)
+			// inventoryManagement.GET("", inventoryHandler.ListProdutcs)
+			// inventoryManagement.GET("/details", inventoryHandler.ShowIndividualProducts)
 			inventoryManagement.POST("/add", inventoryHandler.AddInventory)
 			inventoryManagement.POST("/add-image", inventoryHandler.AddImage)
 			inventoryManagement.PATCH("/update", inventoryHandler.UpdateInventory)
