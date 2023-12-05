@@ -41,6 +41,22 @@ func UserRoutes(engine *gin.RouterGroup,
 			profile.GET("/address", userHandler.GetAddresses)
 			profile.POST("/address/add", userHandler.AddAddress)
 			profile.PATCH("/edit", userHandler.EditUser)
+
+			security := profile.Group("/security")
+			{
+				security.PATCH("/change-password", userHandler.ChangePassword)
+			}
+			wallet := profile.Group("/wallet")
+			{
+				wallet.GET("", userHandler.GetWallet)
+			}
+			orders := profile.Group("/orders")
+			{
+				orders.GET("", orderHandler.GetOrders)
+				orders.POST("/cancel-order", orderHandler.CancelOrder)
+				orders.POST("return-order", orderHandler.ReturnOrder)
+			}
 		}
+		
 	}
 }
