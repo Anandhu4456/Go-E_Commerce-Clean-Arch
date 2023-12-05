@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -32,6 +33,18 @@ func GetUserId(c *gin.Context) (int, error) {
 		return 0, errors.New("failed to convert user id to int")
 	}
 	return userId, nil
+}
+
+func GenerateAdminToken(admin domain.Admin) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"admin": admin.Username,
+		"role":  "admin",
+	})
+	tokenString, err := token.SignedString(viper.GetString("KEY"))
+	if err == nil {
+		fmt.Println("token created")
+	}
+	return tokenString, nil
 }
 
 func GenerateUserToken(user models.UserResponse) (string, error) {
