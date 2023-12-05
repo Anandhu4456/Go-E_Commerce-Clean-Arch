@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUserId(c *gin.Context) (int, error) {
@@ -44,4 +45,13 @@ func GenerateUserToken(user models.UserResponse) (string, error) {
 		fmt.Println("token created")
 	}
 	return tokenString, nil
+}
+
+func PasswordHashing(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return "", errors.New("internal server error")
+	}
+	hash := string(hashedPassword)
+	return hash, nil
 }
