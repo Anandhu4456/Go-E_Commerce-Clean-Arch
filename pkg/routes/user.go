@@ -71,11 +71,12 @@ func UserRoutes(engine *gin.RouterGroup,
 			wishlist.GET("", wishlistHandler.GetWishlist)
 			wishlist.DELETE("/remove", wishlistHandler.RemoveFromWishlist)
 		}
-		checkout:=engine.Group("/checkout")
+		checkout := engine.Group("/checkout")
 		{
-			checkout.GET("",cartHandler.CheckOut)
-			checkout.GET("/download-invoice",orderHandler.DownloadInvoice)
-			checkout.POST("/order",orderHandler.OrderItemsFromCart)
+			checkout.GET("", cartHandler.CheckOut)
+			checkout.GET("/download-invoice", orderHandler.DownloadInvoice)
+			checkout.POST("/order", orderHandler.OrderItemsFromCart)
 		}
+		engine.GET("/coupons", couponHandler.Coupons)
 	}
 }
