@@ -38,7 +38,7 @@ func (otU *otpUsecase) SendOTP(phone string) error {
 
 func (otU *otpUsecase) VerifyOTP(code models.VerifyData) (models.UserToken, error) {
 	helper.TwilioSetup(otU.cfg.ACCOUNTSID, otU.cfg.AUTHTOKEN)
-	if err := helper.TwiloVerifyOTP(otU.cfg.SERVICEID, code.Code, code.PhoneNumber); err != nil {
+	if err := helper.TwilioVerifyOTP(otU.cfg.SERVICEID, code.Code, code.PhoneNumber); err != nil {
 		return models.UserToken{}, errors.New("error while verifying OTP")
 	}
 	// getting user details to generate user token after verify OTP

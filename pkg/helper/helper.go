@@ -93,3 +93,18 @@ func TwilioSendOTP(phone string, serviceId string) (string, error) {
 	}
 	return *resp.Sid, nil
 }
+
+func TwilioVerifyOTP(serviceId string, code string, phone string) error {
+	params := &twilioApi.CreateVerificationCheckParams{}
+	params.SetTo("+91" + phone)
+	params.SetCode(code)
+
+	resp, err := client.VerifyV2.CreateVerificationCheck(serviceId, params)
+	if err != nil {
+		return err
+	}
+	if *resp.Status == "approved" {
+		return nil
+	}
+	return errors.New("otp verification failed")
+}
