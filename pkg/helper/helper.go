@@ -15,8 +15,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var client *twilio.RestClient
-
 func GetUserId(c *gin.Context) (int, error) {
 	var key models.UserKey = "user_id"
 	val := c.Request.Context().Value(key)
@@ -74,6 +72,8 @@ func PasswordHashing(password string) (string, error) {
 }
 
 // This function will setup the twilio
+var client *twilio.RestClient
+
 func TwilioSetup(username string, password string) {
 	client = twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: username,
@@ -107,4 +107,25 @@ func TwilioVerifyOTP(serviceId string, code string, phone string) error {
 		return nil
 	}
 	return errors.New("otp verification failed")
+}
+
+func FindMostBroughtProduct(products []domain.ProductReport) []int {
+	productMap := make(map[int]int)
+
+	for _, item := range products {
+		productMap[item.InventoryID] += item.Quantity
+	}
+	maxQty := 0
+	for _, item := range productMap {
+		if item > maxQty {
+			maxQty = item
+		}
+	}
+	var bestSeller []int
+	for k, item := range productMap {
+		if item == maxQty {
+			bestSeller = append(bestSeller, k)
+		}
+	}
+	return bestSeller
 }
