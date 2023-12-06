@@ -10,8 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
+	"github.com/twilio/twilio-go"
+	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var client *twilio.RestClient
 
 func GetUserId(c *gin.Context) (int, error) {
 	var key models.UserKey = "user_id"
@@ -67,4 +71,25 @@ func PasswordHashing(password string) (string, error) {
 	}
 	hash := string(hashedPassword)
 	return hash, nil
+}
+
+// This function will setup the twilio
+func TwilioSetup(username string, password string) {
+	client = twilio.NewRestClientWithParams(twilio.ClientParams{
+		Username: username,
+		Password: password,
+	})
+}
+
+func TwilioSendOTP(phone string, serviceId string) (string, error) {
+	to := "+91" + phone
+	params := &twilioApi.CreateVerificationParams{}
+	params.SetTo(to)
+	params.SetChannel("sms")
+	resp, err := client.VerifyV2.CreateVerification(serviceId, params)
+
+	if err != nil {
+		return "", err
+	}
+	return *resp.Sid, nil
 }
