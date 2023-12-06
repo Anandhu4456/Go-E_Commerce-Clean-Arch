@@ -1,12 +1,18 @@
 package helper
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"mime/multipart"
 	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
@@ -128,4 +134,32 @@ func FindMostBroughtProduct(products []domain.ProductReport) []int {
 		}
 	}
 	return bestSeller
+}
+
+func AddImageToS3(file *multipart.FileHeader) (string, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-south-1"))
+	if err != nil {
+		fmt.Println("configuration error: ", err)
+		return "", err
+	}
+	client := s3.NewFromConfig(cfg)
+	uploader := manager.NewUploader(client)
+	f, openErr := file.Open()
+	if openErr != nil {
+		fmt.Println("file open error: ", openErr)
+		return "", openErr
+	}
+	defer f.Close()
+
+	result, uploadErr := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+		Bucket: aws.String("samplebucket"),
+		Key:    aws.String(file.Filename),
+		Body:   f,
+		ACL:    "public-read",
+	})
+	if uploadErr != nil {
+		fmt.Println("upload error : ", uploadErr)
+		return "", uploadErr
+	}
+	return result.Location, nil
 }
