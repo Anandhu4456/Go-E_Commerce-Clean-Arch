@@ -351,7 +351,7 @@ func (orU *orderUsecase) ReturnOrder(id int) error {
 	}
 
 	if status != "DELIVERED" {
-		errors.New("user is trying to return an item which is still not delivered")
+		return errors.New("user is trying to return an item which is still not delivered")
 	}
 
 	// make order is return order
@@ -405,7 +405,7 @@ func (orU *orderUsecase) CancelOrder(id, orderid int) error {
 		return errors.New("item already cancelled")
 	}
 	if status == "DELIVERED" {
-		errors.New("item delivered")
+		return errors.New("item delivered")
 	}
 
 	if status == "PENDING" || status == "SHIPPED" {
