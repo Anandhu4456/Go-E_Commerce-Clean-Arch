@@ -1,6 +1,10 @@
 package pdf
 
-import "github.com/unidoc/unipdf/v3/creator"
+import (
+	"github.com/spf13/viper"
+	"github.com/unidoc/unipdf/v3/common/license"
+	"github.com/unidoc/unipdf/v3/creator"
+)
 
 type Client struct {
 	creator *creator.Creator
@@ -76,4 +80,21 @@ var cellStyles = map[string]cellStyle{
 		BorderStyle:     creator.CellBorderStyleSingle,
 		BorderWidth:     3,
 	},
+}
+
+func GenerateInvoicePdf(invoice Invoice) error {
+	conf := viper.GetString("UNIDOC_LICENSE_API_KEY")
+
+	err := license.SetMeteredKey(conf)
+	if err != nil {
+		return err
+	}
+	c := creator.New()
+	c.SetPageMargins(40, 40, 0, 0)
+	cr := &Client{creator: c}
+	err = cr.generatePdf(invoice)
+	if err != nil {
+		return err
+	}
+	return nil
 }
