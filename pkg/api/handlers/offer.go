@@ -22,6 +22,16 @@ func NewOfferHandler(offerUsecase services.OfferUsecase) *OfferHandler {
 	}
 }
 
+// @Summary		Add Offer
+// @Description	Admin can add new  offers
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param           offer      body     models.CreateOffer   true   "Offer"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/offers/create [post]
 func (offH *OfferHandler) AddOffer(c *gin.Context) {
 	var offer models.CreateOffer
 
@@ -39,6 +49,16 @@ func (offH *OfferHandler) AddOffer(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Expire Offer
+// @Description	Admin can add Expire  offers
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param           catID      query     string   true   "Category ID"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/offers/expire [post]
 func (offH *OfferHandler) ExpireValidity(c *gin.Context) {
 	catIdStr := c.Query("catID")
 	catId, err := strconv.Atoi(catIdStr)
@@ -56,6 +76,17 @@ func (offH *OfferHandler) ExpireValidity(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		List Offers
+// @Description	Admin can view the list of  offers
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/offers [get]
 func (offH *OfferHandler) Offers(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
