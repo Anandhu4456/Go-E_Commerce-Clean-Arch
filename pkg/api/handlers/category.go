@@ -22,6 +22,16 @@ func NewCategoryHandler(categoryUsecase services.CategoryUsecase) *CategoryHandl
 	}
 }
 
+// @Summary		Add Category
+// @Description	Admin can add new categories for products
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			category	query	string	true	"category"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/category/add [post]
 func (catH *CategoryHandler) AddCategory(c *gin.Context) {
 	cat := c.Query("category")
 	categoryRes, err := catH.CategoryUsecase.AddCategory(cat)
@@ -35,6 +45,16 @@ func (catH *CategoryHandler) AddCategory(c *gin.Context) {
 	
 }
 
+// @Summary		Update Category
+// @Description	Admin can update name of a category into new name
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			set_new_name	body	models.SetNewName	true	"set new name"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/category/update [patch]
 func (catH *CategoryHandler) UpdateCategory(c *gin.Context) {
 	var updateCategory models.SetNewName
 
@@ -54,6 +74,16 @@ func (catH *CategoryHandler) UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Delete Category
+// @Description	Admin can delete a category
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/category/delete [delete]
 func (catH *CategoryHandler) DeleteCategory(c *gin.Context) {
 	// Find category id
 	categoryId := c.Query("id")
@@ -66,6 +96,17 @@ func (catH *CategoryHandler) DeleteCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		List Categories
+// @Description	Admin can view the list of  Categories
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/category [get]
 func (catH *CategoryHandler) Categories(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
