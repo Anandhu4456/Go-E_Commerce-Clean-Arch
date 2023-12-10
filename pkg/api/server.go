@@ -1,10 +1,11 @@
 package http
 
 import (
-	handlers"github.com/Anandhu4456/go-Ecommerce/pkg/api/handlers"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	swaggerfiles "github.com/swaggo/files"
+	handlers "github.com/Anandhu4456/go-Ecommerce/pkg/api/handlers"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/routes"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // http server for the web application
@@ -19,4 +20,12 @@ func NewServerHTTP(categoryHandler *handlers.CategoryHandler,inventoryHandler *h
 	engine.Use(gin.Logger())
 	engine.LoadHTMLGlob("pkg/templates/*.html")
 	engine.GET("/swagger/*any",ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	routes.UserRoutes(engine.Group("/users"),userHandler,otpHandler,inventoryHandler,cartHandler,orderHandler,couponHandler,paymentHandler,wishlistHandler)
+	routes.AdminRoutes(engine.Group("/admin"),adminHandler,categoryHandler,inventoryHandler,orderHandler,paymentHandler,offerHandler,couponHandler)
+	routes.InventoryRoutes(engine.Group("/products"),inventoryHandler)
+
+	return &ServerHTTP{
+		engine: engine,
+	}
 }
