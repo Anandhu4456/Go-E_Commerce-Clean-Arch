@@ -29,3 +29,7 @@ func NewServerHTTP(categoryHandler *handlers.CategoryHandler,inventoryHandler *h
 		engine: engine,
 	}
 }
+
+func (sh *ServerHTTP)Start(){
+	sh.engine.Run(":8080")
+}
