@@ -21,6 +21,16 @@ func NewCartHandler(usecase services.CartUsecase) *CartHandler {
 	}
 }
 
+// @Summary		Add To Cart
+// @Description	Add products to carts  for the purchase
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			inventory	query	string	true	"inventory ID"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/home/add-to-cart [post]
 func (ch *CartHandler) AddtoCart(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -45,6 +55,14 @@ func (ch *CartHandler) AddtoCart(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Checkout section
+// @Description	Add products to carts  for the purchase
+// @Tags			User
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/check-out [get]
 func (ch *CartHandler) CheckOut(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
