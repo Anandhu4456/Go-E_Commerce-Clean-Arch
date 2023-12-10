@@ -21,6 +21,16 @@ func NewCouponHandler(couponUsecase services.CouponUsecase) *CouponHandler {
 	}
 }
 
+// @Summary		Add Coupon
+// @Description	Admin can add new coupons
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			coupon	body	domain.Coupon	true	"coupon"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/coupons/create [post]
 func (coupH *CouponHandler) CreateNewCoupon(c *gin.Context) {
 	var coupon domain.Coupon
 
@@ -38,6 +48,16 @@ func (coupH *CouponHandler) CreateNewCoupon(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Make Coupon invalid
+// @Description	Admin can make the coupons as invalid so that users cannot use that particular coupon
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/coupons/expire [post]
 func (coupH *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 	idStr := c.Query("id")
 	id, err := strconv.Atoi(idStr)
@@ -55,6 +75,17 @@ func (coupH *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		List Coupons
+// @Description	Admin can view the list of  Coupons
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/coupons [get]
 func (coupH *CouponHandler) Coupons(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
