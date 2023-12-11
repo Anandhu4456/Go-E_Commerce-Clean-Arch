@@ -22,6 +22,14 @@ func NewPaymentHandler(payUsecase services.PaymentUsecase) *PaymentHandler {
 	}
 }
 
+// @Summary		Add new payment method
+// @Description	admin can add a new payment method
+// @Tags			Admin
+// @Produce		    json
+// @Param			paymentMethod	query  string 	true	"Payment Method"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/paymentmethods/add [post]
 func (payH *PaymentHandler) AddNewPaymentMethod(c *gin.Context) {
 	method := c.Query("payment_method")
 
@@ -34,6 +42,14 @@ func (payH *PaymentHandler) AddNewPaymentMethod(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Remove payment method
+// @Description	admin can remove a  payment method
+// @Tags			Admin
+// @Produce		    json
+// @Param			paymentMethodID	query  int 	true	"Payment Method ID"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/paymentmethods/remove [delete]
 func (payH *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
 	methodId, err := strconv.Atoi(c.Query("payment_method_id"))
 	if err != nil {
@@ -51,6 +67,13 @@ func (payH *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Get payment methods
+// @Description	admin can get all  payment methods
+// @Tags			Admin
+// @Produce		    json
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/paymentmethods [get]
 func (payH *PaymentHandler) GetPaymentMethods(c *gin.Context) {
 	paymentMethods, err := payH.paymentUsecase.GetPaymentMethods()
 
@@ -64,7 +87,7 @@ func (payH *PaymentHandler) GetPaymentMethods(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-func (payH *PaymentHandler) MakePamentRazorPay(c *gin.Context) {
+func (payH *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 	orderId := c.Query("id")
 	userId, err := helper.GetUserId(c)
 	if err != nil {

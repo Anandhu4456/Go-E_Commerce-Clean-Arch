@@ -26,7 +26,7 @@ func UserRoutes(engine *gin.RouterGroup,
 	{
 		payment := engine.Group("/payment")
 		{
-			payment.GET("/razorpay", paymentHandler.MakePamentRazorPay)
+			payment.GET("/razorpay", paymentHandler.MakePaymentRazorPay)
 			payment.GET("/verify-status", paymentHandler.VerifyPayment)
 		}
 
