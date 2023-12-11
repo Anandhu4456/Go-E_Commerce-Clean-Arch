@@ -24,6 +24,17 @@ func NewOrderHandler(orderUsecase services.OrderUsecase) *OrderHandler {
 	}
 }
 
+// @Summary		Get Orders
+// @Description	user can view the details of the orders
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/orders [get]
 func (orH *OrderHandler) GetOrders(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -57,6 +68,17 @@ func (orH *OrderHandler) GetOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Order Now
+// @Description	user can order the items that currently in cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			coupon	query	string	true	"coupon"
+// @Param			order	body	models.Order	true	"order"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/check-out/order [post]
 func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -83,6 +105,16 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Order Cancel
+// @Description	user can cancel the orders
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			orderid  query  string  true	"order id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/orders/cancel [post]
 func (orH *OrderHandler) CancelOrder(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -108,6 +140,17 @@ func (orH *OrderHandler) CancelOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Update Order Status
+// @Description	Admin can change the status of the order
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			id  query  string  true	"id"
+// @Param			status  query  string  true	"status"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/orders/edit/status [patch]
 func (orH *OrderHandler) EditOrderStatus(c *gin.Context) {
 	status := c.Query("status")
 	id, err := strconv.Atoi(c.Query("id"))
@@ -126,6 +169,16 @@ func (orH *OrderHandler) EditOrderStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Update Payment Status
+// @Description	Admin can change the status of the payment
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			orderID  query  string  true	"order id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/orders/edit/mark-as-paid [patch]
 func (orH *OrderHandler) MarkAsPaid(c *gin.Context) {
 	orderId, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
@@ -143,6 +196,17 @@ func (orH *OrderHandler) MarkAsPaid(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Orders
+// @Description	Admin can view the orders according to status
+// @Tags			Admin
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Param			status	query  string	true	"status"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/orders [get]
 func (orH *OrderHandler) AdminOrders(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
@@ -168,6 +232,14 @@ func (orH *OrderHandler) AdminOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Sales Report
+// @Description	Admin can view the daily sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/daily [get]
 func (orH *OrderHandler) AdminSalesDailyReport(c *gin.Context) {
 	salesReport, err := orH.orderUsecase.DailyOrders()
 	if err != nil {
@@ -179,6 +251,14 @@ func (orH *OrderHandler) AdminSalesDailyReport(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/weekly [get]
 func (orH *OrderHandler) AdminSalesWeeklyReports(c *gin.Context) {
 	salesReport, err := orH.orderUsecase.WeeklyOrders()
 	if err != nil {
@@ -190,6 +270,14 @@ func (orH *OrderHandler) AdminSalesWeeklyReports(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/monthly [get]
 func (orH *OrderHandler) AdminSalesMonthlyReport(c *gin.Context) {
 	salesReport, err := orH.orderUsecase.MonthlyOrders()
 	if err != nil {
@@ -201,6 +289,14 @@ func (orH *OrderHandler) AdminSalesMonthlyReport(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/annual [get]
 func (orH *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
 	salesReport, err := orH.orderUsecase.AnnualOrders()
 	if err != nil {
@@ -212,6 +308,15 @@ func (orH *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Param			customDates  body  models.CustomDates  true	"custom dates"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/custom [post]
 func (orH *OrderHandler) AdminSaleCustomReport(c *gin.Context) {
 	var dates models.CustomDates
 	if err := c.BindJSON(&dates); err != nil {
@@ -230,6 +335,16 @@ func (orH *OrderHandler) AdminSaleCustomReport(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Return Order
+// @Description	user can return the ordered products which is already delivered and then get the amount fot that particular purchase back in their wallet
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			id  query  string  true	"id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/orders/return [post]
 func (orH *OrderHandler) ReturnOrder(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -247,6 +362,13 @@ func (orH *OrderHandler) ReturnOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Download Invoice PDF
+// @Description Download the invoice PDF file
+// @Tags			User
+// @Security		Bearer
+// @Produce octet-stream
+// @Success 200 {file} application/pdf
+// @Router /users/check-out/order/download-invoice  [get]
 func (orH *OrderHandler) DownloadInvoice(c *gin.Context) {
 	// Set the appropriate header for the file download
 	c.Header("Content-Disposition", "attachment; filename=yoursstore_invoice.pdf")
