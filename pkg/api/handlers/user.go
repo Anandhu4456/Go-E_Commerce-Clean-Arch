@@ -22,6 +22,16 @@ func NewUserHandler(userUsecase services.UserUsecase) *UserHandler {
 	}
 }
 
+// @Summary		Add Address
+// @Description	user can add their addresses
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			address  body  models.AddAddress  true	"address"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/address/add [post]
 func (uH *UserHandler) AddAddress(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -45,6 +55,16 @@ func (uH *UserHandler) AddAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Change Password
+// @Description	user can change their password
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			changepassword  body  models.ChangePassword  true	"changepassword"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/security/change-password [patch]
 func (uH *UserHandler) ChangePassword(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -69,6 +89,16 @@ func (uH *UserHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Edit User
+// @Description	user can change their Details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			userData  body  models.EditUser true	"edit-user"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/edit [patch]
 func (uH *UserHandler) EditUser(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -92,6 +122,15 @@ func (uH *UserHandler) EditUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Get Addresses
+// @Description	user can get all their addresses
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/address [get]
 func (uH *UserHandler) GetAddresses(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -110,6 +149,16 @@ func (uH *UserHandler) GetAddresses(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Get Cart
+// @Description	user can view their cart details
+// @Tags			User
+// @Produce		    json
+// @Security		Bearer
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart [get]
 func (uH *UserHandler) GetCart(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -140,6 +189,15 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Get User Details
+// @Description	user can get all their details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/details [get]
 func (uH *UserHandler) GetUserDetails(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -158,6 +216,16 @@ func (uH *UserHandler) GetUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// Login is a handler for user login
+// @Summary		User Login
+// @Description	user can log in by giving their details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			login  body  models.UserLogin  true	"login"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/login [post]
 func (uH *UserHandler) Login(c *gin.Context) {
 	var user models.UserLogin
 	if err := c.BindJSON(&user); err != nil {
@@ -178,6 +246,15 @@ func (uH *UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Remove from Cart
+// @Description	user can remove products from their cart
+// @Tags			User
+// @Produce		    json
+// @Param			inventory	query	string	true	"inventory id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/remove [delete]
 func (uH *UserHandler) RemoveFromCart(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -207,6 +284,16 @@ func (uH *UserHandler) RemoveFromCart(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// Signup is a handler for user Registration
+// @Summary		User Signup
+// @Description	user can signup by giving their details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			signup  body  models.UserDetails  true	"signup"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/signup [post]
 func (uH *UserHandler) SignUp(c *gin.Context) {
 	var user models.UserDetails
 
@@ -226,6 +313,16 @@ func (uH *UserHandler) SignUp(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Add quantity in cart by one
+// @Description	user can add 1 quantity of product to their cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			inventory	query	string	true	"inventory id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/updateQuantity/plus [post]
 func (uH *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -255,6 +352,16 @@ func (uH *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Subtract quantity in cart by one
+// @Description	user can subtract 1 quantity of product from their cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			inventory	query	string	true	"inventory id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/updateQuantity/minus [post]
 func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
@@ -284,6 +391,16 @@ func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary		Get Wallet
+// @Description	user can get wallet details and history
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/profile/wallet [get]
 func (uH *UserHandler) GetWallet(c *gin.Context) {
 	userId, err := helper.GetUserId(c)
 	if err != nil {
