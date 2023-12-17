@@ -17,7 +17,7 @@ type userUsecase struct {
 	walletRepo interfaces.WalletRepository
 }
 
-// Constructor function
+
 func NewUserUsecase(userRepo interfaces.UserRepository, offerRepo interfaces.OfferRepository, walletRepo interfaces.WalletRepository) services.UserUsecase {
 	return &userUsecase{
 		userRepo:   userRepo,

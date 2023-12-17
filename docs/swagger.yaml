@@ -1,4 +1,1812 @@
+definitions:
+  domain.Coupon:
+    properties:
+      discount_rate:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  models.AddAddress:
+    properties:
+      city:
+        type: string
+      house_name:
+        type: string
+      name:
+        type: string
+      pin:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+    required:
+    - city
+    - house_name
+    - name
+    - pin
+    - state
+    - street
+    type: object
+  models.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 12
+        minLength: 6
+        type: string
+    required:
+    - email
+    type: object
+  models.ChangePassword:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+      re_password:
+        type: string
+    type: object
+  models.CreateOffer:
+    properties:
+      categoryID:
+        type: integer
+      discount:
+        type: integer
+    type: object
+  models.CustomDates:
+    properties:
+      end_date:
+        type: string
+      starting_date:
+        type: string
+    type: object
+  models.EditUser:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    type: object
+  models.OTPData:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
+  models.Order:
+    properties:
+      address_id:
+        type: integer
+      payment_id:
+        type: integer
+    type: object
+  models.SetNewName:
+    properties:
+      current:
+        type: string
+      new:
+        type: string
+    type: object
+  models.UpdateInventory:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      price:
+        type: number
+      product_name:
+        type: string
+      stock:
+        type: integer
+    type: object
+  models.UserDetails:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.VerifyData:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    required:
+    - code
+    - phone
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      statuscode:
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /admin/adminlogin:
+    post:
+      consumes:
+      - application/json
+      description: Login handler for admins
+      parameters:
+      - description: Admin login details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin Login
+      tags:
+      - Admin
+  /admin/category:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  Categories
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Categories
+      tags:
+      - Admin
+  /admin/category/add:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add new categories for products
+      parameters:
+      - description: category
+        in: query
+        name: category
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Category
+      tags:
+      - Admin
+  /admin/category/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a category
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete Category
+      tags:
+      - Admin
+  /admin/category/update:
+    patch:
+      consumes:
+      - application/json
+      description: Admin can update name of a category into new name
+      parameters:
+      - description: set new name
+        in: body
+        name: set_new_name
+        required: true
+        schema:
+          $ref: '#/definitions/models.SetNewName'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update Category
+      tags:
+      - Admin
+  /admin/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  Coupons
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Coupons
+      tags:
+      - Admin
+  /admin/coupons/create:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add new coupons
+      parameters:
+      - description: coupon
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Coupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Coupon
+      tags:
+      - Admin
+  /admin/coupons/expire:
+    post:
+      consumes:
+      - application/json
+      description: Admin can make the coupons as invalid so that users cannot use
+        that particular coupon
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Make Coupon invalid
+      tags:
+      - Admin
+  /admin/inventories/add:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Admin can add new  products
+      parameters:
+      - description: category_id
+        in: formData
+        name: category_id
+        required: true
+        type: string
+      - description: product_name
+        in: formData
+        name: product_name
+        required: true
+        type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: price
+        in: formData
+        name: price
+        required: true
+        type: string
+      - description: stock
+        in: formData
+        name: stock
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Inventory
+      tags:
+      - Admin
+  /admin/inventories/add-image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Admin can add new image to product
+      parameters:
+      - description: product_id
+        in: formData
+        name: product_id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add image to an Inventory
+      tags:
+      - Admin
+  /admin/inventories/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a product
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete Inventory
+      tags:
+      - Admin
+  /admin/inventories/delete-image:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a product image
+      parameters:
+      - description: product_id
+        in: query
+        name: product_id
+        required: true
+        type: string
+      - description: image_id
+        in: query
+        name: image_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete Inventory image
+      tags:
+      - Admin
+  /admin/inventories/update:
+    patch:
+      consumes:
+      - application/json
+      description: Admin can update inventory details
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update Inventory
+        in: body
+        name: updateinventory
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateInventory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update inventory
+      tags:
+      - Admin
+  /admin/inventories/update-image:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Admin can update image of the inventory
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update image
+      tags:
+      - Admin
+  /admin/offers:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  offers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Offers
+      tags:
+      - Admin
+  /admin/offers/create:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add new  offers
+      parameters:
+      - description: Offer
+        in: body
+        name: offer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateOffer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Offer
+      tags:
+      - Admin
+  /admin/offers/expire:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add Expire  offers
+      parameters:
+      - description: Category ID
+        in: query
+        name: catID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Expire Offer
+      tags:
+      - Admin
+  /admin/orders:
+    get:
+      description: Admin can view the orders according to status
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Orders
+      tags:
+      - Admin
+  /admin/orders/edit/mark-as-paid:
+    patch:
+      consumes:
+      - application/json
+      description: Admin can change the status of the payment
+      parameters:
+      - description: order id
+        in: query
+        name: orderID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update Payment Status
+      tags:
+      - Admin
+  /admin/orders/edit/status:
+    patch:
+      consumes:
+      - application/json
+      description: Admin can change the status of the order
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update Order Status
+      tags:
+      - Admin
+  /admin/paymentmethods:
+    get:
+      description: admin can get all  payment methods
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get payment methods
+      tags:
+      - Admin
+  /admin/paymentmethods/add:
+    post:
+      description: admin can add a new payment method
+      parameters:
+      - description: Payment Method
+        in: query
+        name: paymentMethod
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Add new payment method
+      tags:
+      - Admin
+  /admin/paymentmethods/remove:
+    delete:
+      description: admin can remove a  payment method
+      parameters:
+      - description: Payment Method ID
+        in: query
+        name: paymentMethodID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Remove payment method
+      tags:
+      - Admin
+  /admin/products:
+    get:
+      consumes:
+      - application/json
+      description: client can view the list of available products
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Products
+      tags:
+      - Admin
+  /admin/sales/annual:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/custom:
+    post:
+      description: Admin can view the weekly sales Report
+      parameters:
+      - description: custom dates
+        in: body
+        name: customDates
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomDates'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/daily:
+    get:
+      description: Admin can view the daily sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/monthly:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/weekly:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/users/block:
+    post:
+      consumes:
+      - application/json
+      description: using this handler admins can block an user
+      parameters:
+      - description: user-id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Block User
+      tags:
+      - Admin
+  /admin/users/getusers:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve users with pagination
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Users
+      tags:
+      - Admin
+  /admin/users/unblock:
+    post:
+      consumes:
+      - application/json
+      description: UnBlock user
+      parameters:
+      - description: user-id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: UnBlock an existing user
+      tags:
+      - Admin
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: client can view the list of available products
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Products
+      tags:
+      - Products
+  /products/category:
+    get:
+      consumes:
+      - application/json
+      description: client can filter with a category and get the list of  products
+        in the category
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: category ID
+        in: query
+        name: catID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: filter Products by category
+      tags:
+      - Products
+  /products/details:
+    get:
+      consumes:
+      - application/json
+      description: client can view the details of the product
+      parameters:
+      - description: Inventory ID
+        in: query
+        name: inventoryID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Product Details
+      tags:
+      - Products
+  /products/search:
+    get:
+      consumes:
+      - application/json
+      description: client can search with a key and get the list of  products similar
+        to that key
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: searchkey
+        in: query
+        name: searchkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Search Products
+      tags:
+      - Products
+  /users/cart:
+    get:
+      description: user can view their cart details
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Cart
+      tags:
+      - User
+  /users/cart/remove:
+    delete:
+      description: user can remove products from their cart
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Remove from Cart
+      tags:
+      - User
+  /users/cart/updateQuantity/minus:
+    post:
+      consumes:
+      - application/json
+      description: user can subtract 1 quantity of product from their cart
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Subtract quantity in cart by one
+      tags:
+      - User
+  /users/cart/updateQuantity/plus:
+    post:
+      consumes:
+      - application/json
+      description: user can add 1 quantity of product to their cart
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add quantity in cart by one
+      tags:
+      - User
+  /users/check-out:
+    get:
+      description: Add products to carts  for the purchase
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Checkout section
+      tags:
+      - User
+  /users/check-out/order:
+    post:
+      consumes:
+      - application/json
+      description: user can order the items that currently in cart
+      parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        required: true
+        type: string
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Order Now
+      tags:
+      - User
+  /users/check-out/order/download-invoice:
+    get:
+      description: Download the invoice PDF file
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      security:
+      - Bearer: []
+      summary: Download Invoice PDF
+      tags:
+      - User
+  /users/home/add-to-cart:
+    post:
+      consumes:
+      - application/json
+      description: Add products to carts  for the purchase
+      parameters:
+      - description: inventory ID
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add To Cart
+      tags:
+      - User
+  /users/home/add-to-wishlist:
+    post:
+      consumes:
+      - application/json
+      description: Add products to Wishlsit  for the purchase
+      parameters:
+      - description: inventory ID
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add To Wishlist
+      tags:
+      - User
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: user can log in by giving their details
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Login
+      tags:
+      - User
+  /users/otplogin:
+    post:
+      consumes:
+      - application/json
+      description: OTP login send otp
+      parameters:
+      - description: otp-data
+        in: body
+        name: otp
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send OTP
+      tags:
+      - User
+  /users/profile/address:
+    get:
+      consumes:
+      - application/json
+      description: user can get all their addresses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Addresses
+      tags:
+      - User
+  /users/profile/address/add:
+    post:
+      consumes:
+      - application/json
+      description: user can add their addresses
+      parameters:
+      - description: address
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddAddress'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Address
+      tags:
+      - User
+  /users/profile/details:
+    get:
+      consumes:
+      - application/json
+      description: user can get all their details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get User Details
+      tags:
+      - User
+  /users/profile/edit:
+    patch:
+      consumes:
+      - application/json
+      description: user can change their Details
+      parameters:
+      - description: edit-user
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Edit User
+      tags:
+      - User
+  /users/profile/orders:
+    get:
+      consumes:
+      - application/json
+      description: user can view the details of the orders
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Orders
+      tags:
+      - User
+  /users/profile/orders/cancel:
+    post:
+      consumes:
+      - application/json
+      description: user can cancel the orders
+      parameters:
+      - description: order id
+        in: query
+        name: orderid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Order Cancel
+      tags:
+      - User
+  /users/profile/orders/return:
+    post:
+      consumes:
+      - application/json
+      description: user can return the ordered products which is already delivered
+        and then get the amount fot that particular purchase back in their wallet
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Return Order
+      tags:
+      - User
+  /users/profile/security/change-password:
+    patch:
+      consumes:
+      - application/json
+      description: user can change their password
+      parameters:
+      - description: changepassword
+        in: body
+        name: changepassword
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Change Password
+      tags:
+      - User
+  /users/profile/wallet:
+    get:
+      consumes:
+      - application/json
+      description: user can get wallet details and history
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Wallet
+      tags:
+      - User
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: user can signup by giving their details
+      parameters:
+      - description: signup
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Signup
+      tags:
+      - User
+  /users/verifyotp:
+    post:
+      consumes:
+      - application/json
+      description: OTP login verify otp
+      parameters:
+      - description: otp-verify
+        in: body
+        name: otp
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify OTP
+      tags:
+      - User
+  /users/wishlist:
+    get:
+      description: user can view their wishlist details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Wishlist
+      tags:
+      - User
+  /users/wishlist/remove:
+    delete:
+      description: user can remove products from their wishlist
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Remove from Wishlist
+      tags:
+      - User
 swagger: "2.0"
