@@ -14,7 +14,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-// Constructor function
+
 func NewServerHttp(categoryHandler *handlers.CategoryHandler,
 	inventoryHandler *handlers.InventoryHandler,
 	userHandler *handlers.UserHandler,
