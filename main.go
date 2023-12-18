@@ -3,8 +3,9 @@ package main
 import (
 	"log"
 
+	di "github.com/Anandhu4456/go-Ecommerce/pkg/di"
+
 	"github.com/Anandhu4456/go-Ecommerce/pkg/config"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/di"
 )
 
 func main() {

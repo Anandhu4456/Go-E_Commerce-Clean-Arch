@@ -17,7 +17,7 @@ type cartUsecase struct {
 
 // Constructor funciton
 
-func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) *cartUsecase {
+func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) services.CartUsecase {
 	return &cartUsecase{
 		cartRepo:       cartRepo,
 		invRepo:        invRepo,
