@@ -221,8 +221,6 @@ github.com/golang-jwt/jwt
 # github.com/golang/mock v1.6.0
 ## explicit; go 1.11
 github.com/golang/mock/gomock
-# github.com/google/subcommands v1.0.1
-## explicit
 # github.com/google/wire v0.5.0
 ## explicit; go 1.12
 github.com/google/wire
@@ -535,8 +533,6 @@ golang.org/x/exp/slog/internal/buffer
 # golang.org/x/image v0.14.0
 ## explicit; go 1.18
 golang.org/x/image/tiff/lzw
-# golang.org/x/mod v0.12.0
-## explicit; go 1.17
 # golang.org/x/net v0.17.0
 ## explicit; go 1.17
 golang.org/x/net/html
