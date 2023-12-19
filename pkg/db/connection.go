@@ -10,7 +10,7 @@ import (
 )
 
 func ConnectDB(cfg config.Config) (*gorm.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s user=%s dbpassword=%s dbport=%s dbname=%s", cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBPort, cfg.DBName)
+	psqlInfo := fmt.Sprintf("host=%s user=%s password=%s port=%s dbname=%s", cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBPort, cfg.DBName)
 
 	db, dbErr := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
 		SkipDefaultTransaction: true,
