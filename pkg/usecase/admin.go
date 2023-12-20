@@ -28,13 +28,17 @@ func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (models.Adm
 	if err != nil {
 		return models.AdminToken{}, errors.New("admin not found")
 	}
-	// Compare password from database that provided by admin
-
-	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
-	if err != nil {
-		return models.AdminToken{}, errors.New("password doesn't match")
+	
+	hash,err:=helper.PasswordHashing(adminDetails.Password)
+	if err!=nil{
+		return models.AdminToken{},err
 	}
-
+	// Compare password from database that provided by admin
+	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(adminDetails.Password))
+	if err != nil {
+		return models.AdminToken{}, err
+	}
+	
 	token, err := helper.GenerateAdminToken(adminCompareDetails)
 	if err != nil {
 		return models.AdminToken{}, err
