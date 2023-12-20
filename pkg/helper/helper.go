@@ -45,12 +45,15 @@ func GetUserId(c *gin.Context) (int, error) {
 
 func GenerateAdminToken(admin domain.Admin) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":admin.ID,
 		"admin": admin.Username,
+		"email":admin.Email,
+
 		"role":  "admin",
 	})
-	tokenString, err := token.SignedString(viper.GetString("KEY"))
-	if err == nil {
-		fmt.Println("token created")
+	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
+	if err != nil {
+		return "",err
 	}
 	return tokenString, nil
 }
