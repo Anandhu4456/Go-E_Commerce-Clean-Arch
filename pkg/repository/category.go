@@ -98,7 +98,7 @@ func (cat *categoryRepository) GetCategories(page, limit int) ([]domain.Category
 	}
 	offset:=(page-1)*limit
 	var categories []domain.Category
-	err:=cat.DB.Raw("SELECT id,category FROM categories limit ? offset ?",limit,offset).Scan(&categories).Error
+	err:=cat.DB.Raw("SELECT id,category FROM categories LIMIT ? OFFSET ?",limit,offset).Scan(&categories).Error
 	if err!=nil{
 		return []domain.Category{},err
 	}

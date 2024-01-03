@@ -162,7 +162,7 @@ func (invH *InventoryHandler) DeleteImage(c *gin.Context) {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"	
+// @Param			id	query	string	true	"id"
 // @Param			updateinventory	body	models.UpdateInventory	true	"Update Inventory"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -200,7 +200,7 @@ func (invH *InventoryHandler) UpdateInventory(c *gin.Context) {
 // @Tags			Admin
 // @Accept			multipart/form-data
 // @Produce		    json
-// @Param			id	query	string	true	"id"	
+// @Param			id	query	string	true	"id"
 // @Param           image      formData     file   true   "image"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -415,12 +415,15 @@ func (invH *InventoryHandler) GetCategoryProducts(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	catIdStr := c.Query("cat_id")
-	catId, err := strconv.Atoi(catIdStr)
+	// catIdStr := c.Query("category_id")
+	catId, err := strconv.Atoi(c.Query("category_id"))
+
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "category id is in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
+		
+		errRes := response.ClientResponse(http.StatusBadRequest,"category id is in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest,errRes)
 		return
+		
 	}
 	result, err := invH.inventoryUsecase.GetCategoryProducts(catId, page, limit)
 	if err != nil {

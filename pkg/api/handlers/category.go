@@ -118,7 +118,7 @@ func (catH *CategoryHandler) Categories(c *gin.Context) {
 	limitStr := c.Query("limit")
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page limit number not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
