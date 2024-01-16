@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres10"
+      POSTGRES_PASSWORD: "newpass"
+      POSTGRES_DB: "ecommerce10"
+    networks:
+      - mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  yoursstore:
+    image: ecommerce
+    restart: on-failure
+    environment:
+      DB_HOST: "postgres"
+      DB_USER: "postgres10"
+      DB_PASSWORD: "newpass"
+      DB_PORT: "5432"
+      DB_NAME: "ecommerce10"
+    depends_on:
+      - postgres
+    networks:
+      - mydb
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
+
+networks:
+  mydb:
+    driver: bridge
