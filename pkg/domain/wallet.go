@@ -1,7 +1,5 @@
 package domain
 
-import "time"
-
 type Wallet struct {
 	ID     int     `json:"id" gorm:"unique;not null"`
 	UserID int     `json:"user_id"`
@@ -9,10 +7,10 @@ type Wallet struct {
 	Amount float64 `json:"amount" gorm:"default:0"`
 }
 
-type WalletHistory struct {
-	WalletID int       `json:"wallet_id"`
-	Wallet   Wallet    `json:"-" gorm:"foreignkey:WalletID"`
-	Amount   int       `json:"amount"`
-	Purpose  string    `json:"purpose"`
-	Time     time.Time `json:"time"`
-}
+// type WalletHistory struct {
+// 	WalletID int       `json:"wallet_id"`
+// 	Wallet   Wallet    `json:"-" gorm:"foreignkey:WalletID"`
+// 	Amount   int       `json:"amount"`
+// 	Purpose  string    `json:"purpose"`
+// 	Time     time.Time `json:"time"`
+// }

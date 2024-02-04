@@ -1,8 +1,9 @@
 package models
 
-import "github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+
 
 type GetCart struct {
+	Id            int     `json:"product_id"`
 	ProductName   string  `json:"product_name"`
 	CategoryId    int     `json:"category_id"`
 	Quantity      int     `json:"quantity"`
@@ -10,14 +11,9 @@ type GetCart struct {
 	DiscoundPrice float64 `json:"discount_price"`
 }
 
-type CheckOut struct {
-	Addresses []domain.Address
-	Products []GetCart
-	PaymentMethods []domain.PaymentMethod
-	TotalPrice float64
-}
 
-type Order struct{
+
+type Order struct {
 	AddressId int `json:"address_id"`
 	PaymentId int `json:"payment_id"`
 }

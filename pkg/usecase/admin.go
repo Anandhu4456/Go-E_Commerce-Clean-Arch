@@ -3,10 +3,12 @@ package usecase
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
+	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,31 +23,38 @@ func NewAdminUsecase(adRepo interfaces.AdminRepository) services.AdminUsecase {
 	}
 }
 
-func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (models.AdminToken, error) {
+func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.AdminToken, error) {
 	// Getting details of the admin based on the email provided
 
 	adminCompareDetails, err := au.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
-		return models.AdminToken{}, errors.New("admin not found")
+		return domain.AdminToken{}, errors.New("admin not found")
 	}
-	
-	hash,err:=helper.PasswordHashing(adminDetails.Password)
-	if err!=nil{
-		return models.AdminToken{},err
+
+	hash, err := helper.PasswordHashing(adminDetails.Password)
+	if err != nil {
+		return domain.AdminToken{}, err
 	}
 	// Compare password from database that provided by admin
 	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(adminDetails.Password))
 	if err != nil {
-		return models.AdminToken{}, err
+		return domain.AdminToken{}, err
 	}
-	
-	token, err := helper.GenerateAdminToken(adminCompareDetails)
+
+	var adminDetailsResponse models.AdminDetailsResponse
+	err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
 	if err != nil {
-		return models.AdminToken{}, err
+		return domain.AdminToken{}, err
 	}
-	return models.AdminToken{
-		Username: adminCompareDetails.Username,
-		Token:    token,
+
+	token, refresh, err := helper.GenerateAdminToken(adminDetailsResponse)
+	if err != nil {
+		return domain.AdminToken{}, err
+	}
+	return domain.AdminToken{
+		Admin:        adminDetailsResponse,
+		Token:        token,
+		RefreshToken: refresh,
 	}, nil
 }
 

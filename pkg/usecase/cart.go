@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -87,7 +88,7 @@ func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error){
 	}
 
 	var checkOut models.CheckOut
-	checkOut.Addresses = address
+	checkOut.Addresses = 
 	checkOut.Products = products
 	checkOut.PaymentMethods = paymentMethod
 	checkOut.TotalPrice = price

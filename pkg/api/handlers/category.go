@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
+	// "strconv"
 
+	
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
@@ -33,7 +34,13 @@ func NewCategoryHandler(categoryUsecase services.CategoryUsecase) *CategoryHandl
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/category/add [post]
 func (catH *CategoryHandler) AddCategory(c *gin.Context) {
-	cat := c.Query("category")
+	// cat := c.Query("category")
+	var cat string
+	if err:=c.BindJSON(&cat);err!=nil{
+		errRes:=response.ClientResponse(http.StatusBadRequest,"fileds provided are in wrong format",nil,err.Error())
+		c.JSON(http.StatusBadRequest,errRes)
+		return
+	}
 	categoryRes, err := catH.CategoryUsecase.AddCategory(cat)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "Couldn't add category", nil, err.Error())
@@ -108,22 +115,22 @@ func (catH *CategoryHandler) DeleteCategory(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/category [get]
 func (catH *CategoryHandler) Categories(c *gin.Context) {
-	pageStr := c.Query("page")
-	page, err := strconv.Atoi(pageStr)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-	limitStr := c.Query("limit")
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "page limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
+	// pageStr := c.Query("page")
+	// page, err := strconv.Atoi(pageStr)
+	// if err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
+	// limitStr := c.Query("limit")
+	// limit, err := strconv.Atoi(limitStr)
+	// if err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "page limit number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
 
-	categories, err := catH.CategoryUsecase.GetCategories(page, limit)
+	categories, err := catH.CategoryUsecase.GetCategories()
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

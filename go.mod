@@ -10,6 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/wire v0.5.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/razorpay/razorpay-go v1.2.0
 	github.com/spf13/viper v1.17.0

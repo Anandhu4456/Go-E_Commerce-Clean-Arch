@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"time"
+
+)
 
 type AdminLogin struct {
 	Email    string `json:"email,omitempty" validate:"required"`
@@ -11,11 +14,6 @@ type AdminDetailsResponse struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
-}
-
-type AdminToken struct {
-	Username string
-	Token    string
 }
 
 type UserDetailsAtAdmin struct {

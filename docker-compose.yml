@@ -13,7 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   yoursstore:
-    image: ecommerce
+    image: project01
     restart: on-failure
     environment:
       DB_HOST: "postgres"

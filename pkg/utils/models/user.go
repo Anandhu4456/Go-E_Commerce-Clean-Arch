@@ -11,7 +11,7 @@ type UserToken struct {
 }
 
 type UserResponse struct {
-	Id       uint   `json:"id"`
+	Id       int   `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email" validate:"email"`
@@ -29,6 +29,17 @@ type UserDetails struct {
 	ConfirmPassword string `json:"confirm_password"`
 }
 
+type Address struct {
+	Id        uint   `json:"id" gorm:"unique;not null"`
+	UserID    uint   `json:"user_id"`
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string `json:"street" validate:"required"`
+	City      string `json:"city" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Pin       string `json:"pin" validate:"required"`
+}
+
 type AddAddress struct {
 	Name      string `json:"name" validate:"required"`
 	HouseName string `json:"house_name" validate:"required"`
@@ -44,6 +55,12 @@ type ChangePassword struct {
 	RePassword  string `json:"re_password"`
 }
 
+type CheckOut struct {
+	Addresses      []Address
+	Products       []GetCart
+	PaymentMethods []PaymentMethod
+	TotalPrice     float64
+}
 type EditUser struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
