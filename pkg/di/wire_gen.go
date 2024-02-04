@@ -30,7 +30,7 @@ func InitializeAPI(cfg config.Config) (*api.ServerHTTP, error) {
 	inventoryHandler := handlers.NewInventoryHandler(inventoryUsecase)
 	userRepository := repository.NewUserRepository(gormDB)
 	offerRepository := repository.NewOfferRepository(gormDB)
-	walletRepository := repository.NewWalletRepository(gormDB)
+	// walletRepository := repository.NewWalletRepository(gormDB)
 	userUsecase := usecase.NewUserUsecase(userRepository, offerRepository, walletRepository)
 	userHandler := handlers.NewUserHandler(userUsecase)
 	otpRepository := repository.NewOtpRepository(gormDB)

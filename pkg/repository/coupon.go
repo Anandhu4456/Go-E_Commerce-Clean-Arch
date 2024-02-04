@@ -21,7 +21,7 @@ func NewCouponRepository(DB *gorm.DB) interfaces.CouponRepository {
 }
 
 func (couprep *couponRepository) AddCoupon(coupon domain.Coupon) error {
-	err := couprep.DB.Exec("INSERT INTO coupons(name,discount_rate,valid)VALUES ($1,$2,$3)", coupon.Name, coupon.DiscountRate, coupon.Valid).Error
+	err := couprep.DB.Exec("INSERT INTO coupons(name,discount_rate,valid)VALUES ($1,$2,$3)",  coupon.DiscountRate, coupon.Valid).Error
 	if err != nil {
 		return err
 	}
