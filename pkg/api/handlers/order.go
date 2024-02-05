@@ -80,13 +80,6 @@ func (orH *OrderHandler) GetOrders(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/check-out/order [post]
 func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	coupon := c.Query("coupon")
 
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
@@ -94,7 +87,7 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	orderItemsString, err := orH.orderUsecase.OrderItemsFromCart(userId, order, coupon)
+	orderItemsString, err := orH.orderUsecase.OrderItemsFromCart(order.UserID, order.AddressID, order.PaymentMethodID, order.CouponID)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
