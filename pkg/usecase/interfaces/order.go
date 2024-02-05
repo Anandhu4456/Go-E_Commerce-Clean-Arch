@@ -11,7 +11,7 @@ type OrderUsecase interface {
 	CancelOrder(id, orderid int) error
 	EditOrderStatus(status string, id int) error
 	MarkAsPaid(orderID int) error
-	AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error)
+	AdminOrders() (domain.AdminOrderResponse, error)
 	DailyOrders() (domain.SalesReport, error)
 	WeeklyOrders() (domain.SalesReport, error)
 	MonthlyOrders() (domain.SalesReport, error)

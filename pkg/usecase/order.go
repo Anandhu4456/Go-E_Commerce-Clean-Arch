@@ -84,16 +84,9 @@ func (orU *orderUsecase) MarkAsPaid(orderID int) error {
 	return nil
 }
 
-func (orU *orderUsecase) AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error) {
+func (orU *orderUsecase) AdminOrders(page, limit int, status string) (domain.AdminOrderResponse, error) {
 
-	if status != "PENDING" && status != "SHIPPED" && status != "CANCELLED" && status != "RETURNED" && status != "DELIVERED" {
-		return []domain.OrderDetails{}, errors.New("invalid order status")
-	}
-	orders, err := orU.orderRepo.AdminOrders(page, limit, status)
-	if err != nil {
-		return []domain.OrderDetails{}, err
-	}
-	return orders, nil
+
 }
 
 func (orU *orderUsecase) DailyOrders() (domain.SalesReport, error) {
@@ -352,33 +345,6 @@ func (orU *orderUsecase) CancelOrder(id, orderid int) error {
 	if err != nil {
 		return err
 	}
-	// find the user
 
-	userId, err := orU.orderRepo.FindUserIdFromOrderID(id)
-	fmt.Println(userId)
-	if err != nil {
-		return err
-	}
-	// find if the user having a wallet
-	walletId, err := orU.walletRepo.FindWalletIdFromUserId(userId)
-	fmt.Println(walletId)
-	if err != nil {
-		return err
-	}
-	// if no wallet,create new wallet for user
-
-	if walletId == 0 {
-		walletId, err = orU.walletRepo.CreateNewWallet(userId)
-		if err != nil {
-			return err
-		}
-	}
-	// credit the amount into user wallet
-	if err := orU.walletRepo.CreditToUserWallet(amount, walletId); err != nil {
-		return err
-	}
-	if err := orU.walletRepo.AddHistory(int(amount), walletId, "CANCELLATION REFUND"); err != nil {
-		return err
-	}
 	return nil
 }

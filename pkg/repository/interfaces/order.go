@@ -18,7 +18,7 @@ type OrderRepository interface{
 	CancelOrder(orderid int) error
 	EditOrderStatus(status string, id int) error
 	MarkAsPaid(orderID int) error
-	AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error)
+	AdminOrders(status string) ([]domain.OrderDetails, error)
 
 	CheckOrder(orderID string, userID int) error
 	GetOrderDetail(orderID string) (domain.Order, error)
