@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/razorpay/razorpay-go"
@@ -44,10 +43,10 @@ func (payU *paymentUsecase) RemovePaymentMethod(paymentMethodID int) error {
 	return nil
 }
 
-func (payU *paymentUsecase) GetPaymentMethods() ([]domain.PaymentMethod, error) {
+func (payU *paymentUsecase) GetPaymentMethods() ([]models.PaymentMethod, error) {
 	paymentMethods, err := payU.paymentRepo.GetPaymentMethods()
 	if err != nil {
-		return []domain.PaymentMethod{}, err
+		return []models.PaymentMethod{}, err
 	}
 	return paymentMethods, nil
 }

@@ -87,14 +87,13 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	orderItemsString, err := orH.orderUsecase.OrderItemsFromCart(order.UserID, order.AddressID, order.PaymentMethodID, order.CouponID)
-	if err != nil {
+	if err := orH.orderUsecase.OrderItemsFromCart(order.UserID, order.AddressID, order.PaymentMethodID, order.CouponID); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully ordered", orderItemsString, nil)
+	successRes := response.ClientResponse(http.StatusOK, "successfully ordered", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 

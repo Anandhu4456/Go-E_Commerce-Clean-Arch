@@ -19,7 +19,7 @@ type orderUsecase struct {
 	couponRepo interfaces.CouponRepository
 }
 
-func NewOrderUsecase(orderRepo interfaces.OrderRepository, userUsecase services.UserUsecase /*walletRepo interfaces.WalletRepository*/, couponRepo interfaces.CouponRepository) *orderUsecase {
+func NewOrderUsecase(orderRepo interfaces.OrderRepository, userUsecase services.UserUsecase /*walletRepo interfaces.WalletRepository*/, couponRepo interfaces.CouponRepository) services.OrderUsecase {
 	return &orderUsecase{
 		orderRepo:   orderRepo,
 		userUsecase: userUsecase,

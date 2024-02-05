@@ -9,7 +9,7 @@ import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
-type cartUsecase struct {
+type CartUsecase struct {
 	cartRepo       interfaces.CartRepository
 	invRepo        interfaces.InventoryRespository
 	userUsecase    services.UserUsecase
@@ -18,8 +18,8 @@ type cartUsecase struct {
 
 // Constructor funciton
 
-func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) services.CartUsecase {
-	return &cartUsecase{
+func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) *CartUsecase {
+	return &CartUsecase{
 		cartRepo:       cartRepo,
 		invRepo:        invRepo,
 		userUsecase:    userUsecase,
@@ -27,7 +27,7 @@ func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.Inven
 	}
 }
 
-func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
+func (cu *CartUsecase) AddToCart(user_id, inventory_id int) error {
 
 	// check the product has quantity available
 	stock, err := cu.invRepo.CheckStock(inventory_id)
@@ -66,7 +66,7 @@ func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
 	return nil
 }
 
-func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error) {
+func (cu *CartUsecase) CheckOut(id int) (models.CheckOut, error) {
 
 	// Getting address
 	address, err := cu.cartRepo.GetAddresses(id)

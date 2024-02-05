@@ -6,22 +6,20 @@ import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
-	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userUsecase struct {
-	userRepo   interfaces.UserRepository
-	offerRepo  interfaces.OfferRepository
+	userRepo  interfaces.UserRepository
+	offerRepo interfaces.OfferRepository
 	// walletRepo interfaces.WalletRepository
 }
 
-
-func NewUserUsecase(userRepo interfaces.UserRepository, offerRepo interfaces.OfferRepository, /*walletRepo interfaces.WalletRepository*/) services.UserUsecase {
+func NewUserUsecase(userRepo interfaces.UserRepository, offerRepo interfaces.OfferRepository /*walletRepo interfaces.WalletRepository*/) *userUsecase {
 	return &userUsecase{
-		userRepo:   userRepo,
-		offerRepo:  offerRepo,
+		userRepo:  userRepo,
+		offerRepo: offerRepo,
 		// walletRepo: walletRepo,
 	}
 }
@@ -180,16 +178,16 @@ func (usrU *userUsecase) EditUser(id int, userData models.EditUser) error {
 	}
 	return nil
 }
-func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) {
+func (usrU *userUsecase) GetCart(id int) (models.GetCartResponse, error) {
 	// Find cart id
 	cartId, err := usrU.GetCartID(id)
 	if err != nil {
-		return []models.GetCart{}, errors.New("couldn't find cart id")
+		return models.GetCartResponse{}, errors.New("couldn't find cart id")
 	}
 	// Find products inside cart
-	products, err := usrU.userRepo.GetProductsInCart(cartId, page, limit)
+	products, err := usrU.userRepo.GetProductsInCart(cartId)
 	if err != nil {
-		return []models.GetCart{}, errors.New("couldn't find products in cart")
+		return models.GetCartResponse{}, errors.New("couldn't find products in cart")
 	}
 	// Find products name
 
@@ -199,7 +197,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 		prdName, err := usrU.userRepo.FindProductNames(products[i])
 
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productsName = append(productsName, prdName)
 	}
@@ -209,7 +207,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for q := range products {
 		prdQ, err := usrU.userRepo.FindCartQuantity(cartId, products[q])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productQuantity = append(productQuantity, prdQ)
 	}
@@ -219,7 +217,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for p := range products {
 		prdP, err := usrU.userRepo.FindPrice(products[p])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productPrice = append(productPrice, prdP)
 	}
@@ -229,7 +227,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for c := range products {
 		prdC, err := usrU.userRepo.FindCategory(products[c])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productCategory = append(productCategory, prdC)
 	}
@@ -251,16 +249,22 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for i := range productCategory {
 		c, err := usrU.offerRepo.FindDiscountPercentage(productCategory[i])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		offers = append(offers, c)
 	}
 	// Find Discount price
 	for i := range getCart {
-		getCart[i].DiscoundPrice = (getCart[i].Total) - (getCart[i].Total * float64(offers[i]) / 100)
+		getCart[i].DiscountPrice = (getCart[i].Total) - (getCart[i].Total * float64(offers[i]) / 100)
 	}
-	return getCart, nil
+	var response models.GetCartResponse
+	response.Id = cartId
+	response.Values = getCart
+
+	return response, nil
+
 }
+
 func (usrU *userUsecase) RemoveFromCart(id int, inventoryID int) error {
 	err := usrU.userRepo.RemoveFromCart(id, inventoryID)
 	if err != nil {

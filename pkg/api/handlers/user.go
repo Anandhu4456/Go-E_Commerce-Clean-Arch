@@ -33,27 +33,30 @@ func NewUserHandler(userUsecase services.UserUsecase) *UserHandler {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address/add [post]
 func (uH *UserHandler) AddAddress(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	var address models.AddAddress
-	if err := c.BindJSON(&address); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	if err := uH.userusecase.AddAddress(userId, address); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+    id, err := strconv.Atoi(c.Query("id"))
+    if err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
+    var address models.AddAddress
+    if err := c.BindJSON(&address); err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
-	c.JSON(http.StatusOK, successRes)
+    
+    if err := uH.userusecase.AddAddress(id, address); err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
+
+    successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
+    c.JSON(http.StatusOK, successRes)
 }
+
 
 // @Summary		Change Password
 // @Description	user can change their password
@@ -390,7 +393,6 @@ func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully subtracted quantity", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
-
 
 // func (uH *UserHandler) GetWallet(c *gin.Context) {
 // 	userId, err := helper.GetUserId(c)

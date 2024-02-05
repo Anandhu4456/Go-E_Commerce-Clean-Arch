@@ -60,6 +60,16 @@ func (orr *orderRepository) GetProductsQuantity() ([]domain.ProductReport, error
 	return getProductQuantity, nil
 }
 
+func (orr *orderRepository) CreditToUserWallet(amount float64, walletId int) error {
+
+	if err := orr.DB.Exec("update wallets set amount=$1 where id=$2", amount, walletId).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
 func (orr *orderRepository) GetCart(userid int) (models.GetCart, error) {
 
 	var cart models.GetCart
@@ -100,6 +110,21 @@ func (orr *orderRepository) OrderItems(userid int, addressid int, paymentid int,
 	return id, nil
 }
 
+func (orr *orderRepository) CreateNewWallet(userID int) (int, error) {
+
+	var walletID int
+	err := orr.DB.Exec("Insert into wallets(user_id,amount) values($1,$2)", userID, 0).Error
+	if err != nil {
+		return 0, err
+	}
+
+	if err := orr.DB.Raw("select id from wallets where user_id=$1", userID).Scan(&walletID).Error; err != nil {
+		return 0, err
+	}
+
+	return walletID, nil
+}
+
 func (orr *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) error {
 	query := `
 	
@@ -122,6 +147,26 @@ func (orr *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart
 
 	}
 	return nil
+}
+
+func (orr *orderRepository) FindWalletIdFromUserID(userId int) (int, error) {
+
+	var count int
+	err := orr.DB.Raw("select count(*) from wallets where user_id = ?", userId).Scan(&count).Error
+	if err != nil {
+		return 0, err
+	}
+
+	var walletID int
+	if count > 0 {
+		err := orr.DB.Raw("select id from wallets where user_id = ?", userId).Scan(&walletID).Error
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return walletID, nil
+
 }
 
 func (orr *orderRepository) CancelOrder(orderid int) error {

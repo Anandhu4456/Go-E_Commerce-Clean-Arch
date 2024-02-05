@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -36,18 +35,17 @@ func (couprep *couponRepository) MakeCouponInvalid(id int) error {
 	return nil
 }
 
-func (couprep *couponRepository) FindCouponDiscount(coupon string) int {
-	var discountRate int
+func (couprep *couponRepository) FindCouponDetails(couponId int) (domain.Coupon, error) {
+	var coupon domain.Coupon
 
-	err := couprep.DB.Raw("SELECT discount_rate FROM coupons WHERE name=?", coupon).Scan(&discountRate).Error
+	err := couprep.DB.Raw("SELECT * FROM coupon WHERE id =? ", couponId).Scan(&coupon).Error
 	if err != nil {
-		return 0
+		return domain.Coupon{}, err
 	}
-	fmt.Println("discount rate: ", discountRate)
-	return discountRate
+	return coupon, nil
 }
 
-func (couprep *couponRepository) GetCoupons(page, limit int) ([]domain.Coupon, error) {
+func (couprep *couponRepository) GetCoupons() ([]domain.Coupon, error) {
 	var coupon []domain.Coupon
 	err := couprep.DB.Raw("SELECT * FROM coupons").Scan(&coupon).Error
 	if err != nil {

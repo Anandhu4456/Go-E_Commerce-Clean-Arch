@@ -5,6 +5,7 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	services"github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
@@ -14,7 +15,7 @@ type couponUsecase struct {
 
 // constructor function
 
-func NewCouponUsecase(couponRepo interfaces.CouponRepository) *couponUsecase {
+func NewCouponUsecase(couponRepo interfaces.CouponRepository) services.CouponUsecase {
 	return &couponUsecase{
 		couponRepo: couponRepo,
 	}

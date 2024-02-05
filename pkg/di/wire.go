@@ -39,8 +39,6 @@ func InitializeAPI(cfg config.Config) (*api.ServerHTTP, error) {
 		usecase.NewOfferUsecase,
 		handlers.NewOfferHandler,
 
-		repository.NewWalletRepository,
-
 		repository.NewOtpRepository,
 		usecase.NewOtpUsecase,
 		handlers.NewOtpHandler,
