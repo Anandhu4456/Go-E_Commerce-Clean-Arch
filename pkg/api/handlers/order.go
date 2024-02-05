@@ -201,20 +201,8 @@ func (orH *OrderHandler) MarkAsPaid(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/orders [get]
 func (orH *OrderHandler) AdminOrders(c *gin.Context) {
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limit, err := strconv.Atoi(c.Query("limit"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	status := c.Query("status")
-	orders, err := orH.orderUsecase.AdminOrders(page, limit, status)
+
+	orders, err := orH.orderUsecase.AdminOrders()
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
