@@ -47,10 +47,10 @@ func UserRoutes(engine *gin.RouterGroup,
 			{
 				security.PATCH("/change-password", userHandler.ChangePassword)
 			}
-			wallet := profile.Group("/wallet")
-			{
-				wallet.GET("", userHandler.GetWallet)
-			}
+			// wallet := profile.Group("/wallet")
+			// {
+			// 	wallet.GET("", userHandler.GetWallet)
+			// }
 			orders := profile.Group("/orders")
 			{
 				orders.GET("", orderHandler.GetOrders)

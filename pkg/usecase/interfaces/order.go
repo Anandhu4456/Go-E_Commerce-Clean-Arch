@@ -7,7 +7,7 @@ import (
 
 type OrderUsecase interface {
 	GetOrders(id, page, limit int) ([]domain.Order, error)
-	OrderItemsFromCart(userid int, order models.Order, coupon string) (string, error)
+	OrderItemsFromCart(userid int, addressid int, paymentid int, couponid int) (string, error)
 	CancelOrder(id, orderid int) error
 	EditOrderStatus(status string, id int) error
 	MarkAsPaid(orderID int) error

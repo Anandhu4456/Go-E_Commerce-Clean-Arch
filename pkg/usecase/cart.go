@@ -3,7 +3,7 @@ package usecase
 import (
 	"errors"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	// "github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -66,32 +66,35 @@ func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
 	return nil
 }
 
-func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error){
+func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error) {
 
 	// Getting address
-	address,err:=cu.cartRepo.GetAddresses(id)
-	if err!=nil{
-		return models.CheckOut{},errors.New("address not found")
+	address, err := cu.cartRepo.GetAddresses(id)
+	if err != nil {
+		return models.CheckOut{}, errors.New("address not found")
 	}
-	products,err:=cu.userUsecase.GetCart(id,0,0)
-	if err!=nil{
-		return models.CheckOut{},err
+	products, err := cu.userUsecase.GetCart(id)
+	if err != nil {
+		return models.CheckOut{}, err
 	}
-	paymentMethod,err:=cu.paymentUsecase.GetPaymentMethods()
-	if err!=nil{
-		return models.CheckOut{},err
+	paymentMethod, err := cu.paymentUsecase.GetPaymentMethods()
+	if err != nil {
+		return models.CheckOut{}, err
 	}
-	var price float64
+	var price, discount float64
 
-	for _,items:=range products{
-		price = price+items.DiscoundPrice
+	for _, v := range products.Values {
+		discount += v.DiscountPrice
+		price += v.Total
 	}
 
 	var checkOut models.CheckOut
-	checkOut.Addresses = 
-	checkOut.Products = products
+	checkOut.CartId = products.Id
+	checkOut.Addresses = address
+	checkOut.Products = products.Values
 	checkOut.PaymentMethods = paymentMethod
 	checkOut.TotalPrice = price
+	checkOut.DiscountPrice = discount
 
-	return checkOut,nil
+	return checkOut, nil
 }

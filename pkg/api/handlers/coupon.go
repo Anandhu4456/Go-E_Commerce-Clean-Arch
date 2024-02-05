@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +32,7 @@ func NewCouponHandler(couponUsecase services.CouponUsecase) *CouponHandler {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/coupons/create [post]
 func (coupH *CouponHandler) CreateNewCoupon(c *gin.Context) {
-	var coupon domain.Coupon
+	var coupon models.Coupon
 
 	if err := c.BindJSON(&coupon); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
@@ -87,21 +87,8 @@ func (coupH *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/coupons [get]
 func (coupH *CouponHandler) Coupons(c *gin.Context) {
-	pageStr := c.Query("page")
-	page, err := strconv.Atoi(pageStr)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limitStr := c.Query("limit")
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	coupons, err := coupH.couponUsecase.GetCoupons(page, limit)
+
+	coupons, err := coupH.couponUsecase.GetCoupons()
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get coupons", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)

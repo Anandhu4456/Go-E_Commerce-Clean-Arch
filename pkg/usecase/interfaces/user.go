@@ -16,11 +16,11 @@ type UserUsecase interface {
 	EditUser(id int, userData models.EditUser) error
 
 	GetCartID(userID int) (int, error)
-	GetCart(id, page, limit int) ([]models.GetCart, error)
+	GetCart(id int) (models.GetCartResponse, error)
 	RemoveFromCart(id int, inventoryID int) error
 	ClearCart(cartID int) error
 	UpdateQuantityAdd(id, inv_id int) error
 	UpdateQuantityLess(id, inv_id int) error
 
-	GetWallet(id, page, limit int) (models.Wallet, error)
+	// GetWallet(id, page, limit int) (models.Wallet, error)
 }

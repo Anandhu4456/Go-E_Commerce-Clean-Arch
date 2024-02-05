@@ -28,3 +28,8 @@ type CustomDates struct {
 	StartingDate time.Time `json:"starting_date"`
 	EndDate      time.Time `json:"end_date"`
 }
+type Coupon struct {
+	Coupon       string `json:"coupon" gorm:"unique;not null"`
+	DiscountRate int    `json:"discount_rate" gorm:"not null"`
+	Valid        bool   `json:"valid" gorm:"default:true"`
+}

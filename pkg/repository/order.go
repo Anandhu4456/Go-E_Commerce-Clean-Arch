@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
@@ -15,7 +14,7 @@ type orderRepository struct {
 }
 
 // constructor function
-func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
+func NewOrderRepository(DB *gorm.DB) *orderRepository {
 	return &orderRepository{
 		DB: DB,
 	}
@@ -82,19 +81,19 @@ func (orr *orderRepository) GetProductNameFromId(id int) (string, error) {
 	return productName, nil
 }
 
-func (orr *orderRepository) OrderItems(userid int, order models.Order, total float64) (int, error) {
+func (orr *orderRepository) OrderItems(userid int, addressid int, paymentid int, total float64, coupon string) (int, error) {
 
 	var id int
 
 	query := `
 	
 	INSERT INTO orders
-		(user_id,address_id,price,payment_method_id,ordered_at)
+		(user_id,address_id,price,payment_method_id,total,coupon_used)
 	VALUES
 		(?,?,?,?,?)
 	RETURNING id
 	`
-	err := orr.DB.Raw(query, userid, order.AddressId, total, order.PaymentId, time.Now()).Scan(&id).Error
+	err := orr.DB.Raw(query, userid, addressid, paymentid, total, coupon).Scan(&id).Error
 	if err != nil {
 		return 0, err
 	}

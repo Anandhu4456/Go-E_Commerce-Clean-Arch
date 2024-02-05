@@ -5,7 +5,7 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
-	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
 type couponUsecase struct {
@@ -14,13 +14,13 @@ type couponUsecase struct {
 
 // constructor function
 
-func NewCouponUsecase(couponRepo interfaces.CouponRepository) services.CouponUsecase {
+func NewCouponUsecase(couponRepo interfaces.CouponRepository) *couponUsecase {
 	return &couponUsecase{
 		couponRepo: couponRepo,
 	}
 }
 
-func (coupU *couponUsecase) Addcoupon(coupon domain.Coupon) error {
+func (coupU *couponUsecase) Addcoupon(coupon models.Coupon) error {
 	if err := coupU.couponRepo.AddCoupon(coupon); err != nil {
 		return errors.New("coupon adding failed")
 	}
@@ -34,8 +34,8 @@ func (coupU *couponUsecase) MakeCouponInvalid(id int) error {
 	return nil
 }
 
-func (coupU *couponUsecase) GetCoupons(page, limit int) ([]domain.Coupon, error) {
-	coupons, err := coupU.couponRepo.GetCoupons(page, limit)
+func (coupU *couponUsecase) GetCoupons() ([]domain.Coupon, error) {
+	coupons, err := coupU.couponRepo.GetCoupons()
 	if err != nil {
 		return []domain.Coupon{}, err
 	}

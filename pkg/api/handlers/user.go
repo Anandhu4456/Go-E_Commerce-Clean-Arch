@@ -166,19 +166,19 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limit, err := strconv.Atoi(c.Query("limit"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	products, err := uH.userusecase.GetCart(userId, page, limit)
+	// page, err := strconv.Atoi(c.Query("page"))
+	// if err != nil {
+	// 	errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errRes)
+	// 	return
+	// }
+	// limit, err := strconv.Atoi(c.Query("limit"))
+	// if err != nil {
+	// 	errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errRes)
+	// 	return
+	// }
+	products, err := uH.userusecase.GetCart(userId)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't retrieve cart products", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -391,42 +391,33 @@ func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// @Summary		Get Wallet
-// @Description	user can get wallet details and history
-// @Tags			User
-// @Accept			json
-// @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"// @Security		Bearer
-// @Success		200	{object}	response.Response{}
-// @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/wallet [get]
-func (uH *UserHandler) GetWallet(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limit, err := strconv.Atoi(c.Query("limit"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	wallet, err := uH.userusecase.GetWallet(userId, page, limit)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get wallet", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully get wallet", wallet, nil)
-	c.JSON(http.StatusOK, successRes)
-}
+// func (uH *UserHandler) GetWallet(c *gin.Context) {
+// 	userId, err := helper.GetUserId(c)
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	page, err := strconv.Atoi(c.Query("page"))
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	limit, err := strconv.Atoi(c.Query("limit"))
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	wallet, err := uH.userusecase.GetWallet(userId, page, limit)
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get wallet", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+
+// 	successRes := response.ClientResponse(http.StatusOK, "successfully get wallet", wallet, nil)
+// 	c.JSON(http.StatusOK, successRes)
+// }

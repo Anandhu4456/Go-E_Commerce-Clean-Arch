@@ -11,7 +11,7 @@ type UserToken struct {
 }
 
 type UserResponse struct {
-	Id       int   `json:"id"`
+	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email" validate:"email"`
@@ -55,11 +55,27 @@ type ChangePassword struct {
 	RePassword  string `json:"re_password"`
 }
 
+type GetCart struct {
+	Id            int     `json:"product_id"`
+	ProductName   string  `json:"product_name"`
+	CategoryId    int     `json:"category_id"`
+	Quantity      int     `json:"quantity"`
+	Total         float64 `json:"total"`
+	DiscountPrice float64 `json:"discount_price"`
+}
+
+type GetCartResponse struct {
+	Id     int
+	Values []GetCart
+}
+
 type CheckOut struct {
+	CartId         int
 	Addresses      []Address
 	Products       []GetCart
 	PaymentMethods []PaymentMethod
 	TotalPrice     float64
+	DiscountPrice  float64
 }
 type EditUser struct {
 	Name     string `json:"name"`
