@@ -1,14 +1,5 @@
 definitions:
   domain.Coupon:
-    properties:
-      discount_rate:
-        type: integer
-      id:
-        type: integer
-      name:
-        type: string
-      valid:
-        type: boolean
     type: object
   models.AddAddress:
     properties:
@@ -88,7 +79,11 @@ definitions:
     properties:
       address_id:
         type: integer
+      coupon_id:
+        type: integer
       payment_id:
+        type: integer
+      user_id:
         type: integer
     type: object
   models.SetNewName:
@@ -188,17 +183,6 @@ paths:
       consumes:
       - application/json
       description: Admin can view the list of  Categories
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1681,36 +1665,6 @@ paths:
       security:
       - Bearer: []
       summary: Change Password
-      tags:
-      - User
-  /users/profile/wallet:
-    get:
-      consumes:
-      - application/json
-      description: user can get wallet details and history
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Get Wallet
       tags:
       - User
   /users/signup:

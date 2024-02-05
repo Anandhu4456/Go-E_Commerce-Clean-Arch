@@ -73,22 +73,6 @@ const docTemplate = `{
                     "Admin"
                 ],
                 "summary": "List Categories",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2413,51 +2397,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/profile/wallet": {
-            "get": {
-                "description": "user can get wallet details and history",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get Wallet",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/users/signup": {
             "post": {
                 "description": "user can signup by giving their details",
@@ -2612,21 +2551,7 @@ const docTemplate = `{
     },
     "definitions": {
         "domain.Coupon": {
-            "type": "object",
-            "properties": {
-                "discount_rate": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "valid": {
-                    "type": "boolean"
-                }
-            }
+            "type": "object"
         },
         "models.AddAddress": {
             "type": "object",
@@ -2745,7 +2670,13 @@ const docTemplate = `{
                 "address_id": {
                     "type": "integer"
                 },
+                "coupon_id": {
+                    "type": "integer"
+                },
                 "payment_id": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }
