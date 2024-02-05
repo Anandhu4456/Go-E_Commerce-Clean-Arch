@@ -84,8 +84,37 @@ func (orU *orderUsecase) MarkAsPaid(orderID int) error {
 	return nil
 }
 
-func (orU *orderUsecase) AdminOrders(page, limit int, status string) (domain.AdminOrderResponse, error) {
+func (orU *orderUsecase) AdminOrders() (domain.AdminOrderResponse, error) {
+	var response domain.AdminOrderResponse
 
+	pending, err := orU.orderRepo.AdminOrders("PENDING")
+	if err != nil {
+		return domain.AdminOrderResponse{}, err
+	}
+	shipped, err := orU.orderRepo.AdminOrders("SHIPPED")
+	if err != nil {
+		return domain.AdminOrderResponse{}, err
+	}
+	delivered, err := orU.orderRepo.AdminOrders("DELIVERED")
+	if err != nil {
+		return domain.AdminOrderResponse{}, err
+	}
+	returned, err := orU.orderRepo.AdminOrders("RETURNED")
+	if err != nil {
+		return domain.AdminOrderResponse{}, err
+	}
+	canceled, err := orU.orderRepo.AdminOrders("CANCELED")
+	if err != nil {
+		return domain.AdminOrderResponse{}, err
+	}
+
+	response.Pending = pending
+	response.Shipped = shipped
+	response.Delivered = delivered
+	response.Returned = returned
+	response.Canceled = canceled
+
+	return response, nil
 
 }
 

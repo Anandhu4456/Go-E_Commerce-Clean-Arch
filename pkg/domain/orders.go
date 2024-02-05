@@ -41,6 +41,7 @@ type AdminOrderResponse struct {
 	Pending   []OrderDetails
 	Shipped   []OrderDetails
 	Delivered []OrderDetails
+	Returned  []OrderDetails
 	Canceled  []OrderDetails
 }
 
