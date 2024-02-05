@@ -1,32 +1,27 @@
 package middleware
 
 import (
-	"context"
-	"fmt"
 	"net/http"
+	"strings"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/spf13/viper"
 )
 
 func UserAuthMiddleware(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing authorization token"})
-		c.Abort()
-		return
-	}
+	tokenString := c.GetHeader("Authorization")
+
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing authorization token"})
 		c.Abort()
 		return
 	}
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		secret := viper.GetString("KEY")
-		return []byte(secret), nil
+		return []byte("userpass"), nil
 	})
+
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization token"})
 		c.Abort()
@@ -45,18 +40,15 @@ func UserAuthMiddleware(c *gin.Context) {
 		return
 	}
 	id, ok := claims["user_id"].(float64)
-	if !ok {
-		c.JSON(http.StatusForbidden, gin.H{"error": "unauthorized access"})
+	if !ok || id == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"error": "error in retrieving id"})
 		c.Abort()
 		return
 	}
-	userIdString := fmt.Sprintf("%v", id)
+	// userIdString := fmt.Sprintf("%v", id)
 
-	var key models.UserKey = "userId"
-	var val models.UserKey = models.UserKey(userIdString)
-
-	ctx := context.WithValue(c, key, val)
-	c.Request = c.Request.WithContext(ctx)
+	c.Set("role", role)
+	c.Set("id", int(id))
 
 	c.Next()
 }

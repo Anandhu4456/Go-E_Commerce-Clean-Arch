@@ -2,38 +2,26 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
+	"strings"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 )
+
 // middleware for admin authentication
 
 func AdminAuthMiddleware(c *gin.Context) {
-	token, _ := c.Cookie("Authorization")
-	fmt.Println("Token:", token)
-	jwtToken, err := validateToken(token)
+	token := c.Request.Header.Get("Authorization")
+	token = strings.TrimPrefix(token, "Bearer")
+
+	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte("accesssecret"), nil
+	})
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-	if err != nil || !jwtToken.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization token"})
-		c.Abort()
-		return
-	}
-	claims, ok := jwtToken.Claims.(jwt.MapClaims)
-	if !ok || !jwtToken.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization token"})
-		c.Abort()
-		return
-	}
-	role, ok := claims["role"].(string)
-	if !ok || role != "admin" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "unauthorized access"})
-		c.Abort()
+		fmt.Println("error in admin auth")
+		c.AbortWithStatus(401)
 		return
 	}
 	c.Next()
