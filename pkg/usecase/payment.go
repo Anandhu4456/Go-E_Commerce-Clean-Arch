@@ -7,7 +7,6 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
-	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/razorpay/razorpay-go"
 )
@@ -18,7 +17,7 @@ type paymentUsecase struct {
 }
 
 // Constructor function
-func NewPaymentUsecase(paymentRepo interfaces.PaymentRepository, userRepo interfaces.UserRepository) services.PaymentUsecase {
+func NewPaymentUsecase(paymentRepo interfaces.PaymentRepository, userRepo interfaces.UserRepository) *paymentUsecase {
 	return &paymentUsecase{
 		paymentRepo: paymentRepo,
 		userRepo:    userRepo,
@@ -109,21 +108,21 @@ func (payU *paymentUsecase) VerifyPayment(paymentID string, razorID string, orde
 	}
 
 	// Clear cart
-	orderIdInt, err := strconv.Atoi(orderID)
-	if err != nil {
-		return err
-	}
+	// orderIdInt, err := strconv.Atoi(orderID)
+	// if err != nil {
+	// 	return err
+	// }
 
-	userId, err := payU.userRepo.FindUserIDByOrderID(orderIdInt)
-	if err != nil {
-		return err
-	}
-	cartId, err := payU.userRepo.GetCartID(userId)
-	if err != nil {
-		return err
-	}
-	if err := payU.userRepo.ClearCart(cartId); err != nil {
-		return err
-	}
+	// userId, err := payU.userRepo.FindUserIDByOrderID(orderIdInt)
+	// if err != nil {
+	// 	return err
+	// }
+	// cartId, err := payU.userRepo.GetCartID(userId)
+	// if err != nil {
+	// 	return err
+	// }
+	// if err := payU.userRepo.ClearCart(cartId); err != nil {
+	// 	return err
+	// }
 	return nil
 }
