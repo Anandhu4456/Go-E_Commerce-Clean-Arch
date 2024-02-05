@@ -19,7 +19,7 @@ type orderUsecase struct {
 	couponRepo interfaces.CouponRepository
 }
 
-func NewOrderUsecase(orderRepo interfaces.OrderRepository, userUsecase services.UserUsecase /*walletRepo interfaces.WalletRepository*/, couponRepo interfaces.CouponRepository) *OrderUsecase {
+func NewOrderUsecase(orderRepo interfaces.OrderRepository, userUsecase services.UserUsecase /*walletRepo interfaces.WalletRepository*/, couponRepo interfaces.CouponRepository) *orderUsecase {
 	return &orderUsecase{
 		orderRepo:   orderRepo,
 		userUsecase: userUsecase,
@@ -41,13 +41,32 @@ func (orU *orderUsecase) OrderItemsFromCart(userid int, addressid int, paymentid
 	if err != nil {
 		return err
 	}
-	
+
 	var total float64
-	for _, v := range cart.Values{
+	for _, v := range cart.Values {
 		total = total + v.DiscountPrice
 	}
 	// Find discount if any
-	// orU.couponRepo.FindCouponDiscount()
+	coupon, err := orU.couponRepo.FindCouponDetails(couponid)
+	if err != nil {
+		return err
+	}
+	totalDiscount := (total * float64(coupon.DiscountRate)) / 100
+	total = total - totalDiscount
+
+	order_id, err := orU.orderRepo.OrderItems(userid, addressid, paymentid, total, coupon.Coupon)
+	if err != nil {
+		return err
+	}
+	if err := orU.orderRepo.AddOrderProducts(order_id, cart.Values); err != nil {
+		return err
+	}
+	for _, v := range cart.Values {
+		if err := orU.userUsecase.RemoveFromCart(cart.Id, v.Id); err != nil {
+			return err
+		}
+	}
+	return nil
 
 }
 
@@ -279,7 +298,7 @@ func (orU *orderUsecase) ReturnOrder(id int) error {
 		return err
 	}
 	// find if the user having a wallet
-	walletId, err := orU.walletRepo.FindWalletIdFromUserId(userId)
+	walletId, err := orU.orderRepo.FindWalletIdFromUserID(userId)
 	fmt.Println(walletId)
 	if err != nil {
 		return err
@@ -287,20 +306,18 @@ func (orU *orderUsecase) ReturnOrder(id int) error {
 	// if no wallet,create new wallet for user
 
 	if walletId == 0 {
-		walletId, err = orU.walletRepo.CreateNewWallet(userId)
+		walletId, err = orU.orderRepo.CreateNewWallet(userId)
 		if err != nil {
 			return err
 		}
 	}
 	// credit the amount into user wallet
-	if err := orU.walletRepo.CreditToUserWallet(amount, walletId); err != nil {
-		return err
-	}
-	if err := orU.walletRepo.AddHistory(int(amount), walletId, "RETURNED FUND"); err != nil {
+	if err := orU.orderRepo.CreditToUserWallet(amount, walletId); err != nil {
 		return err
 	}
 	return nil
 }
+
 func (orU *orderUsecase) CancelOrder(id, orderid int) error {
 
 	status, err := orU.orderRepo.CheckOrderStatus(orderid)
