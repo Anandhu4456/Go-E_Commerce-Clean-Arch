@@ -10,7 +10,7 @@ type UserUsecase interface {
 	SignUp(user models.UserDetails) (models.UserToken, error)
 	AddAddress(id int, address models.AddAddress) error
 	GetAddresses(id int) ([]domain.Address, error)
-	GetUserDetails(id int) (models.UserResponse, error)
+	GetUserDetails(id int) (models.UserDetailsResponse, error)
 
 	ChangePassword(id int, old string, password string, repassword string) error
 	EditUser(id int, userData models.EditUser) error

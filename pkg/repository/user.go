@@ -41,11 +41,11 @@ func (ur *userRepository) UserBlockStatus(email string) (bool, error) {
 	return permission, nil
 }
 
-func (ur *userRepository) FindUserByEmail(user models.UserLogin) (models.UserResponse, error) {
-	var userResponse models.UserResponse
+func (ur *userRepository) FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error) {
+	var userResponse models.UserSignInResponse
 	err := ur.DB.Raw("SELECT * FROM users WHERE email=? AND permission=true", user.Email).Scan(&userResponse).Error
 	if err != nil {
-		return models.UserResponse{}, errors.New("no user found")
+		return models.UserSignInResponse{}, errors.New("no user found")
 	}
 	return userResponse, nil
 }
@@ -59,11 +59,11 @@ func (ur *userRepository) FindUserIDByOrderID(orderID int) (int, error) {
 	return userId, nil
 }
 
-func (ur *userRepository) SignUp(user models.UserDetails) (models.UserResponse, error) {
-	var userResponse models.UserResponse
-	err := ur.DB.Exec("INSERT INTO users(name,email,username,phone,password)VALUES(?,?,?,?,?)RETURNING id,name,email,phone", user.Name, user.Email, user.Username, user.Phone, user.Password).Scan(&userResponse).Error
+func (ur *userRepository) SignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
+	var userResponse models.UserDetailsResponse
+	err := ur.DB.Raw("INSERT INTO users(name,email,username,phone,password)VALUES(?,?,?,?,?)RETURNING id,name,email,phone", user.Name, user.Email, user.Username, user.Phone,user.Password).Scan(&userResponse).Error
 	if err != nil {
-		return models.UserResponse{}, err
+		return models.UserDetailsResponse{}, err
 	}
 	return userResponse, nil
 }
@@ -73,7 +73,7 @@ func (ur *userRepository) AddAddress(id int, address models.AddAddress, result b
 	
 	INSERT INTO addresses(user_id,name,house_name,street,city,state,pin,"default")
 	VALUES($1,$2,$3,$4,$5,$6,$7,$8)
-	RETURNING id
+	
 	`
 	err := ur.DB.Exec(query, id, address.Name, address.HouseName, address.Street, address.City, address.State, address.Pin, result).Error
 	if err != nil {
@@ -101,12 +101,12 @@ func (ur *userRepository) GetAddresses(id int) ([]domain.Address, error) {
 	return getAddress, nil
 }
 
-func (ur *userRepository) GetUserDetails(id int) (models.UserResponse, error) {
-	var userDetails models.UserResponse
+func (ur *userRepository) GetUserDetails(id int) (models.UserDetailsResponse, error) {
+	var userDetails models.UserDetailsResponse
 
 	err := ur.DB.Raw("SELECT * FROM users WHERE id=?", id).Scan(&userDetails).Error
 	if err != nil {
-		return models.UserResponse{}, errors.New("error while getting user details")
+		return models.UserDetailsResponse{}, errors.New("error while getting user details")
 	}
 	return userDetails, nil
 }

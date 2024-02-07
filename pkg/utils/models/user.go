@@ -5,20 +5,6 @@ type UserLogin struct {
 	Password string `json:"password"`
 }
 
-type UserToken struct {
-	Username string
-	Token    string
-}
-
-type UserResponse struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email" validate:"email"`
-	Phone    string `json:"phone"`
-	Password string `json:"password"`
-}
-
 // User Signup
 type UserDetails struct {
 	Name            string `json:"name"`
@@ -28,6 +14,29 @@ type UserDetails struct {
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirm_password"`
 }
+
+type UserToken struct {
+	User  UserDetailsResponse
+	Token string
+}
+
+// user details shown after loggin
+type UserDetailsResponse struct {
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email" validate:"email"`
+	Phone string `json:"phone"`
+}
+
+type UserSignInResponse struct{
+	Id       uint   `json:"id"`
+	UserID   uint   `json:"user_id"`
+	Name     string `json:"name"`
+	Email    string `json:"email" validate:"email"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}
+
 
 type Address struct {
 	Id        uint   `json:"id" gorm:"unique;not null"`

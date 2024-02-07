@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
-	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,8 +27,10 @@ func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.Adm
 	// Getting details of the admin based on the email provided
 
 	adminCompareDetails, err := au.adminRepository.LoginHandler(adminDetails)
+	fmt.Println(adminDetails)
+	// fmt.Println(adminCompareDetails)
 	if err != nil {
-		return domain.AdminToken{}, errors.New("admin not found")
+		return domain.AdminToken{}, err
 	}
 
 	hash, err := helper.PasswordHashing(adminDetails.Password)
@@ -42,10 +44,20 @@ func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.Adm
 	}
 
 	var adminDetailsResponse models.AdminDetailsResponse
-	err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
-	if err != nil {
-		return domain.AdminToken{}, err
-	}
+
+	// err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
+	// if err != nil {
+	// 	return domain.AdminToken{}, err
+	// }
+	adminDetailsResponse.ID = adminCompareDetails.ID
+	adminDetailsResponse.Name = adminCompareDetails.Name
+	adminDetailsResponse.Email = adminCompareDetails.UserName
+
+	fmt.Println("admindetails response id", adminDetailsResponse.ID)
+	fmt.Println("admin details response name", adminDetailsResponse.Name)
+	fmt.Println("admin details response email", adminDetailsResponse.Email)
+
+	fmt.Println("reached here--------------")
 
 	token, refresh, err := helper.GenerateAdminToken(adminDetailsResponse)
 	if err != nil {

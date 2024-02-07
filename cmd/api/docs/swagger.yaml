@@ -1,6 +1,4 @@
 definitions:
-  domain.Coupon:
-    type: object
   models.AddAddress:
     properties:
       city:
@@ -42,6 +40,15 @@ definitions:
         type: string
       re_password:
         type: string
+    type: object
+  models.Coupon:
+    properties:
+      coupon:
+        type: string
+      discount_rate:
+        type: integer
+      valid:
+        type: boolean
     type: object
   models.CreateOffer:
     properties:
@@ -178,27 +185,6 @@ paths:
       summary: Admin Login
       tags:
       - Admin
-  /admin/category:
-    get:
-      consumes:
-      - application/json
-      description: Admin can view the list of  Categories
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: List Categories
-      tags:
-      - Admin
   /admin/category/add:
     post:
       consumes:
@@ -324,7 +310,7 @@ paths:
         name: coupon
         required: true
         schema:
-          $ref: '#/definitions/domain.Coupon'
+          $ref: '#/definitions/models.Coupon'
       produces:
       - application/json
       responses:
@@ -1508,6 +1494,12 @@ paths:
       consumes:
       - application/json
       description: user can get all their details
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

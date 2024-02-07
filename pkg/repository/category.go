@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
@@ -22,7 +23,9 @@ func NewCategoryRepository(db *gorm.DB) interfaces.CategoryRepository {
 func (cat *categoryRepository) AddCategory(category string) (domain.Category, error) {
 	var b string
 	err := cat.DB.Raw("INSERT INTO categories (category) VALUES(?)RETURNING category", category).Scan(&b).Error
+	fmt.Println("cat b from repo",b)
 	if err != nil {
+		fmt.Println("error from cat repo ",err)
 		return domain.Category{}, err
 	}
 	var categoryResponse domain.Category
@@ -40,6 +43,7 @@ func (cat *categoryRepository) AddCategory(category string) (domain.Category, er
 	if err != nil {
 		return domain.Category{}, err
 	}
+	
 	return categoryResponse, nil
 }
 

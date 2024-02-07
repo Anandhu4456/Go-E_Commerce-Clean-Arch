@@ -8,12 +8,12 @@ import (
 type UserRepository interface {
 	CheckUserAvailability(email string) bool
 	UserBlockStatus(email string) (bool, error)
-	FindUserByEmail(user models.UserLogin) (models.UserResponse, error)
-	SignUp(user models.UserDetails) (models.UserResponse, error)
+	FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error)
+	SignUp(user models.UserDetails) (models.UserDetailsResponse, error)
 	AddAddress(id int, address models.AddAddress, result bool) error
 	GetAddresses(id int) ([]domain.Address, error)
 	CheckIfFirstAddress(id int) bool
-	GetUserDetails(id int) (models.UserResponse, error)
+	GetUserDetails(id int) (models.UserDetailsResponse, error)
 	FindUserIDByOrderID(orderID int) (int, error)
 	FindUserByOrderID(orderId string)(domain.User,error)
 	ChangePassword(id int, password string) error

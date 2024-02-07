@@ -13,7 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   yoursstore:
-    image: project01
+    image: app
     restart: on-failure
     environment:
       DB_HOST: "postgres"
@@ -26,7 +26,7 @@ services:
     networks:
       - mydb
     ports:
-      - "8080:8080"
+      - "8082:8082"
 
 volumes:
   pgdata:

@@ -55,40 +55,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/category": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Admin can view the list of  Categories",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "List Categories",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/category/add": {
             "post": {
                 "security": [
@@ -295,7 +261,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Coupon"
+                            "$ref": "#/definitions/models.Coupon"
                         }
                     }
                 ],
@@ -2155,6 +2121,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get User Details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2550,9 +2525,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Coupon": {
-            "type": "object"
-        },
         "models.AddAddress": {
             "type": "object",
             "required": [
@@ -2611,6 +2583,20 @@ const docTemplate = `{
                 },
                 "re_password": {
                     "type": "string"
+                }
+            }
+        },
+        "models.Coupon": {
+            "type": "object",
+            "properties": {
+                "coupon": {
+                    "type": "string"
+                },
+                "discount_rate": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "type": "boolean"
                 }
             }
         },
@@ -2790,7 +2776,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {

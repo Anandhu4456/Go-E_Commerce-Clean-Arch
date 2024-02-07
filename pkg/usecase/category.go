@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
@@ -23,6 +24,7 @@ func NewCategoryUsecase(repo interfaces.CategoryRepository) services.CategoryUse
 func (catU *categoryUsecase) AddCategory(category string) (domain.Category, error) {
 	productResponse, err := catU.repo.AddCategory(category)
 	if err != nil {
+		fmt.Println("error from cat usecase ",err)
 		return domain.Category{}, err
 	}
 	return productResponse, nil

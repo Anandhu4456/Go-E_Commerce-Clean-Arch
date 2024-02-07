@@ -8,6 +8,7 @@ import (
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
+	"github.com/jinzhu/copier"
 )
 
 type otpUsecase struct {
@@ -50,8 +51,14 @@ func (otU *otpUsecase) VerifyOTP(code models.VerifyData) (models.UserToken, erro
 	if err != nil {
 		return models.UserToken{}, err
 	}
+
+	var userResponse models.UserDetailsResponse
+	err = copier.Copy(&userResponse,&userDetails)
+	if err!=nil{
+		return models.UserToken{},err
+	}
 	return models.UserToken{
-		Username: userDetails.Username,
+		User: userResponse,
 		Token:    tokenString,
 	}, nil
 }

@@ -198,6 +198,7 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Security		Bearer
+// @Param			id	query	string	true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/details [get]
@@ -245,7 +246,8 @@ func (uH *UserHandler) Login(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "user successfully logged in", userToken, nil)
 	// c.SetCookie("Authorization",userToken.Token,3600,"/","yoursstore.online",true,false)
-	c.SetCookie("Authorization", userToken.Token, 3600, "", "", true, false)
+	c.SetCookie("Authorization", userToken.Token, 3600 *24*30, "", "", false,true)
+
 	c.JSON(http.StatusOK, successRes)
 }
 

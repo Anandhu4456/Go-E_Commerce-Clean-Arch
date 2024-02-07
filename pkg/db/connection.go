@@ -61,25 +61,29 @@ func ConnectDB(cfg config.Config) (*gorm.DB, error) {
 	}
 	
 
-	CheckAndCreateAdmin(db)
+	if err:=CheckAndCreateAdmin(db);err!=nil{
+		return db,err
+	}
 	return db, dbErr
 }
 
-func CheckAndCreateAdmin(db *gorm.DB) {
+func CheckAndCreateAdmin(db *gorm.DB)error {
 	var count int64
 	db.Model(&domain.Admin{}).Count(&count)
 	if count == 0 {
 		password := "adminpass"
 		hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
-			return
+			fmt.Println("check and create admin error")
+			return err
 		}
 		admin := domain.Admin{
 			ID:       1,
 			Name: "admin",
-			Username: "yoursstore@gmail.com",
+			UserName: "yoursstore@gmail.com",
 			Password: string(hashedPass),
 		}
 		db.Create(&admin)
 	}
+	return nil
 }

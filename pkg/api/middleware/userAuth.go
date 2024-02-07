@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -9,7 +10,10 @@ import (
 )
 
 func UserAuthMiddleware(c *gin.Context) {
-	tokenString := c.GetHeader("Authorization")
+	tokenString,err:= c.Cookie("Authorization")
+	if err!=nil{
+		return 
+	}
 
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing authorization token"})
@@ -18,18 +22,22 @@ func UserAuthMiddleware(c *gin.Context) {
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		return []byte("userpass"), nil
-	})
-
-	if err != nil || !token.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization token"})
+	// token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+	// 	return []byte("usersecret"), nil
+	// })
+	jwtToken,err:=ValidateToken(tokenString)
+	if err != nil {
+		c.AbortWithStatus(401)
+		return
+	}
+	if err != nil || !jwtToken.Valid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err,})
 		c.Abort()
 		return
 	}
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
-		c.JSON(http.StatusForbidden, gin.H{"error": "invalid authorization token"})
+	claims, ok := jwtToken.Claims.(jwt.MapClaims)
+	if !ok || !jwtToken.Valid {
+		c.JSON(http.StatusForbidden, gin.H{"error": err})
 		c.Abort()
 		return
 	}
@@ -39,9 +47,13 @@ func UserAuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	id, ok := claims["user_id"].(float64)
+
+	id, ok := claims["id"].(float64)
+
+	fmt.Println("user id",id)
+	
 	if !ok || id == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "error in retrieving id"})
+		c.JSON(http.StatusForbidden, gin.H{"error": err})
 		c.Abort()
 		return
 	}
@@ -49,6 +61,8 @@ func UserAuthMiddleware(c *gin.Context) {
 
 	c.Set("role", role)
 	c.Set("id", int(id))
+
+	fmt.Println("user auth is fine")
 
 	c.Next()
 }

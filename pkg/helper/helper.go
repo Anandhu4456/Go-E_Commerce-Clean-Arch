@@ -16,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/jinzhu/copier"
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -44,7 +45,8 @@ func GetUserId(c *gin.Context) (int, error) {
 }
 
 type AuthCustomClaims struct {
-	Id    int    `json:"id"`
+	Id int `json:"id"`
+	// Name  string `json:"name"`
 	Email string `json:"email"`
 	Role  string `json:"role"`
 	jwt.StandardClaims
@@ -54,14 +56,16 @@ func GenerateAdminToken(admin models.AdminDetailsResponse) (string, string, erro
 	tokenClaimes := &AuthCustomClaims{
 		Id:    admin.ID,
 		Email: admin.Email,
-		Role:  "admin",
+		// Name: admin.Name,
+		Role: "admin",
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
 	refreshTokenClaims := &AuthCustomClaims{
-		Id:    admin.ID,
+		Id: admin.ID,
+		// Name: admin.Name,
 		Email: admin.Email,
 		Role:  "admin",
 		StandardClaims: jwt.StandardClaims{
@@ -71,6 +75,8 @@ func GenerateAdminToken(admin models.AdminDetailsResponse) (string, string, erro
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaimes)
 	tokenString, err := token.SignedString([]byte("adminsecret"))
+
+	// fmt.Println("in admin helper",tokenString)
 	if err != nil {
 		return "", "", err
 	}
@@ -83,7 +89,7 @@ func GenerateAdminToken(admin models.AdminDetailsResponse) (string, string, erro
 	return tokenString, refreshTokenString, nil
 }
 
-func GenerateUserToken(user models.UserResponse) (string, error) {
+func GenerateUserToken(user models.UserDetailsResponse) (string, error) {
 	claims := &AuthCustomClaims{
 		Id:    user.Id,
 		Email: user.Email,
@@ -102,7 +108,7 @@ func GenerateUserToken(user models.UserResponse) (string, error) {
 }
 
 func PasswordHashing(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password),10)
 	if err != nil {
 		return "", errors.New("internal server error")
 	}
@@ -195,4 +201,19 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 		return "", uploadErr
 	}
 	return result.Location, nil
+}
+
+func CompareHashAndPassword(a string, b string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(a), []byte(b))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Copy(a *models.UserDetailsResponse, b *models.UserSignInResponse) (models.UserDetailsResponse, error) {
+	if err := copier.Copy(a, b); err != nil {
+		return models.UserDetailsResponse{}, err
+	}
+	return *a, nil
 }

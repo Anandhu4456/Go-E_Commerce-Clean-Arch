@@ -22,10 +22,11 @@ func NewAdminRepository(DB *gorm.DB)interfaces.AdminRepository{
 
 func (ar *adminRepository) LoginHandler(adminDetails models.AdminLogin) (domain.Admin, error) {
 	var adminCompareDetail domain.Admin
-	err := ar.DB.Raw("SELECT * FROM admins WHERE username = ?", adminDetails.Email).Scan(&adminCompareDetail).Error
+	err := ar.DB.Raw("select * from admins where user_name = ?", adminDetails.Email).Scan(&adminCompareDetail).Error
 	if err != nil {
 		return domain.Admin{}, err
 	}
+	fmt.Println("admincompare details from repo",adminCompareDetail)
 	return adminCompareDetail, nil
 }
 

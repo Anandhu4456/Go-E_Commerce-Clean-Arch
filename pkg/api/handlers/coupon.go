@@ -26,7 +26,7 @@ func NewCouponHandler(couponUsecase services.CouponUsecase) *CouponHandler {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
-// @Param			coupon	body	domain.Coupon	true	"coupon"
+// @Param			coupon	body	models.Coupon	true	"coupon"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}

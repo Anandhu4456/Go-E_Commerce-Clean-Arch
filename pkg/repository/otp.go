@@ -28,12 +28,12 @@ func (otr *otpRepository) FindUserByMobileNumber(phone string) bool {
 	return count > 0
 }
 
-func (otr *otpRepository) UserDetailsUsingPhone(phone string) (models.UserResponse, error) {
-	var userDetails models.UserResponse
+func (otr *otpRepository) UserDetailsUsingPhone(phone string) (models.UserDetailsResponse, error) {
+	var userDetails models.UserDetailsResponse
 
 	err := otr.DB.Raw("SELECT * FROM users WHERE phone=?", phone).Scan(&userDetails).Error
 	if err != nil {
-		return models.UserResponse{}, err
+		return models.UserDetailsResponse{}, err
 	}
 	return userDetails, nil
 }

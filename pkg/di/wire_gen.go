@@ -25,6 +25,19 @@ func InitializeAPI(cfg config.Config)(*api.ServerHTTP,error){
 	offerUsecase:=usecase.NewOfferUsecase(offerRepository)
 	offerHandler:=handlers.NewOfferHandler(offerUsecase)
 
+	orderRepository:=repository.NewOrderRepository(gormDB)
+
+	userRepository:=repository.NewUserRepository(gormDB)
+	
+	userUsecase:=usecase.NewUserUsecase(userRepository,offerRepository,orderRepository)
+
+	couponRepository:=repository.NewCouponRepository(gormDB)
+
+	orderUsecase:=usecase.NewOrderUsecase(orderRepository,userUsecase,couponRepository)
+	orderHandler:=handlers.NewOrderHandler(orderUsecase)
+
+	userHandler:=handlers.NewUserHandler(userUsecase)
+
 	wishlistRepository:=repository.NewWishlistRepository(gormDB)
 	wishlistUsecase:=usecase.NewWishlistUsecase(wishlistRepository)
 	wishlistHandler:=handlers.NewWishlistHandler(wishlistUsecase)
@@ -33,9 +46,9 @@ func InitializeAPI(cfg config.Config)(*api.ServerHTTP,error){
 	adminUsecase:=usecase.NewAdminUsecase(adminRepository)
 	adminHandler:=handlers.NewAdminHandler(adminUsecase)
 
-	userRepository:=repository.NewUserRepository(gormDB)
-	userUsecase:=usecase.NewUserUsecase(userRepository,offerRepository)
-	userHandler:=handlers.NewUserHandler(userUsecase)
+	
+
+	
 
 	inventoryRepository:=repository.NewInventoryRepository(gormDB)
 	inventoryUsecase:=usecase.NewInventoryUsecase(inventoryRepository)
@@ -53,13 +66,10 @@ func InitializeAPI(cfg config.Config)(*api.ServerHTTP,error){
 	cartUsecase:=usecase.NewCartUsecase(cartRepository,inventoryRepository,userUsecase,paymentUsecase)
 	cartHandler:=handlers.NewCartHandler(cartUsecase)
 
-	couponRepository:=repository.NewCouponRepository(gormDB)
+	
 	couponUsecase:=usecase.NewCouponUsecase(couponRepository)
 	couponHandler:=handlers.NewCouponHandler(couponUsecase)
 
-	orderRepository:=repository.NewOrderRepository(gormDB)
-	orderUsecase:=usecase.NewOrderUsecase(orderRepository,userUsecase,couponRepository)
-	orderHandler:=handlers.NewOrderHandler(orderUsecase)
 
 	otpRepository:=repository.NewOtpRepository(gormDB)
 	otpUsecase:=usecase.NewOtpUsecase(cfg,otpRepository)

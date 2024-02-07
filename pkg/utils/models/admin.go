@@ -14,6 +14,8 @@ type AdminDetailsResponse struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+
+
 }
 
 type UserDetailsAtAdmin struct {
@@ -29,7 +31,7 @@ type CustomDates struct {
 	EndDate      time.Time `json:"end_date"`
 }
 type Coupon struct {
-	Coupon       string `json:"coupon" gorm:"unique;not null"`
-	DiscountRate int    `json:"discount_rate" gorm:"not null"`
+	Coupon       string `json:"coupon" gorm:"unique"`
+	DiscountRate int    `json:"discount_rate"`
 	Valid        bool   `json:"valid" gorm:"default:true"`
 }
