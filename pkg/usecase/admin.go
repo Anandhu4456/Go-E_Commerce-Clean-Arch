@@ -26,11 +26,11 @@ func NewAdminUsecase(adRepo interfaces.AdminRepository) services.AdminUsecase {
 func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.AdminToken, error) {
 	// Getting details of the admin based on the email provided
 
-	adminCompareDetails, err := au.adminRepository.LoginHandler(adminDetails)
-	fmt.Println(adminDetails)
-	// fmt.Println(adminCompareDetails)
-	if err != nil {
-		return domain.AdminToken{}, err
+	fmt.Println("admin details in usecase ",adminDetails)
+	adminCompareDetails, _ := au.adminRepository.LoginHandler(adminDetails)
+	fmt.Println("admincompare details in usecase ",adminCompareDetails)
+	if  adminCompareDetails.UserName !=adminDetails.Email{
+		return domain.AdminToken{}, errors.New("admin not exist")
 	}
 
 	hash, err := helper.PasswordHashing(adminDetails.Password)
