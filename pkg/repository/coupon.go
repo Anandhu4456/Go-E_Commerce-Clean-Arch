@@ -2,10 +2,9 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -14,14 +13,14 @@ type couponRepository struct {
 }
 
 // constructor function
-func NewCouponRepository(DB *gorm.DB) interfaces.CouponRepository {
+func NewCouponRepository(DB *gorm.DB) *couponRepository {
 	return &couponRepository{
 		DB: DB,
 	}
 }
 
-func (couprep *couponRepository) AddCoupon(coupon domain.Coupon) error {
-	err := couprep.DB.Exec("INSERT INTO coupons(name,discount_rate,valid)VALUES ($1,$2,$3)", coupon.Name, coupon.DiscountRate, coupon.Valid).Error
+func (couprep *couponRepository) AddCoupon(coupon models.Coupon) error {
+	err := couprep.DB.Exec("INSERT INTO coupons(coupon,discount_rate,valid)VALUES ($1,$2,$3)",coupon.Coupon, coupon.DiscountRate, coupon.Valid).Error
 	if err != nil {
 		return err
 	}
@@ -36,31 +35,23 @@ func (couprep *couponRepository) MakeCouponInvalid(id int) error {
 	return nil
 }
 
-func (couprep *couponRepository) FindCouponDiscount(coupon string) int {
-	var discountRate int
+func (couprep *couponRepository) FindCouponDetails(couponId int) (domain.Coupon, error) {
+	var coupon domain.Coupon
 
-	err := couprep.DB.Raw("SELECT discount_rate FROM coupons WHERE name=?", coupon).Scan(&discountRate).Error
+	err := couprep.DB.Raw("SELECT * FROM coupon WHERE id =? ", couponId).Scan(&coupon).Error
 	if err != nil {
-		return 0
+		return domain.Coupon{}, err
 	}
-	fmt.Println("discount rate: ", discountRate)
-	return discountRate
+	return coupon, nil
 }
 
-func (couprep *couponRepository) GetCoupons(page, limit int) ([]domain.Coupon, error) {
-	if page == 0 {
-		page = 1
-	}
-	if limit == 0 {
-		limit = 10
-	}
-	offset := (page - 1) * limit
-	var couponResponse []domain.Coupon
-	err := couprep.DB.Raw("SELECT id,name,discount_rate,valid FROM coupons limit ? offset ?", limit, offset).Scan(&couponResponse).Error
+func (couprep *couponRepository) GetCoupons() ([]domain.Coupon, error) {
+	var coupon []domain.Coupon
+	err := couprep.DB.Raw("SELECT * FROM coupons").Scan(&coupon).Error
 	if err != nil {
 		return []domain.Coupon{}, err
 	}
-	return couponResponse, nil
+	return coupon, nil
 }
 
 func (couprep *couponRepository) ValidateCoupon(coupon string) (bool, error) {

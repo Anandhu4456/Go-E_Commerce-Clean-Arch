@@ -1,9 +1,12 @@
 package interfaces
 
-import "github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+import (
+	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
+)
 
 type CouponUsecase interface {
-	Addcoupon(coupon domain.Coupon) error
+	Addcoupon(coupon models.Coupon) error
 	MakeCouponInvalid(id int) error
-	GetCoupons(page, limit int) ([]domain.Coupon, error)
+	GetCoupons() ([]domain.Coupon, error)
 }

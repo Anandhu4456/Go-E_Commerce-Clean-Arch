@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -45,10 +46,14 @@ func (ah *AdminHandler) LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", admin.Token, 3600, "/", "", true, false)
+	// c.Set("",admin.Token)
+	
+	// c.Set("Refresh",admin.RefreshToken)
+	c.SetCookie("Authorization",admin.Token,3600 *24*30,"/","",false,true)
+	c.SetCookie("Refresh",admin.RefreshToken,3600 *24*30,"/","",false,true)
 
 	successRes := response.ClientResponse(http.StatusOK, "Admin authenticated successfully", admin, nil)
+	fmt.Println("from admin handler ",admin)
 	c.JSON(http.StatusOK, successRes)
 }
 

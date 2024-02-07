@@ -5,6 +5,7 @@ import (
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/config"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -16,23 +17,73 @@ func ConnectDB(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&domain.Inventory{})
-	db.AutoMigrate(&domain.Category{})
-	db.AutoMigrate(&domain.Admin{})
-	db.AutoMigrate(&domain.User{})
-	db.AutoMigrate(&domain.Cart{})
-	db.AutoMigrate(&domain.WishList{})
-	db.AutoMigrate(&domain.WishlistItems{})
-	db.AutoMigrate(&domain.Address{})
-	db.AutoMigrate(&domain.Order{})
-	db.AutoMigrate(&domain.OrderItem{})
-	db.AutoMigrate(&domain.LineItems{})
-	db.AutoMigrate(&domain.PaymentMethod{})
-	db.AutoMigrate(&domain.Offer{})
-	db.AutoMigrate(&domain.Coupon{})
-	db.AutoMigrate(&domain.Wallet{})
-	db.AutoMigrate(&domain.WalletHistory{})
-	db.AutoMigrate(&domain.Image{})
+	if err:=db.AutoMigrate(&domain.Inventory{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Category{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Admin{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.User{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Cart{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Wishlist{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Address{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Order{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.OrderItem{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.LineItems{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.PaymentMethod{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Offer{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Coupon{});err!=nil{
+		return db,err
+	}
+	if err:=db.AutoMigrate(&domain.Wallet{});err!=nil{
+		return db,err
+	}
+	
 
+	if err:=CheckAndCreateAdmin(db);err!=nil{
+		return db,err
+	}
 	return db, dbErr
+}
+
+func CheckAndCreateAdmin(db *gorm.DB)error {
+	var count int64
+	db.Model(&domain.Admin{}).Count(&count)
+	if count == 0 {
+		password := "adminpass"
+		hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Println("check and create admin error")
+			return err
+		}
+		admin := domain.Admin{
+			ID:       1,
+			Name: "admin",
+			UserName: "yoursstore@gmail.com",
+			Password: string(hashedPass),
+		}
+		db.Create(&admin)
+	}
+	return nil
 }

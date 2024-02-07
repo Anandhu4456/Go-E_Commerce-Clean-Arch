@@ -55,56 +55,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/category": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Admin can view the list of  Categories",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "List Categories",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/category/add": {
             "post": {
                 "security": [
@@ -311,7 +261,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Coupon"
+                            "$ref": "#/definitions/models.Coupon"
                         }
                     }
                 ],
@@ -2171,6 +2121,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get User Details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2413,51 +2372,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/profile/wallet": {
-            "get": {
-                "description": "user can get wallet details and history",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get Wallet",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/users/signup": {
             "post": {
                 "description": "user can signup by giving their details",
@@ -2611,23 +2525,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Coupon": {
-            "type": "object",
-            "properties": {
-                "discount_rate": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "valid": {
-                    "type": "boolean"
-                }
-            }
-        },
         "models.AddAddress": {
             "type": "object",
             "required": [
@@ -2689,6 +2586,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Coupon": {
+            "type": "object",
+            "properties": {
+                "coupon": {
+                    "type": "string"
+                },
+                "discount_rate": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
         "models.CreateOffer": {
             "type": "object",
             "properties": {
@@ -2745,7 +2656,13 @@ const docTemplate = `{
                 "address_id": {
                     "type": "integer"
                 },
+                "coupon_id": {
+                    "type": "integer"
+                },
                 "payment_id": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }

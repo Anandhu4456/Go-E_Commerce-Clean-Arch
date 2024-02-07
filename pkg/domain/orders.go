@@ -1,9 +1,14 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Order of user
 type Order struct {
+	gorm.Model
 	ID              int           `json:"id" gorm:"primarykey;autoIncrement"`
 	UserID          int           `json:"user_id" gorm:"not null"`
 	User            User          `json:"-" gorm:"foreignkey:UserID"`
@@ -36,6 +41,7 @@ type AdminOrderResponse struct {
 	Pending   []OrderDetails
 	Shipped   []OrderDetails
 	Delivered []OrderDetails
+	Returned  []OrderDetails
 	Canceled  []OrderDetails
 }
 

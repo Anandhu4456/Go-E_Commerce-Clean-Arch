@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
-	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	// "github.com/Anandhu4456/go-Ecommerce/pkg/domain"
+	// "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -11,17 +12,17 @@ type cartRepository struct{
 }
 
 // constructor function
-func NewCartRepository (DB *gorm.DB)interfaces.CartRepository{
+func NewCartRepository (DB *gorm.DB)*cartRepository{
 	return &cartRepository{
 		DB:DB,
 	}
 }
 
-func (cr *cartRepository)GetAddresses(id int)([]domain.Address,error){
-	var addresses []domain.Address
+func (cr *cartRepository)GetAddresses(id int)([]models.Address,error){
+	var addresses []models.Address
 	err:=cr.DB.Raw("select * from addresses where id = ?",id).Scan(&addresses).Error
 	if err!=nil{
-		return []domain.Address{},err
+		return []models.Address{},err
 	}
 	return addresses,nil
 }

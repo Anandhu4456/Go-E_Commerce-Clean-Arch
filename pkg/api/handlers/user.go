@@ -33,27 +33,30 @@ func NewUserHandler(userUsecase services.UserUsecase) *UserHandler {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address/add [post]
 func (uH *UserHandler) AddAddress(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	var address models.AddAddress
-	if err := c.BindJSON(&address); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	if err := uH.userusecase.AddAddress(userId, address); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+    id, err := strconv.Atoi(c.Query("id"))
+    if err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
+    var address models.AddAddress
+    if err := c.BindJSON(&address); err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
-	c.JSON(http.StatusOK, successRes)
+    
+    if err := uH.userusecase.AddAddress(id, address); err != nil {
+        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
+        c.JSON(http.StatusBadRequest, errRes)
+        return
+    }
+
+    successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
+    c.JSON(http.StatusOK, successRes)
 }
+
 
 // @Summary		Change Password
 // @Description	user can change their password
@@ -166,19 +169,19 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limit, err := strconv.Atoi(c.Query("limit"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	products, err := uH.userusecase.GetCart(userId, page, limit)
+	// page, err := strconv.Atoi(c.Query("page"))
+	// if err != nil {
+	// 	errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errRes)
+	// 	return
+	// }
+	// limit, err := strconv.Atoi(c.Query("limit"))
+	// if err != nil {
+	// 	errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errRes)
+	// 	return
+	// }
+	products, err := uH.userusecase.GetCart(userId)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't retrieve cart products", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -195,11 +198,12 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Security		Bearer
+// @Param			id	query	string	true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/details [get]
 func (uH *UserHandler) GetUserDetails(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -242,7 +246,8 @@ func (uH *UserHandler) Login(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "user successfully logged in", userToken, nil)
 	// c.SetCookie("Authorization",userToken.Token,3600,"/","yoursstore.online",true,false)
-	c.SetCookie("Authorization", userToken.Token, 3600, "", "", true, false)
+	c.SetCookie("Authorization", userToken.Token, 3600 *24*30, "", "", false,true)
+
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -391,42 +396,32 @@ func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// @Summary		Get Wallet
-// @Description	user can get wallet details and history
-// @Tags			User
-// @Accept			json
-// @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"// @Security		Bearer
-// @Success		200	{object}	response.Response{}
-// @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/wallet [get]
-func (uH *UserHandler) GetWallet(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	limit, err := strconv.Atoi(c.Query("limit"))
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
-	wallet, err := uH.userusecase.GetWallet(userId, page, limit)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get wallet", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+// func (uH *UserHandler) GetWallet(c *gin.Context) {
+// 	userId, err := helper.GetUserId(c)
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	page, err := strconv.Atoi(c.Query("page"))
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	limit, err := strconv.Atoi(c.Query("limit"))
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
+// 	wallet, err := uH.userusecase.GetWallet(userId, page, limit)
+// 	if err != nil {
+// 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get wallet", nil, err.Error())
+// 		c.JSON(http.StatusBadRequest, errRes)
+// 		return
+// 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully get wallet", wallet, nil)
-	c.JSON(http.StatusOK, successRes)
-}
+// 	successRes := response.ClientResponse(http.StatusOK, "successfully get wallet", wallet, nil)
+// 	c.JSON(http.StatusOK, successRes)
+// }

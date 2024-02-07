@@ -8,3 +8,7 @@ type VerifyData struct {
 type OTPData struct {
 	PhoneNumber string `json:"phone,omitempty" validate:"required"`
 }
+type PaymentMethod struct {
+	ID           uint   `json:"id"`
+	Payment_Name string `json:"payment_name"`
+}

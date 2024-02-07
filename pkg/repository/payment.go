@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -36,11 +36,11 @@ func (pr *paymentRepository) RemovePaymentMethod(paymentMethodId int) error {
 	return nil
 }
 
-func (pr *paymentRepository) GetPaymentMethods() ([]domain.PaymentMethod, error) {
-	var paymentMethods []domain.PaymentMethod
+func (pr *paymentRepository) GetPaymentMethods() ([]models.PaymentMethod, error) {
+	var paymentMethods []models.PaymentMethod
 	err := pr.DB.Raw("SELECT * FROM payment_methods").Scan(&paymentMethods).Error
 	if err != nil {
-		return []domain.PaymentMethod{}, err
+		return []models.PaymentMethod{}, err
 	}
 	return paymentMethods, nil
 }

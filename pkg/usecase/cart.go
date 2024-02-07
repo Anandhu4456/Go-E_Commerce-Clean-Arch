@@ -3,12 +3,13 @@ package usecase
 import (
 	"errors"
 
+	// "github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 )
 
-type cartUsecase struct {
+type CartUsecase struct {
 	cartRepo       interfaces.CartRepository
 	invRepo        interfaces.InventoryRespository
 	userUsecase    services.UserUsecase
@@ -17,8 +18,8 @@ type cartUsecase struct {
 
 // Constructor funciton
 
-func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) services.CartUsecase {
-	return &cartUsecase{
+func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.InventoryRespository, userUsecase services.UserUsecase, paymentUsecase services.PaymentUsecase) *CartUsecase {
+	return &CartUsecase{
 		cartRepo:       cartRepo,
 		invRepo:        invRepo,
 		userUsecase:    userUsecase,
@@ -26,7 +27,7 @@ func NewCartUsecase(cartRepo interfaces.CartRepository, invRepo interfaces.Inven
 	}
 }
 
-func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
+func (cu *CartUsecase) AddToCart(user_id, inventory_id int) error {
 
 	// check the product has quantity available
 	stock, err := cu.invRepo.CheckStock(inventory_id)
@@ -65,32 +66,35 @@ func (cu *cartUsecase) AddToCart(user_id, inventory_id int) error {
 	return nil
 }
 
-func (cu *cartUsecase) CheckOut(id int) (models.CheckOut, error){
+func (cu *CartUsecase) CheckOut(id int) (models.CheckOut, error) {
 
 	// Getting address
-	address,err:=cu.cartRepo.GetAddresses(id)
-	if err!=nil{
-		return models.CheckOut{},errors.New("address not found")
+	address, err := cu.cartRepo.GetAddresses(id)
+	if err != nil {
+		return models.CheckOut{}, errors.New("address not found")
 	}
-	products,err:=cu.userUsecase.GetCart(id,0,0)
-	if err!=nil{
-		return models.CheckOut{},err
+	products, err := cu.userUsecase.GetCart(id)
+	if err != nil {
+		return models.CheckOut{}, err
 	}
-	paymentMethod,err:=cu.paymentUsecase.GetPaymentMethods()
-	if err!=nil{
-		return models.CheckOut{},err
+	paymentMethod, err := cu.paymentUsecase.GetPaymentMethods()
+	if err != nil {
+		return models.CheckOut{}, err
 	}
-	var price float64
+	var price, discount float64
 
-	for _,items:=range products{
-		price = price+items.DiscoundPrice
+	for _, v := range products.Values {
+		discount += v.DiscountPrice
+		price += v.Total
 	}
 
 	var checkOut models.CheckOut
+	checkOut.CartId = products.Id
 	checkOut.Addresses = address
-	checkOut.Products = products
+	checkOut.Products = products.Values
 	checkOut.PaymentMethods = paymentMethod
 	checkOut.TotalPrice = price
+	checkOut.DiscountPrice = discount
 
-	return checkOut,nil
+	return checkOut, nil
 }

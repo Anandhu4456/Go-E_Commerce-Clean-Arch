@@ -10,17 +10,17 @@ type UserUsecase interface {
 	SignUp(user models.UserDetails) (models.UserToken, error)
 	AddAddress(id int, address models.AddAddress) error
 	GetAddresses(id int) ([]domain.Address, error)
-	GetUserDetails(id int) (models.UserResponse, error)
+	GetUserDetails(id int) (models.UserDetailsResponse, error)
 
 	ChangePassword(id int, old string, password string, repassword string) error
 	EditUser(id int, userData models.EditUser) error
 
 	GetCartID(userID int) (int, error)
-	GetCart(id, page, limit int) ([]models.GetCart, error)
+	GetCart(id int) (models.GetCartResponse, error)
 	RemoveFromCart(id int, inventoryID int) error
 	ClearCart(cartID int) error
 	UpdateQuantityAdd(id, inv_id int) error
 	UpdateQuantityLess(id, inv_id int) error
 
-	GetWallet(id, page, limit int) (models.Wallet, error)
+	// GetWallet(id, page, limit int) (models.Wallet, error)
 }

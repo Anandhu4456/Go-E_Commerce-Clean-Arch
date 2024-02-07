@@ -8,6 +8,13 @@ type OrderPaymentDetails struct {
 	FinalPrice float64 `json:"final_price"`
 }
 
+type Order struct {
+	UserID          int `json:"user_id"`
+	AddressID       int `json:"address_id"`
+	PaymentMethodID int `json:"payment_id"`
+	CouponID        int `json:"coupon_id"`
+}
+
 type InvoiceData struct {
 	Title       string
 	Quantity    int

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
@@ -21,8 +22,10 @@ func NewCategoryRepository(db *gorm.DB) interfaces.CategoryRepository {
 
 func (cat *categoryRepository) AddCategory(category string) (domain.Category, error) {
 	var b string
-	err := cat.DB.Raw("INSERT INTO categories(category)VALUES(?)RETURNING category", category).Scan(&b).Error
+	err := cat.DB.Raw("INSERT INTO categories (category) VALUES(?)RETURNING category", category).Scan(&b).Error
+	fmt.Println("cat b from repo",b)
 	if err != nil {
+		fmt.Println("error from cat repo ",err)
 		return domain.Category{}, err
 	}
 	var categoryResponse domain.Category
@@ -40,6 +43,7 @@ func (cat *categoryRepository) AddCategory(category string) (domain.Category, er
 	if err != nil {
 		return domain.Category{}, err
 	}
+	
 	return categoryResponse, nil
 }
 
@@ -89,16 +93,16 @@ func (cat *categoryRepository) DeleteCategory(categoryId string) error {
 	return nil
 }
 
-func (cat *categoryRepository) GetCategories(page, limit int) ([]domain.Category, error) {
-	if page == 0 {
-		page = 1
-	}
-	if limit == 0 {
-		limit = 10
-	}
-	offset:=(page-1)*limit
+func (cat *categoryRepository) GetCategories() ([]domain.Category, error) {
+	// if page == 0 {
+	// 	page = 1
+	// }
+	// if limit == 0 {
+	// 	limit = 10
+	// }
+	// offset:=(page-1)*limit
 	var categories []domain.Category
-	err:=cat.DB.Raw("SELECT id,category FROM categories LIMIT ? OFFSET ?",limit,offset).Scan(&categories).Error
+	err:=cat.DB.Raw("SELECT * FROM categories").Scan(&categories).Error
 	if err!=nil{
 		return []domain.Category{},err
 	}

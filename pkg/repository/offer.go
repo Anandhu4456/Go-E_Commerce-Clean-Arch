@@ -20,7 +20,7 @@ func NewOfferRepository(DB *gorm.DB) interfaces.OfferRepository {
 }
 
 func (or *offerRepository) AddNewOffer(offer models.CreateOffer) error {
-	err := or.DB.Exec("INSERT INTO offers(category_id,discount) VALUES (?,?)", offer.CategoryID, offer.Discount).Error
+	err := or.DB.Exec("INSERT INTO offers(category_id,discount_rate) VALUES (?,?)", offer.CategoryID, offer.Discount).Error
 	if err != nil {
 		return err
 	}

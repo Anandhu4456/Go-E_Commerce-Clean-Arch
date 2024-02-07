@@ -6,23 +6,21 @@ import (
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	interfaces "github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
-	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userUsecase struct {
-	userRepo   interfaces.UserRepository
-	offerRepo  interfaces.OfferRepository
-	walletRepo interfaces.WalletRepository
+	userRepo  interfaces.UserRepository
+	offerRepo interfaces.OfferRepository
+	orderRepo interfaces.OrderRepository
 }
 
-
-func NewUserUsecase(userRepo interfaces.UserRepository, offerRepo interfaces.OfferRepository, walletRepo interfaces.WalletRepository) services.UserUsecase {
+func NewUserUsecase(userRepo interfaces.UserRepository, offerRepo interfaces.OfferRepository, orderRepo interfaces.OrderRepository) *userUsecase {
 	return &userUsecase{
-		userRepo:   userRepo,
-		offerRepo:  offerRepo,
-		walletRepo: walletRepo,
+		userRepo:  userRepo,
+		offerRepo: offerRepo,
+		orderRepo: orderRepo,
 	}
 }
 
@@ -42,23 +40,30 @@ func (usrU *userUsecase) Login(user models.UserLogin) (models.UserToken, error) 
 		return models.UserToken{}, errors.New("user is blocked by admin")
 	}
 	// Get the user details in order to check password
-	userDetails, err := usrU.userRepo.FindUserByEmail(user)
+	user_details, err := usrU.userRepo.FindUserByEmail(user)
 	if err != nil {
 		return models.UserToken{}, err
 	}
 	// check the password
-	err = bcrypt.CompareHashAndPassword([]byte(userDetails.Password), []byte(user.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password), []byte(user.Password))
 	if err != nil {
 		return models.UserToken{}, errors.New("password incorrect")
 	}
+
+	var userResponse models.UserDetailsResponse
+	userResponse.Id = int(user_details.Id)
+	userResponse.Name = user_details.Name
+	userResponse.Email = user_details.Email
+	userResponse.Phone = user_details.Phone
+
 	// generate token
-	tokenString, err := helper.GenerateUserToken(userDetails)
+	tokenString, err := helper.GenerateUserToken(userResponse)
 	if err != nil {
 		return models.UserToken{}, errors.New("could't create token for user")
 	}
 	return models.UserToken{
-		Username: userDetails.Username,
-		Token:    tokenString,
+		User:  userResponse,
+		Token: tokenString,
 	}, nil
 }
 
@@ -88,9 +93,13 @@ func (usrU *userUsecase) SignUp(user models.UserDetails) (models.UserToken, erro
 	if err != nil {
 		return models.UserToken{}, errors.New("couldn't create token for user due to some internal error")
 	}
+	// create new wallet for user
+	if _, err := usrU.orderRepo.CreateNewWallet(userData.Id); err != nil {
+		return models.UserToken{}, errors.New("error creating new wallet for user")
+	}
 	return models.UserToken{
-		Username: user.Username,
-		Token:    tokenString,
+		User:  userData,
+		Token: tokenString,
 	}, nil
 
 }
@@ -118,10 +127,10 @@ func (usrU *userUsecase) GetAddresses(id int) ([]domain.Address, error) {
 	return addresses, nil
 }
 
-func (usrU *userUsecase) GetUserDetails(id int) (models.UserResponse, error) {
+func (usrU *userUsecase) GetUserDetails(id int) (models.UserDetailsResponse, error) {
 	userDetails, err := usrU.userRepo.GetUserDetails(id)
 	if err != nil {
-		return models.UserResponse{}, err
+		return models.UserDetailsResponse{}, err
 	}
 	return userDetails, nil
 }
@@ -180,16 +189,16 @@ func (usrU *userUsecase) EditUser(id int, userData models.EditUser) error {
 	}
 	return nil
 }
-func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) {
+func (usrU *userUsecase) GetCart(id int) (models.GetCartResponse, error) {
 	// Find cart id
 	cartId, err := usrU.GetCartID(id)
 	if err != nil {
-		return []models.GetCart{}, errors.New("couldn't find cart id")
+		return models.GetCartResponse{}, errors.New("couldn't find cart id")
 	}
 	// Find products inside cart
-	products, err := usrU.userRepo.GetProductsInCart(cartId, page, limit)
+	products, err := usrU.userRepo.GetProductsInCart(cartId)
 	if err != nil {
-		return []models.GetCart{}, errors.New("couldn't find products in cart")
+		return models.GetCartResponse{}, errors.New("couldn't find products in cart")
 	}
 	// Find products name
 
@@ -199,7 +208,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 		prdName, err := usrU.userRepo.FindProductNames(products[i])
 
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productsName = append(productsName, prdName)
 	}
@@ -209,7 +218,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for q := range products {
 		prdQ, err := usrU.userRepo.FindCartQuantity(cartId, products[q])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productQuantity = append(productQuantity, prdQ)
 	}
@@ -219,7 +228,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for p := range products {
 		prdP, err := usrU.userRepo.FindPrice(products[p])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productPrice = append(productPrice, prdP)
 	}
@@ -229,7 +238,7 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for c := range products {
 		prdC, err := usrU.userRepo.FindCategory(products[c])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		productCategory = append(productCategory, prdC)
 	}
@@ -251,16 +260,22 @@ func (usrU *userUsecase) GetCart(id, page, limit int) ([]models.GetCart, error) 
 	for i := range productCategory {
 		c, err := usrU.offerRepo.FindDiscountPercentage(productCategory[i])
 		if err != nil {
-			return []models.GetCart{}, err
+			return models.GetCartResponse{}, err
 		}
 		offers = append(offers, c)
 	}
 	// Find Discount price
 	for i := range getCart {
-		getCart[i].DiscoundPrice = (getCart[i].Total) - (getCart[i].Total * float64(offers[i]) / 100)
+		getCart[i].DiscountPrice = (getCart[i].Total) - (getCart[i].Total * float64(offers[i]) / 100)
 	}
-	return getCart, nil
+	var response models.GetCartResponse
+	response.Id = cartId
+	response.Values = getCart
+
+	return response, nil
+
 }
+
 func (usrU *userUsecase) RemoveFromCart(id int, inventoryID int) error {
 	err := usrU.userRepo.RemoveFromCart(id, inventoryID)
 	if err != nil {
@@ -291,25 +306,25 @@ func (usrU *userUsecase) UpdateQuantityLess(id, inv_id int) error {
 	return nil
 }
 
-func (usrU *userUsecase) GetWallet(id, page, limit int) (models.Wallet, error) {
-	// Get wallet id
-	walletId, err := usrU.walletRepo.FindWalletIdFromUserId(id)
-	if err != nil {
-		return models.Wallet{}, errors.New("couldn't find wallet id from user id")
-	}
-	// Get wallet balance
-	balance, err := usrU.walletRepo.GetBalance(walletId)
-	if err != nil {
-		return models.Wallet{}, errors.New("couldn't find wallet balance")
-	}
-	// Get wallet history(history with amount,purpose,time,walletId)
-	history, err := usrU.walletRepo.GetHistory(walletId, page, limit)
-	if err != nil {
-		return models.Wallet{}, errors.New("couldn't find wallet history")
-	}
-	var wallet models.Wallet
-	wallet.Balance = balance
-	wallet.History = history
+// func (usrU *userUsecase) GetWallet(id, page, limit int) (models.Wallet, error) {
+// 	// Get wallet id
+// 	walletId, err := usrU.walletRepo.FindWalletIdFromUserId(id)
+// 	if err != nil {
+// 		return models.Wallet{}, errors.New("couldn't find wallet id from user id")
+// 	}
+// 	// Get wallet balance
+// 	balance, err := usrU.walletRepo.GetBalance(walletId)
+// 	if err != nil {
+// 		return models.Wallet{}, errors.New("couldn't find wallet balance")
+// 	}
+// 	// Get wallet history(history with amount,purpose,time,walletId)
+// 	history, err := usrU.walletRepo.GetHistory(walletId, page, limit)
+// 	if err != nil {
+// 		return models.Wallet{}, errors.New("couldn't find wallet history")
+// 	}
+// 	var wallet models.Wallet
+// 	wallet.Balance = balance
+// 	wallet.History = history
 
-	return wallet, nil
-}
+// 	return wallet, nil
+// }

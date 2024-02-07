@@ -8,12 +8,12 @@ import (
 type UserRepository interface {
 	CheckUserAvailability(email string) bool
 	UserBlockStatus(email string) (bool, error)
-	FindUserByEmail(user models.UserLogin) (models.UserResponse, error)
-	SignUp(user models.UserDetails) (models.UserResponse, error)
+	FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error)
+	SignUp(user models.UserDetails) (models.UserDetailsResponse, error)
 	AddAddress(id int, address models.AddAddress, result bool) error
 	GetAddresses(id int) ([]domain.Address, error)
 	CheckIfFirstAddress(id int) bool
-	GetUserDetails(id int) (models.UserResponse, error)
+	GetUserDetails(id int) (models.UserDetailsResponse, error)
 	FindUserIDByOrderID(orderID int) (int, error)
 	FindUserByOrderID(orderId string)(domain.User,error)
 	ChangePassword(id int, password string) error
@@ -30,7 +30,7 @@ type UserRepository interface {
 	UpdateQuantityLess(id, inv_id int) error
 
 	GetCartID(id int) (int, error)
-	GetProductsInCart(cart_id, page, limit int) ([]int, error)
+	GetProductsInCart(cart_id int) ([]int, error)
 	FindProductNames(inventory_id int) (string, error)
 	FindCartQuantity(cart_id, inventory_id int) (int, error)
 	FindPrice(inventory_id int) (float64, error)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"strconv"
+	"time"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
@@ -15,7 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/spf13/viper"
+	"github.com/jinzhu/copier"
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -43,36 +44,71 @@ func GetUserId(c *gin.Context) (int, error) {
 	return userId, nil
 }
 
-func GenerateAdminToken(admin domain.Admin) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":admin.ID,
-		"admin": admin.Username,
-		"email":admin.Email,
-
-		"role":  "admin",
-	})
-	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
-	if err != nil {
-		return "",err
-	}
-	return tokenString, nil
+type AuthCustomClaims struct {
+	Id int `json:"id"`
+	// Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
+	jwt.StandardClaims
 }
 
-func GenerateUserToken(user models.UserResponse) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user":   user.Username,
-		"role":   "user",
-		"userId": user.Id,
-	})
-	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
-	if err == nil {
-		fmt.Println("token created")
+func GenerateAdminToken(admin models.AdminDetailsResponse) (string, string, error) {
+	tokenClaimes := &AuthCustomClaims{
+		Id:    admin.ID,
+		Email: admin.Email,
+		// Name: admin.Name,
+		Role: "admin",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+	refreshTokenClaims := &AuthCustomClaims{
+		Id: admin.ID,
+		// Name: admin.Name,
+		Email: admin.Email,
+		Role:  "admin",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaimes)
+	tokenString, err := token.SignedString([]byte("adminsecret"))
+
+	// fmt.Println("in admin helper",tokenString)
+	if err != nil {
+		return "", "", err
+	}
+
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
+	refreshTokenString, err := refreshToken.SignedString([]byte("adminrefresh"))
+	if err != nil {
+		return "", "", err
+	}
+	return tokenString, refreshTokenString, nil
+}
+
+func GenerateUserToken(user models.UserDetailsResponse) (string, error) {
+	claims := &AuthCustomClaims{
+		Id:    user.Id,
+		Email: user.Email,
+		Role:  "user",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte("usersecret"))
+	if err != nil {
+		return "", err
 	}
 	return tokenString, nil
 }
 
 func PasswordHashing(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password),10)
 	if err != nil {
 		return "", errors.New("internal server error")
 	}
@@ -165,4 +201,19 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 		return "", uploadErr
 	}
 	return result.Location, nil
+}
+
+func CompareHashAndPassword(a string, b string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(a), []byte(b))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Copy(a *models.UserDetailsResponse, b *models.UserSignInResponse) (models.UserDetailsResponse, error) {
+	if err := copier.Copy(a, b); err != nil {
+		return models.UserDetailsResponse{}, err
+	}
+	return *a, nil
 }
