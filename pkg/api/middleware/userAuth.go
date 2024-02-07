@@ -22,25 +22,28 @@ func UserAuthMiddleware(c *gin.Context) {
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	// token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-	// 	return []byte("usersecret"), nil
-	// })
-	jwtToken,err:=ValidateToken(tokenString)
-	if err != nil {
-		c.AbortWithStatus(401)
-		return
-	}
-	if err != nil || !jwtToken.Valid {
+	fmt.Println("user token ",tokenString)
+
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println("in user auth parse token...")
+		return []byte("usersecret"), nil
+	})
+	fmt.Println("after user auth parse ",token)
+	
+	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err,})
 		c.Abort()
 		return
 	}
-	claims, ok := jwtToken.Claims.(jwt.MapClaims)
-	if !ok || !jwtToken.Valid {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
 		c.JSON(http.StatusForbidden, gin.H{"error": err})
 		c.Abort()
 		return
 	}
+
+	fmt.Println("reached user auth...............")
+
 	role, ok := claims["role"].(string)
 	if !ok || role != "user" {
 		c.JSON(http.StatusForbidden, gin.H{"error": "unauthorized access"})

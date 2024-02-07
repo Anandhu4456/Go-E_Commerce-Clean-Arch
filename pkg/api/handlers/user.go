@@ -203,7 +203,7 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/details [get]
 func (uH *UserHandler) GetUserDetails(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
