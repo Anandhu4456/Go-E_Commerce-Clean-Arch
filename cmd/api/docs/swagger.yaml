@@ -1162,14 +1162,9 @@ paths:
     get:
       description: user can view their cart details
       parameters:
-      - description: page
+      - description: id
         in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
+        name: id
         required: true
         type: string
       produces:
@@ -1192,9 +1187,9 @@ paths:
     delete:
       description: user can remove products from their cart
       parameters:
-      - description: inventory id
+      - description: id
         in: query
-        name: inventory
+        name: id
         required: true
         type: string
       produces:
@@ -1445,6 +1440,12 @@ paths:
       consumes:
       - application/json
       description: user can get all their addresses
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1467,6 +1468,11 @@ paths:
       - application/json
       description: user can add their addresses
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: address
         in: body
         name: address
@@ -1522,6 +1528,11 @@ paths:
       - application/json
       description: user can change their Details
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: edit-user
         in: body
         name: userData
@@ -1637,6 +1648,11 @@ paths:
       - application/json
       description: user can change their password
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: changepassword
         in: body
         name: changepassword

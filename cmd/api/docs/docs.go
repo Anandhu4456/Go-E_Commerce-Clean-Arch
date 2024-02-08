@@ -1595,15 +1595,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
+                        "description": "id",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     }
@@ -1642,8 +1635,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "inventory id",
-                        "name": "inventory",
+                        "description": "id",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     }
@@ -2042,6 +2035,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get Addresses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2077,6 +2079,13 @@ const docTemplate = `{
                 ],
                 "summary": "Add Address",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "address",
                         "name": "address",
@@ -2165,6 +2174,13 @@ const docTemplate = `{
                 ],
                 "summary": "Edit User",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "edit-user",
                         "name": "userData",
@@ -2346,6 +2362,13 @@ const docTemplate = `{
                 ],
                 "summary": "Change Password",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "changepassword",
                         "name": "changepassword",

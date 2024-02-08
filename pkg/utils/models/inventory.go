@@ -14,6 +14,11 @@ type Inventory struct {
 	Price       float64 `json:"price"`
 }
 
+type AddToCart struct {
+	UserID      int `json:"user_id"`
+	InventoryID int `json:"inventory_id"`
+}
+
 type UpdateInventory struct {
 	CategoryID  int     `json:"category_id"`
 	ProductName string  `json:"product_name"`

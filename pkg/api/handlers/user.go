@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -27,18 +28,21 @@ func NewUserHandler(userUsecase services.UserUsecase) *UserHandler {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			id	query	string	true	"id"
 // @Param			address  body  models.AddAddress  true	"address"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address/add [post]
 func (uH *UserHandler) AddAddress(c *gin.Context) {
+	// id ,err:=helper.GetUserId(c)
     id, err := strconv.Atoi(c.Query("id"))
+	fmt.Println("user id from add address handler ",id)
     if err != nil {
-        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
-        c.JSON(http.StatusBadRequest, errRes)
-        return
-    }
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
     var address models.AddAddress
     if err := c.BindJSON(&address); err != nil {
         errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
@@ -46,7 +50,6 @@ func (uH *UserHandler) AddAddress(c *gin.Context) {
         return
     }
 
-    
     if err := uH.userusecase.AddAddress(id, address); err != nil {
         errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
         c.JSON(http.StatusBadRequest, errRes)
@@ -63,15 +66,16 @@ func (uH *UserHandler) AddAddress(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			id	query	string	true	"id"
 // @Param			changepassword  body  models.ChangePassword  true	"changepassword"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/security/change-password [patch]
 func (uH *UserHandler) ChangePassword(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't find user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -97,13 +101,14 @@ func (uH *UserHandler) ChangePassword(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			id	query	string	true	"id"
 // @Param			userData  body  models.EditUser true	"edit-user"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/edit [patch]
 func (uH *UserHandler) EditUser(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get bad request", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -131,13 +136,14 @@ func (uH *UserHandler) EditUser(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Security		Bearer
+// @Param			id	query	string	true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address [get]
 func (uH *UserHandler) GetAddresses(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId,err:=strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check id again", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -157,8 +163,7 @@ func (uH *UserHandler) GetAddresses(c *gin.Context) {
 // @Tags			User
 // @Produce		    json
 // @Security		Bearer
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"
+// @Param			id	query	string	true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart [get]
@@ -169,18 +174,7 @@ func (uH *UserHandler) GetCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	// page, err := strconv.Atoi(c.Query("page"))
-	// if err != nil {
-	// 	errRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errRes)
-	// 	return
-	// }
-	// limit, err := strconv.Atoi(c.Query("limit"))
-	// if err != nil {
-	// 	errRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errRes)
-	// 	return
-	// }
+
 	products, err := uH.userusecase.GetCart(userId)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't retrieve cart products", nil, err.Error())
@@ -255,13 +249,13 @@ func (uH *UserHandler) Login(c *gin.Context) {
 // @Description	user can remove products from their cart
 // @Tags			User
 // @Produce		    json
-// @Param			inventory	query	string	true	"inventory id"
+// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/remove [delete]
 func (uH *UserHandler) RemoveFromCart(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't find user id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
