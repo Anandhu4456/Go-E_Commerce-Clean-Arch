@@ -88,7 +88,7 @@ func (payH *PaymentHandler) GetPaymentMethods(c *gin.Context) {
 
 func (payH *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 	orderId := c.Query("id")
-	userId, err := strconv.Atoi(c.Query("user_id"))
+	 userId, err := strconv.Atoi(c.Query("user_id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "check path paremeter(user id)", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
