@@ -1667,6 +1667,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
@@ -1710,6 +1717,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
@@ -1747,6 +1761,15 @@
                     "User"
                 ],
                 "summary": "Checkout section",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1902,6 +1925,13 @@
                 ],
                 "summary": "Add To Wishlist",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "inventory ID",
@@ -2217,6 +2247,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "page",
                         "name": "page",
                         "in": "query",
@@ -2479,6 +2516,15 @@
                     "User"
                 ],
                 "summary": "Get Wishlist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2511,6 +2557,13 @@
                 ],
                 "summary": "Remove from Wishlist",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "inventory id",

@@ -5,7 +5,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
@@ -29,6 +28,7 @@ func NewOrderHandler(orderUsecase services.OrderUsecase) *OrderHandler {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param            id     query  string   true   "id"
 // @Param			page	query  string 	true	"page"
 // @Param			limit	query  string 	true	"limit"
 // @Security		Bearer
@@ -51,7 +51,7 @@ func (orH *OrderHandler) GetOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	id, err := helper.GetUserId(c)
+	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "geting user id failed", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -108,7 +108,7 @@ func (orH *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/orders/cancel [post]
 func (orH *OrderHandler) CancelOrder(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)

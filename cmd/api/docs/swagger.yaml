@@ -1214,6 +1214,11 @@ paths:
       - application/json
       description: user can subtract 1 quantity of product from their cart
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: inventory id
         in: query
         name: inventory
@@ -1241,6 +1246,11 @@ paths:
       - application/json
       description: user can add 1 quantity of product to their cart
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: inventory id
         in: query
         name: inventory
@@ -1265,6 +1275,12 @@ paths:
   /users/check-out:
     get:
       description: Add products to carts  for the purchase
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1362,6 +1378,11 @@ paths:
       - application/json
       description: Add products to Wishlsit  for the purchase
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: inventory ID
         in: query
         name: inventory
@@ -1561,6 +1582,11 @@ paths:
       - application/json
       description: user can view the details of the orders
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: page
         in: query
         name: page
@@ -1730,6 +1756,12 @@ paths:
   /users/wishlist:
     get:
       description: user can view their wishlist details
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1750,6 +1782,11 @@ paths:
     delete:
       description: user can remove products from their wishlist
       parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
       - description: inventory id
         in: query
         name: inventory

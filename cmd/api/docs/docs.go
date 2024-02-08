@@ -1678,6 +1678,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
@@ -1721,6 +1728,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
@@ -1758,6 +1772,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Checkout section",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1913,6 +1936,13 @@ const docTemplate = `{
                 ],
                 "summary": "Add To Wishlist",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "inventory ID",
@@ -2228,6 +2258,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "page",
                         "name": "page",
                         "in": "query",
@@ -2490,6 +2527,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get Wishlist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2522,6 +2568,13 @@ const docTemplate = `{
                 ],
                 "summary": "Remove from Wishlist",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "inventory id",

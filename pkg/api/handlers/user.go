@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
@@ -36,30 +35,29 @@ func NewUserHandler(userUsecase services.UserUsecase) *UserHandler {
 // @Router			/users/profile/address/add [post]
 func (uH *UserHandler) AddAddress(c *gin.Context) {
 	// id ,err:=helper.GetUserId(c)
-    id, err := strconv.Atoi(c.Query("id"))
-	fmt.Println("user id from add address handler ",id)
-    if err != nil {
+	id, err := strconv.Atoi(c.Query("id"))
+	fmt.Println("user id from add address handler ", id)
+	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-    var address models.AddAddress
-    if err := c.BindJSON(&address); err != nil {
-        errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-        c.JSON(http.StatusBadRequest, errRes)
-        return
-    }
+	var address models.AddAddress
+	if err := c.BindJSON(&address); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
 
-    if err := uH.userusecase.AddAddress(id, address); err != nil {
-        errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
-        c.JSON(http.StatusBadRequest, errRes)
-        return
-    }
+	if err := uH.userusecase.AddAddress(id, address); err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't add address", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
 
-    successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
-    c.JSON(http.StatusOK, successRes)
+	successRes := response.ClientResponse(http.StatusOK, "successfully added address", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }
-
 
 // @Summary		Change Password
 // @Description	user can change their password
@@ -141,7 +139,7 @@ func (uH *UserHandler) EditUser(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address [get]
 func (uH *UserHandler) GetAddresses(c *gin.Context) {
-	userId,err:=strconv.Atoi(c.Query("id"))
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "check id again", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -168,9 +166,9 @@ func (uH *UserHandler) GetAddresses(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart [get]
 func (uH *UserHandler) GetCart(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -240,7 +238,7 @@ func (uH *UserHandler) Login(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "user successfully logged in", userToken, nil)
 	// c.SetCookie("Authorization",userToken.Token,3600,"/","yoursstore.online",true,false)
-	c.SetCookie("Authorization", userToken.Token, 3600 *24*30, "", "", false,true)
+	c.SetCookie("Authorization", userToken.Token, 3600*24*30, "", "", false, true)
 
 	c.JSON(http.StatusOK, successRes)
 }
@@ -317,31 +315,27 @@ func (uH *UserHandler) SignUp(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			inventory	query	string	true	"inventory id"
+// @Param           id          query   string  true   "id"
+// @Param			inventory 	query	string	true	"inventory id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/updateQuantity/plus [post]
 func (uH *UserHandler) UpdateQuantityAdd(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	cartId, err := uH.userusecase.GetCartID(userId)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get cart id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+
 	invId, err := strconv.Atoi(c.Query("inventory_id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	if err := uH.userusecase.UpdateQuantityAdd(cartId, invId); err != nil {
+	if err := uH.userusecase.UpdateQuantityAdd(userId, invId); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't update quantity", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
@@ -356,31 +350,27 @@ func (uH *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param           id          query   string  true    "id"
 // @Param			inventory	query	string	true	"inventory id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/updateQuantity/minus [post]
 func (uH *UserHandler) UpdateQuantityLess(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	cartId, err := uH.userusecase.GetCartID(userId)
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get cart id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+
 	invId, err := strconv.Atoi(c.Query("inventory_id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "conversion failed", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	if err := uH.userusecase.UpdateQuantityLess(cartId, invId); err != nil {
+	if err := uH.userusecase.UpdateQuantityLess(userId, invId); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't subtract quantity", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return

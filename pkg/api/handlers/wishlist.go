@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -26,15 +25,16 @@ func NewWishlistHandler(wishlistUsecase services.WishlistUsecase) *WishlistHandl
 // @Tags			User
 // @Accept			json
 // @Produce		json
+// @Param         id    query  string   true  "id"
 // @Param			inventory	query	string	true	"inventory ID"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/home/add-to-wishlist [post]
 func (wiH *WishlistHandler) AddtoWishlist(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
+	userId, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -58,15 +58,16 @@ func (wiH *WishlistHandler) AddtoWishlist(c *gin.Context) {
 // @Description	user can remove products from their wishlist
 // @Tags			User
 // @Produce		    json
+// @Param            id        query   string   true   "id"
 // @Param			inventory	query	string	true	"inventory id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/wishlist/remove [delete]
 func (wiH *WishlistHandler) RemoveFromWishlist(c *gin.Context) {
-	id, err := helper.GetUserId(c)
+	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "could not get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -96,14 +97,15 @@ func (wiH *WishlistHandler) RemoveFromWishlist(c *gin.Context) {
 // @Description	user can view their wishlist details
 // @Tags			User
 // @Produce		    json
+// @Param   id   query  string  true  "id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/wishlist [get]
 func (wiH *WishlistHandler) GetWishlist(c *gin.Context) {
-	id, err := helper.GetUserId(c)
+	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "couldn't get user id", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, "check path parameter( user id)", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
