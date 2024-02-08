@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/repository/interfaces"
@@ -75,6 +76,7 @@ func (ur *userRepository) AddAddress(id int, address models.AddAddress, result b
 	VALUES($1,$2,$3,$4,$5,$6,$7,$8)
 	
 	`
+	fmt.Println("user id from add address repo",id)
 	err := ur.DB.Exec(query, id, address.Name, address.HouseName, address.Street, address.City, address.State, address.Pin, result).Error
 	if err != nil {
 		return errors.New("adding address failed")
@@ -94,7 +96,7 @@ func (ur *userRepository) CheckIfFirstAddress(id int) bool {
 
 func (ur *userRepository) GetAddresses(id int) ([]domain.Address, error) {
 	var getAddress []domain.Address
-	err := ur.DB.Raw("SELECT * FROM addresses WHERE id=?", id).Scan(&getAddress).Error
+	err := ur.DB.Raw("SELECT * FROM addresses WHERE user_id=?", id).Scan(&getAddress).Error
 	if err != nil {
 		return []domain.Address{}, errors.New("failed to getting address")
 	}

@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
+	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
@@ -32,20 +32,15 @@ func NewCartHandler(usecase services.CartUsecase) *CartHandler {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/home/add-to-cart [post]
 func (ch *CartHandler) AddtoCart(c *gin.Context) {
-	userId, err := helper.GetUserId(c)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-	inventoryID, err := strconv.Atoi(c.Query("inventory"))
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+	// userId, err := helper.GetUserId(c)
+	var cart models.AddToCart
+	if err := c.BindJSON(&cart); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	if err := ch.cartUsecase.AddToCart(userId, inventoryID); err != nil {
+	if err := ch.cartUsecase.AddToCart(cart.UserID, cart.InventoryID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not add the Cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

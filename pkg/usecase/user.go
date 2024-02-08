@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
@@ -105,6 +106,7 @@ func (usrU *userUsecase) SignUp(user models.UserDetails) (models.UserToken, erro
 }
 
 func (usrU *userUsecase) AddAddress(id int, address models.AddAddress) error {
+	fmt.Println("user id from add address usecase ",id)
 	rslt := usrU.userRepo.CheckIfFirstAddress(id)
 	var checkAddress bool
 

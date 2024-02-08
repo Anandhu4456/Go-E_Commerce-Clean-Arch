@@ -11,7 +11,7 @@ type User struct {
 }
 
 type Address struct {
-	ID        uint   `json:"id" gorm:"unique;not null"`
+	Id        uint   `json:"id" gorm:"unique;not null"`
 	UserID    uint   `json:"user_id"`
 	User      User   `json:"-" gorm:"foreignkey:UserID"`
 	Name      string `json:"name" validate:"required"`

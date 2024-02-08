@@ -1584,15 +1584,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
+                        "description": "id",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     }
@@ -1631,8 +1624,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "inventory id",
-                        "name": "inventory",
+                        "description": "id",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     }
@@ -2031,6 +2024,15 @@
                     "User"
                 ],
                 "summary": "Get Addresses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2066,6 +2068,13 @@
                 ],
                 "summary": "Add Address",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "address",
                         "name": "address",
@@ -2154,6 +2163,13 @@
                 ],
                 "summary": "Edit User",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "edit-user",
                         "name": "userData",
@@ -2335,6 +2351,13 @@
                 ],
                 "summary": "Change Password",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "changepassword",
                         "name": "changepassword",
