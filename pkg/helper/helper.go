@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
-	"strconv"
 	"time"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
@@ -14,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/jinzhu/copier"
 	"github.com/twilio/twilio-go"
@@ -22,27 +20,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GetUserId(c *gin.Context) (int, error) {
-	var key models.UserKey = "user_id"
-	val := c.Request.Context().Value(key)
-
-	// Check if the value is not nil
-	if val == nil {
-		return 0, errors.New("user id not found in context")
-	}
-	// using type assertion to chech the type of val is models.UserKey
-
-	userkey, ok := val.(models.UserKey)
-	if !ok {
-		return 0, errors.New("user id type is not expected type")
-	}
-	id := userkey.String()
-	userId, err := strconv.Atoi(id)
-	if err != nil {
-		return 0, errors.New("failed to convert user id to int")
-	}
-	return userId, nil
-}
 
 type AuthCustomClaims struct {
 	Id int `json:"id"`
@@ -108,7 +85,7 @@ func GenerateUserToken(user models.UserDetailsResponse) (string, error) {
 }
 
 func PasswordHashing(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password),10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		return "", errors.New("internal server error")
 	}
