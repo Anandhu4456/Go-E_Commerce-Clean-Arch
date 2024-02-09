@@ -1,5 +1,6 @@
 
-.PHONY: run stop wire
+.PHONY:  run stop  wire
+
 
 run :
 	docker compose up

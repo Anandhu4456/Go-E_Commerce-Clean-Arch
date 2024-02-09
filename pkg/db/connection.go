@@ -72,7 +72,7 @@ func CheckAndCreateAdmin(db *gorm.DB)error {
 	db.Model(&domain.Admin{}).Count(&count)
 	if count == 0 {
 		password := "adminpass"
-		hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		hashedPass, err := bcrypt.GenerateFromPassword([]byte(password),10)
 		if err != nil {
 			fmt.Println("check and create admin error")
 			return err
