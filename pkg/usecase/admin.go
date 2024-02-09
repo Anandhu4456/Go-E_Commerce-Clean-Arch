@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/Anandhu4456/go-Ecommerce/pkg/domain"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/helper"
@@ -10,6 +9,7 @@ import (
 	services "github.com/Anandhu4456/go-Ecommerce/pkg/usecase/interfaces"
 	"github.com/Anandhu4456/go-Ecommerce/pkg/utils/models"
 	"golang.org/x/crypto/bcrypt"
+	// "golang.org/x/crypto/bcrypt"
 )
 
 type adminUsecase struct {
@@ -26,19 +26,16 @@ func NewAdminUsecase(adRepo interfaces.AdminRepository) services.AdminUsecase {
 func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.AdminToken, error) {
 	// Getting details of the admin based on the email provided
 
-	fmt.Println("admin details in usecase ",adminDetails)
 	adminCompareDetails, _ := au.adminRepository.LoginHandler(adminDetails)
-	fmt.Println("admincompare details in usecase ",adminCompareDetails)
-	if  adminCompareDetails.UserName !=adminDetails.Email{
-		return domain.AdminToken{}, errors.New("admin not exist")
-	}
 
-	hash, err := helper.PasswordHashing(adminDetails.Password)
-	if err != nil {
-		return domain.AdminToken{}, err
+	if adminCompareDetails.UserName != adminDetails.Email {
+
+		return domain.AdminToken{}, errors.New("admin not exist")
+
 	}
 	// Compare password from database that provided by admin
-	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(adminDetails.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
+
 	if err != nil {
 		return domain.AdminToken{}, err
 	}
@@ -49,15 +46,16 @@ func (au *adminUsecase) LoginHandler(adminDetails models.AdminLogin) (domain.Adm
 	// if err != nil {
 	// 	return domain.AdminToken{}, err
 	// }
+
 	adminDetailsResponse.ID = adminCompareDetails.ID
 	adminDetailsResponse.Name = adminCompareDetails.Name
 	adminDetailsResponse.Email = adminCompareDetails.UserName
 
-	fmt.Println("admindetails response id", adminDetailsResponse.ID)
-	fmt.Println("admin details response name", adminDetailsResponse.Name)
-	fmt.Println("admin details response email", adminDetailsResponse.Email)
+	// fmt.Println("admindetails response id", adminDetailsResponse.ID)
+	// fmt.Println("admin details response name", adminDetailsResponse.Name)
+	// fmt.Println("admin details response email", adminDetailsResponse.Email)
 
-	fmt.Println("reached here--------------")
+	// fmt.Println("reached here--------------")
 
 	token, refresh, err := helper.GenerateAdminToken(adminDetailsResponse)
 	if err != nil {
