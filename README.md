@@ -48,4 +48,5 @@ Before running the project, you need to set the following environment variables 
 - `AWS_REGION`: AWS region
 - `AWS_ACCESS_KEY_ID`: AWS access key ID
 - `AWS_SECRET_ACCESS_KEY`: AWS secret access key
+
 Make sure to provide the appropriate values for these environment variables to configure the project correctly.
